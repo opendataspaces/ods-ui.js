@@ -1,0 +1,151 @@
+/*
+ * Main css file containing all custom css classes and modifications which are
+ * not part of Bootstrap or jQuery but only belong to ODS.
+ */
+
+ /* 60px to make the bootstrap container go all the way to the bottom of the topbar */
+body {
+    padding-top: 60px;
+    padding-bottom:128px;
+}
+
+#navfooter {
+    height: 128px
+}
+
+/* less spacing between booptstrap form rows */
+.form-horizontal .control-group {
+    margin-bottom: 10px;
+}
+
+/* rounded corners on any element. */
+.rounded {
+    -webkit-border-radius: 3px 3px 3px 3px;
+    -moz-border-radius: 3px 3px 3px 3px;
+    border-radius: 3px 3px 3px 3px;
+}
+
+.gravatar {
+    height: 22px;
+    float:left;
+    display:inline;
+    margin: 0px 10px 0px 10px;
+}
+
+.footer {
+    text-align:right;
+}
+
+.navbar-inner {
+    background-color:#049cdb;
+    background-image:none;
+    color:white;
+}
+
+#content {
+    margin-bottom:20px;
+}
+
+.bottom-menu {
+    padding:10px 70px 10px 70px;
+}
+
+.navbar {
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px#888;
+    box-shadow: 0 0 5px #888;
+}
+
+#navheader {
+    background-color:white;
+    background-repeat:no-repeat;
+    height:60px;
+}
+
+#header-left {
+    background-image:url(../img/banner.png);
+    background-repeat:no-repeat;
+    height:60px;
+}
+
+#header-right {
+    background-image:url(../img/banner-right.png);
+    background-repeat:no-repeat;
+    background-position:right;
+    height:60px;
+}
+
+header .navbar .container {
+    height:60px
+}
+
+#main-navigation,
+#main-navigation ul {
+    height:60px;
+}
+
+#main-navigation a {
+    height:40px
+}
+
+/* MW changes */
+.navbar .nav > li > a {
+    text-shadow:none;
+}
+
+.navbar .nav > li > a:hover {
+    text-shadow:none;
+    color:white;
+    background-color:#049cdb;
+}
+
+.navbar .nav .active > a,
+.navbar .nav .active > a:hover {
+    background-color:#049cdb;
+}
+
+#main-nav-container {
+    padding-left:200px;
+}
+
+footer ul {
+    list-style-type: none;
+}
+
+footer li {
+    margin-left:-10px;
+}
+
+footer a,
+footer a:hover {
+    color:white;
+}
+
+.featureCheck {
+    display: list-item;
+    font-size: 1.8em;
+    list-style: disc inside none;
+    text-align: center;
+}
+
+.tableRowFeature {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #D9D9D9;
+    background-color: #F5F5F5;
+    padding: 6px 20px;
+}
+
+.tableSubTitle {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #D9D9D9;
+    padding: 6px 11px;
+    font-weight: bold;
+    background-color: #EDEDED;
+}
+
+.tableFeatureHeader {
+  padding: 11px;
+  text-align: center;
+}
