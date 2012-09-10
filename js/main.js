@@ -11,6 +11,9 @@ $(document).ready(function() {
     $('#testOdsButton').button();
     $('#getOdsButton').button();
     $('#odsFeed').rssfeed('https://trueg.wordpress.com/feed/',
-      { limit: 5 }
+      { limit: 5,
+        header: false,
+        content: false
+      }
     );
 });
