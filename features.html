@@ -1,0 +1,438 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/i/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>ODS - The 3.0 Cloud</title>
+  <meta name="description" content="">
+
+  <!-- Mobile viewport optimized: h5bp.com/viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/bootstrap-responsive.css" rel="stylesheet">
+  <link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+  <link href="js/vendor/jquery.zrssfeed.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="css/main.css">
+
+  <!-- disabled the boilerplate css since it messes up bootstraps css here and there.
+       TODO: figure out what we should keep from boilerplate
+  <link rel="stylesheet" href="css/style.css">-->
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+  <!-- All JavaScript at the bottom, except this Modernizr build.
+       Modernizr enables HTML5 elements & feature detects for optimal performance.
+       Create your own custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="js/vendor/modernizr-2.5.3.min.js"></script>
+</head>
+
+<body>
+
+  <a href="https://github.com/openlink/virtuoso-opensource">
+    <img style="position: fixed; top: 0; right: 0; border: 0; z-index:2000;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub">
+  </a>
+
+  <div id="pageContainer">
+  <header>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner" id="navheader">
+        <div id="header-right" />
+        <div id="header-left" />
+        <div class="container">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="mainContent" class="container">
+  <div class="row-fluid">
+  <div class="span10">
+
+    <div class="page-header">
+      <h1>Profile Management <small>Manage User Accounts</small></h1>
+    </div>
+    <div>
+      <p>ODS brings full profile management. Store your personal details and share details according to ODS' powerful ACL rules with other ODS users or any person that can be identified via their WebID. An ODS profile can hold many personal details including online accounts, favorite things, likes and dislikes, areas of interest, product and service wishes, or the social network.</p>
+      <p>User profiles are exported as FOAF profiles which can be combined with an X.509 certificate to create fully functional WebIDs for each user profile. As with all data in ODS the profile is accessible as linked data through Virtuoso's SPARQL end-point or by dereferencing the personal URI and requesting an appropriate format like Turtle, JSON-LD, or RDF+XML.</p>
+      <p>ODS supports a variety of registration and login mechanisms including WebID, OpenID, or OAuth-powered services like Facebook or Twitter. Accounts can be created by providing simple password digest information or by connecting them to existing accounts or identifiers from other services.</p>
+      <div class="pull-right"><table><tr><td><img src="img/webid.png"></img></td><td><img src="img/sign-in-with-twitter-d.png"></img></td><td><img src="img/linkedin-large.png"></img></td><td><img src="img/facebook_logo_full.png"></img></td></tr></table></div>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Social Networking <small>Manage Friend Lists and Share Information</small></h1>
+    </div>
+    <div>
+      <p>ODS allows to manage your personal social network. Build your list of friends, share information with them, let ODS send pingbacks to inform them of the shared data.</p>
+      <p>Each ODS user account exposes a full FOAF profile with optional WebID support.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>File Management <small>WebDAV With a Vengance</small></h1>
+    </div>
+    <div>
+      <p>With the Briefcase ODS provides a WebDAV-compliant platform that offers advanced file-sharing capabilities.</p>
+      <p>In addition to basic WebDAV file management and its complex ACL rule driven security and file-sharing functionality the Briefcase has a wide range of additional feature that make it one of the most powerful file storage systems available.</p>
+      <p>The Briefcase benefits from Virtuoso's Sponger module to automatically extract file metadata from a wide array of file formats including MS Office, Open Office, Open Document Format, Content Syndication Formats (RSS 1.0, RSS 2.0, Atom, OPML, OCS), (X)HTML, Web Services Contract Files (BPEL, WSDL), XBRL, XBEL, FOAF, iCalendar, hCalendar, vCARD or Google Base Items. This information is available either as pure WebDAV data or as RDF. The latter is, as with all resources in ODS, available by dereferencing the file URIs using content-negotiation or my querying Virtuoso's SPARQL end-point. This also includes the powerful full-text search capabilities of Virtuoso which can be combined with arbitrary complex structured queries.</p>
+      <p>Briefcase also supports UNIX-style file-permissions as a simple alternative to the powerful ACL rule system.</p>
+      <p>Briefcase allows to mount other known web storage solutions like Google Drive, Amazon S3, SkyDrive or Dropbox directly into your ODS Briefcase and apply the same powerful ACL rules to them as to any other resource. Through the same mechanism non-physical WebDAV resources like contacts or feed posts can be provided as files in the WebDAV system.</p>
+      <p>Smart folders allow to browse files by their meta-data. For example the path <em>DAV/home/[username]/Items/Graphics/Type/JPEG</em> lists all the graphic images that are of type JPEG for a given user.</p>
+      <p>The Briefcase supports version control for any resources using any client supporting the DeltaV core feature set. Historical versions of resources will appear in a separate virtual folder. DeltaV core WebDAV methods are supported for resources for which versioning has been enabled.</p>
+      <p>Flexible and Open data access are key in the ODS Briefcase. It can be transparently integrated into any WebDAV-compliant environment like MAC OS X Finder, Windows Explorer, or Linux DAV mounts. In addition as with all resources in ODS the data is exported as RDF and accessible through the <a href="/odsdox/group__ods__module__briefcase.html">Briefcase HTTP API</a>.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Calendar <small>Manage Tasks And Events</small></h1>
+    </div>
+    <div>
+      <p>ODS provides a full calendar system for event and note management. Schedule new events, add attending people, configure reminders, create tasks with priority, due date, attendees, or manage comments.</p>
+      <p>ODS can subscribe to external calendar resources via CalDAV or by importing ICS files from any WebDAV system or any URL. In the same way calendar events and tasks can be exported or published to any writable URL or any CalDAV resource. The ODS Calendar supports several formats for resource syndication like RSS, Atom, or <a href="http://rdfs.org/sioc/spec/">RDF SIOC</a>.</p>
+      <p>Events and tasks can be shared with other users through ODS' advanced ACL rule system allowing fine grained privacy settings on any resource.</p>
+      <p>The ODS Calendar supports synchronization via SyncML through the ODS Briefcase's powerful virtual folder system.</p>
+      <p>ODS Clients can either manage events by directly accessing the resources via CalDAV, by writing to an ics file which the Calendar instance is subscribed to, or by using the <a href="/odsdox/group__ods__module__calendar.html">ODS Calendar API</a>.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Address Book <small>Manage Contacts</small></h1>
+    </div>
+    <div>
+      <p>ODS comes with a fully featured address book manager which in addition to managing contacts exposes these as FOAF resources, allows access via CardDAV, and supports publication and subscription to and from other CardDAV instances or any URL.</p>
+      <p>The ODS Address Book can import contacts from local or DAV files in several formats including vCard, FOAF, or CSV, or from external LDAP servers.</p>
+      <p>Like all resources in ODS <a href="http://ods.openlinksw.com/wiki/ODS/ODSSIOCRef#AddressBook%20Data%20Space">contacts are exported as SIOC RDF</a> data and made accessible through Virtuoso's SPARQL endpoint or via content-negotiation on the resources' URIs.</p>
+      <p>The ODS Address Book supports synchronization via SyncML through the ODS Briefcase's powerful virtual folder system.</p>
+      <p>ODS clients can either manage contacts by directly accessing the resources via CardDAV, by writing to a vcard file which the address book instance is subscribed to, or by using the <a href="/odsdox/group__ods__module__addressbook.html">ODS Address Book API</a>.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>E-Mail <small>The shortest road to fully integrated Webmail</small></h1>
+    </div>
+    <div>
+      <p>ODS integrates a complete and highly scalable E-Mail solution which ranges from simple E-Mail storage and sending to complex smart folder filtering. The ODS mail solution can act as an email client and a server, supporting IMAP, IMAPS, and POP3. It allows to combine and filter the E-Mails from external accounts with the ones directly stored in ODS.</p>
+      <p>Thanks to the RDF exposure of the resources and powerful SPARQL-based E-Mail filtering the possibilities of virtual sorting and filtering are endless. Smart folders allow to filter mails by embedded WebID certificates, by content or by an arbitrary number of header values. These folders can then be accessed via IMAP through any compliant client allowing for powerful server-side filtering which is consistent between clients and devices.</p>
+      <p>ODS Mail provides all the tools required to build a fully featured WebMail system or E-Mail filtering proxy.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Manage Bookmarks <small>Weblinks and More</small></h1>
+    </div>
+    <div>
+      <p>The ODS Bookmark module allows to construct, maintain, and share vast collections of web resource URLs. Bookmarks can be sorted into folders, imported and exported from and to XBEL (Mozilla Firefox, Microsoft Internet Explorer, Mozilla/Netscape, and Opera bookmarks) or <a href="http://delicious.com/">Delicious</a>. Publish all bookmarks to Delicious or any writable URL, subscribe to bookmark feeds from Delicious or any URL including WebDAV.</p>
+      <p>Bookmarks can be tagged, commented, or shared through ODS' powerful ACL rule system. Smart folders allow to filter bookmarks into virtual hierarchies allowing different views onto the same data.</p>
+      <p>Like with all resources in ODS bookmarks are exposed as RSS, Atom, or RDF feeds which can be accessed by any client or person with the appropriate permissions. These feeds are directly available in the ODS Briefcase (the ODS WebDAV file storage system) in special virtual folders.</p>
+      <p>ODS provides a complete <a href="/odsdox/group__ods__module__bookmark.html">bookmark HTTP API</a> allowing to perform all tasks surrounding bookmark management.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Feed Aggregator <small>Combine, Split, Sort, Filter</small></h1>
+    </div>
+    <div>
+      <p>ODS' Feed Manager module allows to combine feeds from different sources in different formats into new feeds, exposing them in a variety of formats including RSS, Atom, OPML, or RDF.</p>
+      <p>Feeds can be organized into folders and sub-folders or be filtered and combined via smart folders based on their content, URLs, or manually assigned meta-data like tags. Smart folders essentially are stored searches which can be exposed as new feeds.</p>
+      <p>As with all content ODS exposes <a href="http://ods.openlinksw.com/wiki/ODS/ODSSIOCRef#Feeds%20/%20Subscriptions%20Data%20Space%20%28Feed%20Aggregation%29">feeds and posts as RDF</a> (using the <a href="http://rdfs.org/sioc/spec/">SIOC</a> ontology) to be queried via SPARQL and extended with additional information using the Virtuoso triple-store.</p>
+      <p>A feed is an xml-based document that contains content, summary information or blog posts with a links to the source. On-line newspapers, magazines, blogs and other web sites produce channels or "feeds" as another information source.</p>
+      <p>All of the feed managers functionality is provided by the <a href="/odsdox/group__ods__module__feeds.html">feed manager HTTP API</a>.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Blogging <small>Create Content</small></h1>
+    </div>
+    <div>
+      <p>ODS features a complete Weblog system which allows each user to setup an arbitrary number of blogs. ODS Weblog supports a variety of content publishing protocols including Blogger, Meta Weblog, or Atom. As with most other ODS content blog entries are syndicated in various formats including RSS, Atom, OPML, or XBEL.</p>
+      <p>Blog posts can be automatically archived by year, month, and category. A sophisticated comment engine based on the ODS Discussion system allows to manage comment thread on each blog post. Every aspect of the blog system is protected by ODS' sophisticated ACL rule system allowing to grant access to any person or group of person.</p>
+      <p>The ODS Weblog exposes search requests in any of the supported syndication formats and additionally OpenSearch and GData. Posts can be queried through free text, GData, XQuery, or XPath queries. Making use of ODS' Linked-Data exposure and Virtuoso's SPARQL endpoint any blog can be queried through SPARQL, always controlled by the powerful ACL rule system.</p>
+      <p>ODS Weblog can send pings (TrackBack) to a variety of third-party services to publish newly written blog posts.</p>
+      <p>Blog posts can be categorized and tagged including semantic MOAT (Meaning Of A Tag) annotations which connect tags to a semantic meaning.</p>
+      <p>In addition to the publishing protocols which allow posting of blog entries via third-party tools ODS provides <a href="/odsdox/group__ods__module__weblog.html">the Weblog HTTP API</a> which allows to control every aspect of a Weblog instance.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Discussions <small>Comment on Anything</small></h1>
+    </div>
+    <div>
+      <p>The ODS Discussion module adds support for comment threads to all other ODS modules.</p>
+      <p>Users can add comments to calendar events and tasks, to blog entries, even to bookmarks. As with all resources in ODS the permissions on comments are controlled by sophisticated ACL rules based on people's personal URIs (WebIDs). Each comment can contain file attachments and can be tagged with arbitrary keywords.</p>
+      <p>The ODS discussion system is powered by Virtuoso's news server implementation which also allows to subscribe to any news feed available. This includes any comment thread on any ODS resource since these are also exposed as news feeds.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Polls Manager <small>Gather Opinions</small></h1>
+    </div>
+    <div>
+      <p>With the ODS Polls Manager users can create, edit, and vote on polls. Polls can consist of one of more questions with several choices to choose from. Polls can be scheduled for a certain time or be started and closed manually. A poll can be configured to allow only a single or several votes.</p>
+      <p>Like all content in ODS polls can be shared with other persons of be made public using the powerful ACL rule system ODS provides.</pa>
+      <p>All polls are exported as syndication gems in several formats including RSS, Atom, or SIOC RDF. The <a href="/odsdox/group__ods__module__poll.html">ODS Polls HTTP API</a> allows to control each aspect of the polls manager through any client.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>ACL <small>Share Information</small></h1>
+    </div>
+    <div>
+      <p>ODS features comprehensive ACL rules for any kind of data stored in the system. Share information with selected people, with groups of people, even with people whose profiles fulfill certain conditions. Thanks to WebID the people do not require an account with ODS. All they require is to authenticate themselves with their WebID which ODS can map to the individual users' ACL rules.</p>
+      <p>ODS has a complex ACL rule system which supports fixed groups of people and dynamic groups. Dynamic groups are defined by conditions that the persons need to fulfill. A typical example could be to create the group of all friends by using the foaf:knows relation as condition. Other examples include the exploitation of Virtuoso's transitivity support by creating a family group. All this is possible via dynamic groups defined by arbitrarily complex SPARQL ASK queries.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Standard Compliance <small>WebDAV, CalDAV, CardDAV, RSS, Atom, XBEL, ...</small></h1>
+    </div>
+    <div>
+      <p>ODS is fully standard-compliant. Data is exposed using established protocols like WebDAV for files, CardDAV for contacts, CalDAV for calendar items, RSS and Atom for feeds, XBEL for Bookmarks, and so on.</p>
+      <p>As such ODS can be used in different ways by clients. Clients can either use the formerly mentioned standard interfaces to access many of the ODS features which are also part of the standard interfaces. Or clients can use the <a href="/odsdox/">ODS HTTP API</a> to get access to every last feature ODS has to offer.</p>
+      <ul>
+        <li>Access file via WebDAV.</li>
+        <li>Manage your address book via any CardDAV-compliant client.</li>
+        <li>Manage your calendar via any CalDAV-compliant client.</li>
+        <li>Retrieve the structured description of any resource in ODS by resolving its URI.</li>
+        <li>Query data via Virtuoso's SPARQL HTTP end-point.</li>
+        <li>Access syndication feeds on most information in ODS through many formats including RSS, Atom, or OPML.</li>
+        <li>Post new blog entries through established XML-RPC protocols such as Blogger or Meta Weblog.</li>
+      </ul>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Linked Data <small>Data Exposed as RDF</small></h1>
+    </div>
+    <div>
+      <p>ODS provides full linked-data exposure for every piece of information stored within. Any information provided by ODS can be queried through Virtuoso's SPARQL endpoint or be retrieved by dereferencing the resources' URIs and requesting an appropriate encoding of the data. Like everything in ODS the SPARQL endpoint is ACL-protected, only providing the information the requesting person has access to.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Search <small>Query all information in ODS</small></h1>
+    </div>
+    <div>
+      <p>ODS, being built on top of Virtuoso, takes advantage of the powerful query capabilities. All resources in ODS are exposed as RDF and can thus be queries via SPARQL. This includes full-text matching on text literals. As with all information in ODS the query results are subject to the ACL rules setup by the user.</p>
+      <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span3">
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="span2">
+    <div>
+      <h2>ODS News</h2>
+      TODO: federated using an ODS smart folder: <div id="odsFeed"></div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+    <div id="navfooter" class="navbar navbar-fixed-bottom">
+    <footer>
+      <div class="navbar-inner">
+        <div class="container">
+          <div class="row">
+
+            <div class="span4">
+              <div class="bottom-menu">
+                <p class="opl-nav-title">Documentation</p>
+                <ul>
+                  <li><a href="/features.html">ODS Feature Tour</a></li>
+                  <li><a href="http://ods.openlinksw.com/wiki/ODS/OdsConfig">ODS Installation Instructions</a></li>
+                  <li><a href="/odsdox/">ODS API Documentation</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="span4">
+              <div class="bottom-menu">
+                <p class="opl-nav-title">Contribute</p>
+                <ul>
+                  <li><a href="http://github.com/openlink/virtuoso-opensource/">Fork on GitHub</a></li>
+                  <li><a href="#">ODS Bug Tracker</a></li>
+                  <li><a href="/odsdox/ods_console.html">ODS Console</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="span4">
+              <div class="bottom-menu">
+                <p class="opl-nav-title">Contact</p>
+                <ul>
+                  <li><a href="http://www.openlinksw.com/">OpenLink Software</a></li>
+                  <li><a href="http://www.openlinksw.com/virtuoso/">Virtuoso Enterprise</a></li>
+                  <li><a href="http://www.sourceforge.net/projects/virtuoso/">Virtuoso Open-Source</a></li>
+                </ul>
+              </div>
+            </div>
+
+          </div> <!-- /row -->
+          <!--<span class="copyright">Copyright (C) 2012 OpenLink Software</span>-->
+        </div>
+      </div>
+    </footer>
+    </div>
+  </div>
+
+  <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.7.2.min.js"><\/script>')</script>
+  <script src="js/vendor/jquery.cookie.js"></script>
+  <script src="js/vendor/jquery.sha1.js"></script>
+  <script src="js/vendor/jquery-ui-1.8.19.custom.min.js"></script>
+  <script src="js/vendor/jquery-ui-messageBox.js"></script>
+  <script src="js/vendor/jquery.spinner.js"></script>
+  <script src="js/vendor/jquery.address-1.4.js"></script>
+  <script src="js/vendor/jquery.zrssfeed.js" type="text/javascript"></script>
+
+  <script src="js/vendor/jsrender.js"></script>
+
+  <!--daterangepicker-->
+  <script type="text/javascript" src="js/third-party/jQuery-UI-Date-Range-Picker/js/date.js"></script>
+  <script type="text/javascript" src="js/third-party/jQuery-UI-Date-Range-Picker/js/daterangepicker.jQuery.js"></script>
+
+  <!--wijmo-->
+  <script src="js/third-party/wijmo/jquery.mousewheel.min.js" type="text/javascript"></script>
+  <script src="js/third-party/wijmo/jquery.bgiframe-2.1.3-pre.js" type="text/javascript"></script>
+  <script src="js/third-party/wijmo/jquery.wijmo-open.1.5.0.min.js" type="text/javascript"></script>
+
+  <!-- FileInput -->
+  <script src="js/third-party/jQuery-UI-FileInput/js/enhance.min.js" type="text/javascript"></script>
+  <script src="js/third-party/jQuery-UI-FileInput/js/fileinput.jquery.js" type="text/javascript"></script>
+
+  <script src="js/vendor/bootstrap.js"></script>
+
+  <script src="js/vendor/vkbeautify.0.97.00.beta.js"></script>
+
+  <!-- scripts concatenated and minified via build script -->
+  <script src="js/ods-common.js"></script>
+  <script src="js/main.js"></script>
+  <!-- end scripts -->
+
+</body>
+</html>
