@@ -45,152 +45,127 @@
 
 <body>
 
-  <a href="https://github.com/openlink/ods">
+  <a href="https://github.com/openlink/virtuoso-opensource">
     <img style="position: fixed; top: 0; right: 0; border: 0; z-index:2000;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub">
   </a>
 
+  <div id="pageContainer">
   <header>
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner" id="navheader">
         <div id="header-right" />
         <div id="header-left" />
         <div class="container">
-          <span class="brand" href="#">ODS - The Web 3.0 Cloud</span>
-
-          <!-- Main navigation block -->
-          <div id="main-navigation">
-            <ul class="nav pull-right">
-              <li><a href="index.php?title=TakeATour">Take A Tour</a></li>
-              <li><a href="index.php?title=GetODS">Get ODS</a></li>
-              <li><a href="index.php?title=Enterprise">Enterprise</a></li>
-              <!-- Only show personal tools when logged in -->
-
-            </ul>
-          </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
   </header>
 
-  <div class="container">
-
+  <div id="mainContent" class="container">
+  <div class="row-fluid">
+  <div class="span10">
     <div>
-      <h2>About ODS</h2>
-      The OpenLink Data Spaces are a powerful Cloud system to manage contacts, calendars, tasks, a social network, emails, bookmarks, news or blog feeds, and much more. ODS supports fine-grained sharing of information through complex access control lists. Its complete developer API and broad support of standard interfaces make it the perfect personal information management service, either deployed as a shared intranet or internet service or as a personal storage at home. ODS provides all the tools UI developers require to build professional and powerful cloud applications.
+      <h2>OpenLink Data Spaces</h2>
+      <p>The OpenLink Data Spaces are a powerful Cloud system to manage contacts, calendars, tasks, a social network, emails, bookmarks, news or blog feeds, and much more. ODS supports fine-grained sharing of information through complex access control lists. ODS can interface with virtually any existing personal data managing web service to consolidate data streams from different sources into one coherent interface. Its complete developer API and broad support of standard interfaces make it the perfect personal information management service, either deployed as a shared intranet or internet service or as a personal storage at home. ODS provides all the tools UI developers require to build professional and powerful cloud applications.</p>
+      <p>ODS is powered by OpenLink's own Virtuso universal server. It runs as a web service directly inside Virtuoso and is easily deployed via Virtuoso's package system.</p>
+      <p><a href="/ods">Try it today</a>, take a <a href="features.html">feature tour</a>, or check out the <a href="/odsdox/">ODS API docs</a>.</p>
     </div>
 
-    <div>
-      <h2>Buzz Lines</h2>
-      <p>Get back control of your data with OpenLink Data Spaces.</p>
-      <p>Host your own social network with OpenLink Data Spaces.</p>
+    <div class="well">
+      <blockquote class="pull-right"><p>Connect the Web with OpenLink Data Spaces</p></blockquote>
+      <blockquote><p>Get back control of your data with OpenLink Data Spaces</p></blockquote>
+      <blockquote class="pull-right"><p>Host your own social network with OpenLink Data Spaces</p></blockquote>
+      <blockquote><p>Connect all your data with OpenLink Data Spaces</p></blockquote>
     </div>
 
-    <div id="testOds">
-      <h2>Try ODS</h2>
-      <p>OpenLink provides a comprehensive UI interface to ODS which is shipped with ODS itself. Try it yourself to see the full power of ODS:
-      <a id="testOdsButton" class="btn" href="http://ods-qa.openlinksw.com/ods">Try ODS</a>
-      <a id="getOdsButton" class="btn" href="http://virtuoso.openlinksw.com/dataspace/dav/wiki/Main/VOSDownload">Get ODS</a></p>
-      <p><a href="hosting.html">ODS hosting options</a></p>
-    </div>
-
-    <div>
-      <h2>News feed</h2>
-      federated using an ODS smart folder: <div id="odsFeed"></div>
-    </div>
-
-    <div>
-      <h2>Features</h2>
-
+    <div id="features" name="features">
+      <h2>ODS Highlights</h2>
+      <div class="tabbable">
       <ul class="nav nav-tabs" id="myTab">
-        <li class="active"><a href="#featureOverview" data-toggle="tab">ODS Features</a></li>
-        <li><a href="#featureLogin" data-toggle="tab">Login any which way</a></li>
-        <li><a href="#featureProfile" data-toggle="tab">Profile Management</a></li>
+        <li class="active"><a href="#featureBackend" data-toggle="tab">Backend</a></li>
+        <li><a href="#featureAcl" data-toggle="tab">Powerful ACL System</a></li>
+        <li><a href="#featureStandards" data-toggle="tab">Standard-compliant</a></li>
+        <li><a href="#featureConnection" data-toggle="tab">Connection</a></li>
         <li><a href="#featureLinkedData" data-toggle="tab">Linked Data</a></li>
-        <li><a href="#featureAcl" data-toggle="tab">ACL Rules</a></li>
-        <li><a href="#featureBriefcase" data-toggle="tab">File Storage</a></li>
-        <li><a href="#featureInterfaces" data-toggle="tab">Interfaces</a></li>
-        <li><a href="#featureOpenSource" data-toggle="tab">Open-Source</a></li>
+        <li><a href="#featureOpenSource" data-toggle="tab">Open Source</a></li>
       </ul>
 
       <div class="tab-content">
-        <div class="tab-pane active" id="featureOverview">
-          ODS is the powerful linked-data-enabled cloud platform for your data. Store profiles, addresses, calendar events, files, manage feeds, and protect everything with powerful ACL rules. Access your data through a comprehensive RESTful API or via established standard interfaces.
-        </div>
-        <div class="tab-pane" id="featureLogin">
-          ODS supports a wide variety of registration and login mechnisms including WebID, OpenID, or OAuth-powered services like Facebook or Twitter.
-          <table><tr><td><img src="img/webid.png"></img></td><td><img src="img/sign-in-with-twitter-d.png"></img></td><td><img src="img/linkedin-large.png"></img></td><td><img src="img/facebook_logo_full.png"></img></td></tr></table>
-        </div>
-        <div class="tab-pane" id="featureProfile">
-          ODS brings full profile management. Store your personal details, your likes, your dislikes, your achievements, manage your social network, and share details accoring to ODS' powerful ACL rules.
-        </div>
-        <div class="tab-pane" id="featureLinkedData">
-          ODS provides full linked-data exposure for every piece of information stored within.
+        <div class="tab-pane active" id="featureBackend">
+          <p>ODS is a powerful Cloud system which is independant from a specific UI and can be deployed everywhere, be it a public server, an intranet installation or a private local desktop system.</p>
         </div>
         <div class="tab-pane" id="featureAcl">
-          ODS features comprehensive ACL rules for any kind of data stored in the system. Share information with selected people, with groups of people, even with people whose profiles fulfill certain conditions. Thanks to WebID the people do not require an account with ODS. All they require is to authenticate themselves with their WebID.
+          <p>ODS features powerful and complex ACL rules which allow to share resources with individuals, fixed groups, or dynamic groups which are defined by an arbitrary set of conditions.</p>
         </div>
-        <div class="tab-pane" id="featureBriefcase">
-          ODS comes with the Briefcase, the file storage solution which matches all your needs:
-          <ul>
-            <li>The WebDAV interface allows managing your files through any compliant client.</li>
-            <li>The integrated ACL system allows to share files with other people or groups of people.</li>
-            <li>File annoations like tags or comments, or any other kind of property or relation can be attached to files thanks to the Linked Data store.</li>
-            <li>Mount other known web storage solutions like Google Drive or Dropbox directly into your ODS Briefcase and apply the same powerful ACL rules to them.</li>
-          </ul>
+        <div class="tab-pane" id="featureStandards">
+          <p>ODS is fully standard-compliant, exposing data through well established interfaces and protocols such as WebDAV, CalDAV, RSS, or RDF.</p>
         </div>
-        <div class="tab-pane" id="featureInterfaces">
-          In addition to its comprehensive RESTful API which allows to manage every detail of the ODS system, ODS supports a variety of standard access protocols:
-          <ul>
-            <li>Access file via WebDAV.</li>
-            <li>Manage your address book via any CardDAV-compliant client.</li>
-            <li>Manage your calendar via any CalDAV-compliant client.</li>
-            <li>Retrieve the structured description of any resource in ODS by resolving its URI.</li>
-          </ul>
+        <div class="tab-pane" id="featureConnection">
+          <p>ODS connects data from third-party services, allows to combine, filter, and expose it again, subject to powerful ACL rules.</p>
+        </div>
+        <div class="tab-pane" id="featureLinkedData">
+          <p>ODS exposes all information as linked data which is retrievable either through SPARQL queries or by dereferencing ODS resource URIs.</p>
         </div>
         <div class="tab-pane" id="featureOpenSource">
-          OpenLink Software distributes ODS under an open-source licence. For a comparison between the open-source and the enterprise version of ODS see the <a href="featurecomp.html">ODS version comparison</a>.
+          <p>OpenLink Software distributes Virtuoso and ODS under an open-source licence. Both Virtuoso and ODS open-source can be used and redistributed according to the conditions of the <a href="http://www.gnu.org/licenses/gpl-2.0.html">General Public Licence Version 2</a>.</p>
         </div>
       </div>
+      </div>
+    </div>
+
+    <div id="download" name="download">
+      <h2>Get ODS</h2>
+      <p>ODS comes bundled with Virtuoso, OpenLink's universal server. The open-source version of Virtuoso can either be downloaded from the <a href="http://sourceforge.net/projects/virtuoso/">Virtuoso Sourceforge project page</a> or be <a href="http://github.com/openlink/virtuoso-opensource/">forked on GitHub</a>.</p>
+      <p>Alternatively most Linux distributions ship packages for easy Virtuoso open-source installation.</p>
     </div>
 
   </div>
 
-  <footer>
+  <div class="span2">
+    <div>
+      <h2>ODS News</h2>
+      TODO: federated using an ODS smart folder: <div id="odsFeed"></div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
     <div id="navfooter" class="navbar navbar-fixed-bottom">
+    <footer>
       <div class="navbar-inner">
         <div class="container">
           <div class="row">
 
             <div class="span4">
               <div class="bottom-menu">
-                <h3>About</h3>
+                <p class="opl-nav-title">Documentation</p>
                 <ul>
-                  <li><a href="index.php?title=about">The Generic Cloud</a></li>
-                  <li>ODS for Semantic Webbers</li>
-                  <li>ODS for Enterprise</li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="span4">
-              <div class="bottom-menu">
-                <h3>Contribute</h3>
-                <ul>
-                  <li><a href="http://github.com/openlink/ods">Fork on GitHub</a></li>
-                  <li><a href="#">ODS Bug Tracker</a></li>
+                  <li><a href="/features.html">ODS Feature Tour</a></li>
+                  <li><a href="http://ods.openlinksw.com/wiki/ODS/OdsConfig">ODS Installation Instructions</a></li>
                   <li><a href="/odsdox/">ODS API Documentation</a></li>
-                  <li><a href="http://ods-qa.openlinksw.com/ods-console/">ODS Console</a></li>
                 </ul>
               </div>
             </div>
 
             <div class="span4">
               <div class="bottom-menu">
-                <h3>Contact</h3>
+                <p class="opl-nav-title">Contribute</p>
                 <ul>
-                  <li><a href="http://www.openlinksw.com">OpenLink Software</a></li>
-                  <li><a href="http://www.openlinksw.com/virtuoso">Virtuoso</a></li>
-                  <li>Legal</li>
+                  <li><a href="http://github.com/openlink/virtuoso-opensource/">Fork on GitHub</a></li>
+                  <li><a href="#">ODS Bug Tracker</a></li>
+                  <li><a href="/odsdox/ods_console.html">ODS Console</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="span4">
+              <div class="bottom-menu">
+                <p class="opl-nav-title">Contact</p>
+                <ul>
+                  <li><a href="http://www.openlinksw.com/">OpenLink Software</a></li>
+                  <li><a href="http://www.openlinksw.com/virtuoso/">Virtuoso Enterprise</a></li>
+                  <li><a href="http://www.sourceforge.net/projects/virtuoso/">Virtuoso Open-Source</a></li>
                 </ul>
               </div>
             </div>
@@ -199,9 +174,9 @@
           <!--<span class="copyright">Copyright (C) 2012 OpenLink Software</span>-->
         </div>
       </div>
+    </footer>
     </div>
-  </footer>
-
+  </div>
 
   <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
 
