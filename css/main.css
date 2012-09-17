@@ -3,14 +3,38 @@
  * not part of Bootstrap or jQuery but only belong to ODS.
  */
 
- /* 60px to make the bootstrap container go all the way to the bottom of the topbar */
+html {
+  height:100%;
+}
+
+/* 60px to make the bootstrap container go all the way to the bottom of the topbar */
 body {
-    padding-top: 60px;
-    padding-bottom:128px;
+    margin: 0;
+    height:100%;
 }
 
 #navfooter {
-    height: 128px
+    height: 128px;
+    background-color:#049cdb;
+    position:absolute;
+    width:100%;
+    bottom:0; /* stick to bottom */
+}
+
+#pageContainer {
+  position:relative; /* needed for footer positioning*/
+  margin:0 auto; /* center, not in IE5 */
+  width:100%;
+  
+  height:auto !important; /* real browsers */
+  height:100%; /* IE6: treaded as min-height*/
+
+  min-height:100%; /* real browsers */
+}
+
+#mainContent {
+  padding-top: 65px;
+  padding-bottom: 128px;
 }
 
 /* less spacing between booptstrap form rows */
@@ -59,7 +83,7 @@ body {
 #navheader {
     background-color:white;
     background-repeat:no-repeat;
-    height:60px;
+    height:65px;
 }
 
 #header-left {
@@ -148,4 +172,13 @@ footer a:hover {
 .tableFeatureHeader {
   padding: 11px;
   text-align: center;
+}
+
+.rssFeed {
+  margin: 0 0;
+}
+
+.opl-nav-title {
+  font-weight: bold;
+  font-size: 1.2em;
 }
