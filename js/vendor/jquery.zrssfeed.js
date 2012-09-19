@@ -152,7 +152,7 @@
 			// Add feed row
 			rowArray[i]['html'] = '<'+ options.titletag +'><a href="'+ entry.link +'" title="View this feed at '+ feeds.title +'">'+ entry.title +'</a></'+ options.titletag +'>'
 
-			if (options.date && pubDate) rowArray[i]['html'] += '<div>'+ pubDate +'</div>'
+			if (options.date && pubDate) rowArray[i]['html'] += '<div class="rssDate" title="' + entryDate.toISOString() + '">'+ pubDate +'</div>'
 			if (options.content) {
 			
 				// Use feed snippet if available and optioned

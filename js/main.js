@@ -14,6 +14,9 @@ $(document).ready(function() {
       { limit: 5,
         header: false,
         content: false
+      },
+      function() {
+        $('.rssDate').timeago();
       }
     );
 });

@@ -736,3 +736,13 @@ footer.container a {
 .rssBody {
   border: none;
 }
+
+.rssRow {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.rssRow div {
+  margin: 0;
+}
