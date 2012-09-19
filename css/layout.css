@@ -397,13 +397,13 @@ aside ul {
 
 
 /* Branding */
-#youid-logo {
+#ods-logo {
 	position: absolute;
 	top: 0;
 	left: 10px;
-	width: 90px;
+	width: 176px;
 	height: 88px;
-	background: url(../img/youid-logo.png) no-repeat 0 0;
+	background: url(../img/odslogo_88.png) no-repeat 0 0;
 }
 
 #openlink-software {
