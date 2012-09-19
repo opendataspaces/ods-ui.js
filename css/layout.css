@@ -416,7 +416,7 @@ aside ul {
 }
 
 /* HP - Feature */
-.hp .feature-container {
+.hp .navigation-container {
 	position: relative;
 	min-height: 331px;
 	background: url(../img/social-circle.jpg) no-repeat 5px 0;
@@ -431,7 +431,7 @@ aside ul {
 
 
 /* Navigation */
-.navigation-container {
+.sub .navigation-container {
 	padding-bottom:15px;
 }
 
