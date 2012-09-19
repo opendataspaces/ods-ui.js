@@ -1,219 +1,150 @@
 <!doctype html>
-<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
-       More info: h5bp.com/i/378 -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>OpenLink Data Spaces</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-  <title>ODS - The 3.0 Cloud</title>
-  <meta name="description" content="">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <!-- Mobile viewport optimized: h5bp.com/viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/js/vendor/jquery.zrssfeed.css">
+	<link rel="stylesheet" href="css/layout.css">
 
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+  <script type="text/javascript">var switchTo5x=true;</script>
+  <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+  <script type="text/javascript" src="http://s.sharethis.com/loader.js"></script>
 
-  <link href="css/bootstrap.css" rel="stylesheet">
-  <link href="css/bootstrap-responsive.css" rel="stylesheet">
-  <link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
-  <link href="js/vendor/jquery.zrssfeed.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="css/main.css">
-
-  <!-- disabled the boilerplate css since it messes up bootstraps css here and there.
-       TODO: figure out what we should keep from boilerplate
-  <link rel="stylesheet" href="css/style.css">-->
-
-  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-  <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-
-  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
-
-  <!-- All JavaScript at the bottom, except this Modernizr build.
-       Modernizr enables HTML5 elements & feature detects for optimal performance.
-       Create your own custom Modernizr build: www.modernizr.com/download/ -->
-  <script src="js/vendor/modernizr-2.5.3.min.js"></script>
+	<!--[if lt IE 9]>
+		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
 </head>
+<body class="hp">
+	
+<div class="wrapper">
+	
+	<div class="branding bs">
+		
+    <a id="youid-logo" class="ir" href="index.html">ODS Home Page</a>
 
-<body>
+    <a id="openlink-software" class="ir" href="http://www.openlinksw.com/">OpenLink Software</a>
+		
+	</div>
+	
+	<div class="container rc bs" role="main">
+	
+		<div class="feature-container">
+			
+			<nav role="navigation" class="navigation clearfix">
+				<ul class="rc">
+					<li><a class="active" href="index.html">Home</a></li>
+					<li><a href="features.html">Feature Overview</a></li>
+          <li><a href="download.html">Get ODS</a></li>
+          <li><a href="documentation.html">Documentation</a></li>
+          <li><a href="contribute.html">Contribute</a></li>
+				</ul>
+			</nav>
+			
+			<header class="feature">
+				<h1>Introducing ODS</h1>
+				<p>The OpenLink Data Spaces are an industry standards-compliant collaborative platform serving the productivity requirements of individuals and enterprises alike. The basic unit of value provided by this system is a data space, a virtualized collection of structured data objects accessible via a wide variety of standard protocols. ODS allows to manage contacts, calendars, tasks, social networks, emails, bookmarks, news, blog feeds, and more. ODS can interface with virtually any existing personal data managing web service to consolidate data streams from different sources into one coherent interface.</p>
+				<h2>Take back control over your data!</h2>
+			</header>
+			
+		</div>
+		
+		<div class="content-container rc">
+			
+			<div class="content clearfix">
+				
+				<article class="column column-1">
+					<header>
+						<h2>What Are Data Spaces?</h2>
+					</header>
+					<p class="first">A Data Space is a named structured data cluster within a distributed data network where each item of data has a unique HTTP-based identifier.</p>
+          <p>In a Data Space the Data Object Identity is distinct from its Content, Structure, and Location (Address), data object representations are delivered via structured content constrained by a schema. Creation, Update, and Deletion privileges are controlled by the Data Space owner.</p>
+          <p>In relation to the Web, data spaces provide clustered points of access to data objects instead of web pages.</p>
+				</article>
+				
+				<article class="column column-2">
+					<header>
+						<h2>Why OpenLink Data Spaces?</h2>
+					</header>
+					<p class="first">Productivity is still fundamentally driven by the ability to access, integrate, analyze, and disseminate data, information, knowledge, and wisdom to relevant parties on a timely basis.</p>
+          <p>Increasingly, productivity is being strained by the exponential growth of data volume, velocity, and variety due to the fact that most collaboration solutions end up being silos constrained by platform, data format, data access, and network specifity.</p>
+          <p>ODS breaks this walled-garden effect by providing collections of data, stemming from a variety of different sources, allowing to combine, filter, and protect the data through the support of industry standards and a powerful ACL rule system.</p>
+				</article>
+				
+				<aside class="column column-3">
 
-  <a href="https://github.com/openlink/virtuoso-opensource">
-    <img style="position: fixed; top: 0; right: 0; border: 0; z-index:2000;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub">
-  </a>
+					<div id="odsFeed"></div>
+					
+          <a class="btn-large blue info rc" href="/odslite">Try ODS</a>
+					
+					<a class="btn-large blue rc" href="http://github.com/openlink/virtuoso-opensource/">Fork On GitHub</a>
+				</aside>
+				
+				
+			</div>
+			
+		</div>
+	
+	</div>
+	<footer class="container clearfix">
+			
+			<div class="links">
+				<ul>
+					<li><a href="index.html">Home</a></li>
+          <li><a href="/odsdox/">API Documentation</a></li>
+					<li><a href="/ods-console/">ODS Console</a></li>
+					<li><a href="http://virtuoso.openlinksw.com/">Virtuoso</a></li>
+          <li><a href="http://www.openlinksw.com/contact/">Contact</a></li>
+				</ul>
+				<p>Copyright &copy;2012 <a href="http://www.openlinksw.com/">OpenLink Software Inc.</a></p>
+			</div>
+      <div class="social">
+				<ul>
+					<li><a href="/"><img src="img/social16/facebook.png"/></a></li>
+					<li><a href="/"><img src="img/social16/twitter.png"/></a></li>
+					<li><a href="/"><img src="img/social16/linkedin.png"/></a></li>
+          <li><a href="/"><img src="img/social16/social-rss.png"/></a></li>
+				</ul>
+			</div>
+			
+		</footer>
+</div>	
+	
+	
+	
+<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.7.2.min.js"><\/script>')</script>
 
-  <div id="pageContainer">
-  <header>
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner" id="navheader">
-        <div id="header-right" />
-        <div id="header-left" />
-        <div class="container">
-        </div>
-      </div>
-    </div>
-  </header>
+<script src="js/vendor/jquery.zrssfeed.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<!-- end scripts-->
 
-  <div id="mainContent" class="container">
-  <div class="row-fluid">
-  <div class="span10">
-    <div>
-      <h2>OpenLink Data Spaces</h2>
-      <p>The OpenLink Data Spaces are a powerful Cloud system to manage contacts, calendars, tasks, a social network, emails, bookmarks, news or blog feeds, and much more. ODS supports fine-grained sharing of information through complex access control lists. ODS can interface with virtually any existing personal data managing web service to consolidate data streams from different sources into one coherent interface. Its complete developer API and broad support of standard interfaces make it the perfect personal information management service, either deployed as a shared intranet or internet service or as a personal storage at home. ODS provides all the tools UI developers require to build professional and powerful cloud applications.</p>
-      <p>ODS is powered by OpenLink's own Virtuso universal server. It runs as a web service directly inside Virtuoso and is easily deployed via Virtuoso's package system.</p>
-      <p><a href="/ods">Try it today</a>, take a <a href="features.html">feature tour</a>, or check out the <a href="/odsdox/">ODS API docs</a>.</p>
-    </div>
+<script>
+	var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']]; // Change UA-XXXXX-X to be your site's ID
+	(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+	g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
 
-    <div class="well">
-      <blockquote class="pull-right"><p>Connect the Web with OpenLink Data Spaces</p></blockquote>
-      <blockquote><p>Get back control of your data with OpenLink Data Spaces</p></blockquote>
-      <blockquote class="pull-right"><p>Host your own social network with OpenLink Data Spaces</p></blockquote>
-      <blockquote><p>Connect all your data with OpenLink Data Spaces</p></blockquote>
-    </div>
+<script>
+var options={ "publisher": "a75df741-d75d-4965-83f0-e7f4a8889c81", "position": "left", "ad": { "visible": false, "openDelay": 5, "closeDelay": 0}};
+var st_hover_widget = new sharethis.widgets.hoverbuttons(options);
+</script>
 
-    <div id="features" name="features">
-      <h2>ODS Highlights</h2>
-      <div class="tabbable">
-      <ul class="nav nav-tabs" id="myTab">
-        <li class="active"><a href="#featureBackend" data-toggle="tab">Backend</a></li>
-        <li><a href="#featureAcl" data-toggle="tab">Powerful ACL System</a></li>
-        <li><a href="#featureStandards" data-toggle="tab">Standard-compliant</a></li>
-        <li><a href="#featureConnection" data-toggle="tab">Connection</a></li>
-        <li><a href="#featureLinkedData" data-toggle="tab">Linked Data</a></li>
-        <li><a href="#featureOpenSource" data-toggle="tab">Open Source</a></li>
-      </ul>
-
-      <div class="tab-content">
-        <div class="tab-pane active" id="featureBackend">
-          <p>ODS is a powerful Cloud system which is independant from a specific UI and can be deployed everywhere, be it a public server, an intranet installation or a private local desktop system.</p>
-        </div>
-        <div class="tab-pane" id="featureAcl">
-          <p>ODS features powerful and complex ACL rules which allow to share resources with individuals, fixed groups, or dynamic groups which are defined by an arbitrary set of conditions.</p>
-        </div>
-        <div class="tab-pane" id="featureStandards">
-          <p>ODS is fully standard-compliant, exposing data through well established interfaces and protocols such as WebDAV, CalDAV, RSS, or RDF.</p>
-        </div>
-        <div class="tab-pane" id="featureConnection">
-          <p>ODS connects data from third-party services, allows to combine, filter, and expose it again, subject to powerful ACL rules.</p>
-        </div>
-        <div class="tab-pane" id="featureLinkedData">
-          <p>ODS exposes all information as linked data which is retrievable either through SPARQL queries or by dereferencing ODS resource URIs.</p>
-        </div>
-        <div class="tab-pane" id="featureOpenSource">
-          <p>OpenLink Software distributes Virtuoso and ODS under an open-source licence. Both Virtuoso and ODS open-source can be used and redistributed according to the conditions of the <a href="http://www.gnu.org/licenses/gpl-2.0.html">General Public Licence Version 2</a>.</p>
-        </div>
-      </div>
-      </div>
-    </div>
-
-    <div id="download" name="download">
-      <h2>Get ODS</h2>
-      <p>ODS comes bundled with Virtuoso, OpenLink's universal server. The open-source version of Virtuoso can either be downloaded from the <a href="http://sourceforge.net/projects/virtuoso/">Virtuoso Sourceforge project page</a> or be <a href="http://github.com/openlink/virtuoso-opensource/">forked on GitHub</a>.</p>
-      <p>Alternatively most Linux distributions ship packages for easy Virtuoso open-source installation.</p>
-    </div>
-
-  </div>
-
-  <div class="span2">
-    <div>
-      <h2>ODS News</h2>
-      TODO: federated using an ODS smart folder: <div id="odsFeed"></div>
-    </div>
-  </div>
-
-  </div>
-  </div>
-
-    <div id="navfooter" class="navbar navbar-fixed-bottom">
-    <footer>
-      <div class="navbar-inner">
-        <div class="container">
-          <div class="row">
-
-            <div class="span4">
-              <div class="bottom-menu">
-                <p class="opl-nav-title">Documentation</p>
-                <ul>
-                  <li><a href="/features.html">ODS Feature Tour</a></li>
-                  <li><a href="http://ods.openlinksw.com/wiki/ODS/OdsConfig">ODS Installation Instructions</a></li>
-                  <li><a href="/odsdox/">ODS API Documentation</a></li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="span4">
-              <div class="bottom-menu">
-                <p class="opl-nav-title">Contribute</p>
-                <ul>
-                  <li><a href="http://github.com/openlink/virtuoso-opensource/">Fork on GitHub</a></li>
-                  <li><a href="#">ODS Bug Tracker</a></li>
-                  <li><a href="/odsdox/ods_console.html">ODS Console</a></li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="span4">
-              <div class="bottom-menu">
-                <p class="opl-nav-title">Contact</p>
-                <ul>
-                  <li><a href="http://www.openlinksw.com/">OpenLink Software</a></li>
-                  <li><a href="http://www.openlinksw.com/virtuoso/">Virtuoso Enterprise</a></li>
-                  <li><a href="http://www.sourceforge.net/projects/virtuoso/">Virtuoso Open-Source</a></li>
-                </ul>
-              </div>
-            </div>
-
-          </div> <!-- /row -->
-          <!--<span class="copyright">Copyright (C) 2012 OpenLink Software</span>-->
-        </div>
-      </div>
-    </footer>
-    </div>
-  </div>
-
-  <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
-
-  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.7.2.min.js"><\/script>')</script>
-  <script src="js/vendor/jquery.cookie.js"></script>
-  <script src="js/vendor/jquery.sha1.js"></script>
-  <script src="js/vendor/jquery-ui-1.8.19.custom.min.js"></script>
-  <script src="js/vendor/jquery-ui-messageBox.js"></script>
-  <script src="js/vendor/jquery.spinner.js"></script>
-  <script src="js/vendor/jquery.address-1.4.js"></script>
-  <script src="js/vendor/jquery.zrssfeed.js" type="text/javascript"></script>
-
-  <script src="js/vendor/jsrender.js"></script>
-
-  <!--daterangepicker-->
-  <script type="text/javascript" src="js/third-party/jQuery-UI-Date-Range-Picker/js/date.js"></script>
-  <script type="text/javascript" src="js/third-party/jQuery-UI-Date-Range-Picker/js/daterangepicker.jQuery.js"></script>
-
-  <!--wijmo-->
-  <script src="js/third-party/wijmo/jquery.mousewheel.min.js" type="text/javascript"></script>
-  <script src="js/third-party/wijmo/jquery.bgiframe-2.1.3-pre.js" type="text/javascript"></script>
-  <script src="js/third-party/wijmo/jquery.wijmo-open.1.5.0.min.js" type="text/javascript"></script>
-
-  <!-- FileInput -->
-  <script src="js/third-party/jQuery-UI-FileInput/js/enhance.min.js" type="text/javascript"></script>
-  <script src="js/third-party/jQuery-UI-FileInput/js/fileinput.jquery.js" type="text/javascript"></script>
-
-  <script src="js/vendor/bootstrap.js"></script>
-
-  <script src="js/vendor/vkbeautify.0.97.00.beta.js"></script>
-
-  <!-- scripts concatenated and minified via build script -->
-  <script src="js/ods-common.js"></script>
-  <script src="js/main.js"></script>
-  <!-- end scripts -->
+<!--[if lt IE 7 ]>
+	<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
+	<script>window.attachEvent("onload",function(){CFInstall.check({mode:"overlay"})})</script>
+<![endif]-->
 
 </body>
 </html>

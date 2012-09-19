@@ -8,8 +8,8 @@
 $(document).ready(function() {
     console.log("Ready");
 
-    $('#testOdsButton').button();
-    $('#getOdsButton').button();
+/*    $('#testOdsButton').button();
+    $('#getOdsButton').button();*/
     $('#odsFeed').rssfeed('https://trueg.wordpress.com/feed/',
       { limit: 5,
         header: false,
