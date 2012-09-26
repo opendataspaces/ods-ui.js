@@ -1,7 +1,7 @@
 
 /// The ODS instance host
-var odsHost = "localhost:8890";
-var odsSSLHost = "localhost:4433";
+var odsHost = window.location.host;
+var odsSSLHost = null;
 
 /**
  * Construct an ODS API URL with optional ssl.
@@ -9,13 +9,14 @@ var odsSSLHost = "localhost:4433";
  * @param ssl If \p true the returned URL will use the https protocol.
  */
 function odsApiUrl(methodName, ssl) {
-    if(ssl == 1 || /* HACK: work around local CORS issues */ document.location.protocol == "https:") {
+    if(ssl == 1) {
         return "https://" + odsSSLHost + "/ods/api/" + methodName;
     }
     else {
         return "http://" + odsHost + "/ods/api/" + methodName;
     }
 }
+
 
 /**
  * Create an ODS DAV URL.
@@ -190,6 +191,26 @@ var ODS = (function() {
 
     return {
         /**
+         * Construct an ODS API URL with optional ssl.
+         * @param methodName The name of the method to call.
+         * @param ssl If \p true the returned URL will use the https protocol.
+         */
+        apiUrl: function(methodName, ssl) {
+            return odsApiUrl(methodName, ssl);
+        },
+
+        authenticationMethods: function(callback) {
+            var methods = [];
+            $.get(odsApiUrl("server.getInfo", 0), {info: "regData"}).success(function(result) {
+              for(a in result.authentication) {
+                if(result.authentication[a])
+                  methods.push(a);
+              }
+              callback(methods);
+            });
+        },
+
+        /**
          * @brief Create a new ODS session with password hash authentication.
          * 
          * @param usr The user name.
@@ -290,50 +311,26 @@ var ODS = (function() {
             if(error == null) {
                 error = function(msg) { alert(msg); };
             }
-            if(openid == null || openid == '') {
-                // Step 2: Extract details from the URL
-                var openIdUrl = window.location.href;
-                $.get(odsApiUrl("user.openid.loginUrl", 0), { "url": openIdUrl }).success(function(result) {
-                    console.log("user.openid.loginUrl: " + result);
 
-                    var authenticationUrl = odsApiUrl("user.authenticate", 0),
-                    authenticationParams = {
-                        openIdUrl : result,
-                        openIdIdentity : getParameterByName(openIdUrl, "openid.identity")
-                    };
-
-                    $.get(authenticationUrl, authenticationParams).success(function(result) {
-                        var s = $(result).find("sid").text();
-
-                        console.log("Authentication result: " + s);
-
-                        if(s.length > 0) {
-                            // login succeeded
-                            success(new Session(s));
-                        }
-                        else {
-                            // login failed
-                            error(extractODSErrorMessage(result));
-                        }
-                    }).error(function(jqXHR) {
-                        // FIXME: handle HTTP errors
-                        error("AJAX call failed.");
-                    });
-                }).error(function(jqXHR) {
-                    // FIXME: handle HTTP errors
-                    error("AJAX call failed.");
-                });
-          }
-          else {
-            // Step 1: Build the authentication url and navigate to it
-            $.get(odsApiUrl("user.openid.authenticationUrl", 0), { "openid": openid, "hostUrl": url }, "text/plain").success(function(result) {
-              console.log("user.openid.authenticationUrl: " + result);
+            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
               window.location.href = result;
             }).error(function(jqXHR) {
               // FIXME: handle HTTP errors
                 error("AJAX call failed.");
             });
+        },
+
+        createThirdPartyServiceSession: function(type, url, success, error) {
+          if(error == null) {
+            error = function(msg) { alert(msg); };
           }
+
+          $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: type, "callback": url }, "text/plain").success(function(result) {
+            window.location.href = result;
+          }).error(function(jqXHR) {
+            // FIXME: handle HTTP errors
+            error("AJAX call failed.");
+          });
         },
 
         /**
@@ -356,93 +353,30 @@ var ODS = (function() {
             if(error == null) {
                 error = function(msg) { alert(msg); };
             }
-            // Check if there is already an access token in the URL
-            var at = window.location.hash.substring(window.location.hash.indexOf('access_token=')+13);
-            if(at.length > 0) {
-              // strip the expiration date
-              var len = at.indexOf('&');
-              if(len > 0)
-                at = at.substring(0, len);
-              console.log("createFacebookSession Step 2: " + at);
-              // Step 2: Use the access token to authenticate
-              var authenticationUrl = odsApiUrl("user.authenticate", 0);
 
-              $.get(authenticationUrl, { oauthMode: 'facebook', oauthToken: at}).success(function(result) {
-                var s = $(result).find("sid").text();
-
-                console.log("Authentication result: " + s);
-
-                if(s.length > 0) {
-                    // login succeeded
-                    success(new Session(s));
-                }
-                else {
-                    // login failed
-                    console.log("createFacebookSession: login failed: " + extractODSErrorMessage(result));
-                    error(extractODSErrorMessage(result));
-                }
-              }).error(function(jqXHR) {
-                  // FIXME: handle HTTP errors
-                  error("AJAX call failed.");
-              });
-            }
-            else {
-              console.log("createFacebookSession Step 1");
-              // Step 1: Build the authentication url and navigate to it
-              $.get(odsApiUrl("user.oauth.facebook.authenticationUrl", 0), { "hostUrl": url }, "text/plain").success(function(result) {
-                console.log("user.oauth.facebook.authenticationUrl: " + result);
-                window.location.href = result;
-              }).error(function(jqXHR) {
-                // FIXME: handle HTTP errors
-                error("AJAX call failed.");
-              });
-            }
+            console.log("createFacebookSession");
+            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: "facebook", "callback": url }, "text/plain").success(function(result) {
+              console.log("user.authenticate.authenticationUrl: " + result);
+              window.location.href = result;
+            }).error(function(jqXHR) {
+              // FIXME: handle HTTP errors
+              error("AJAX call failed.");
+            });
         },
 
         createTwitterSession: function(url, success, error) {
             if(error == null) {
                 error = function(msg) { alert(msg); };
             }
-            // Check if there is already an OAuth session id in the URL
-            var sid = getParameterByName(window.location.href, 'sid');
-            if(sid.length > 0) {
-              // strip the expiration date
-              console.log("createTwitterSession Step 2: " + sid);
-              // Step 2: Use the OAuth credentials to authenticate
-              $.get(odsApiUrl("user.authenticate", 0), {
-                  oauthMode: 'twitter',
-                  oauthToken: getParameterByName(window.location.href, 'oauth_token'),
-                  oauthVerifier: getParameterByName(window.location.href, 'oauth_verifier')
-              }).success(function(result) {
-                var s = $(result).find("sid").text();
 
-                console.log("Authentication result: " + s);
-
-                if(s.length > 0) {
-                    // login succeeded
-                    success(new Session(s));
-                }
-                else {
-                    // login failed
-                    console.log("createTwitterSession: login failed: " + extractODSErrorMessage(result));
-                    error(extractODSErrorMessage(result));
-                }
-              }).error(function(jqXHR) {
-                  // FIXME: handle HTTP errors
-                  error("AJAX call failed.");
-              });
-            }
-            else {
-              console.log("createTwitterSession Step 1");
-              // Step 1: Build the authentication url and navigate to it
-              $.get(odsApiUrl("user.oauth.twitter.authenticationUrl", 0), { "hostUrl": url }, "text/plain").success(function(result) {
-                console.log("user.oauth.twitter.authenticationUrl: " + result);
-                window.location.href = result;
-              }).error(function(jqXHR) {
-                // FIXME: handle HTTP errors
-                error("AJAX call failed.");
-              });
-            }
+            console.log("createTwitterSession Step 1");
+            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: 'twitter', "callback": url }, "text/plain").success(function(result) {
+              console.log("user.authenticate.authenticationUrl: " + result);
+              window.location.href = result;
+            }).error(function(jqXHR) {
+              // FIXME: handle HTTP errors
+              error("AJAX call failed.");
+            });
         },
 
         createLinkedInSession: function(url, success, error) {
@@ -528,3 +462,18 @@ var ODS = (function() {
         }
     }
 })();
+
+$(document).ready(function() {
+  // fetch the SSL host and port from ODS
+  if(odsSSLHost == null) {
+    $.get(odsApiUrl("server.getInfo", 0), {info: "sslPort"}).success(function(result) {
+      if(result["sslHost"]) {
+        odsSSLHost = result["sslHost"] + ":" + result["sslPort"];
+        console.log("Fetched SSL Host from ODS: " + odsSSLHost);
+      }
+      else {
+        console.log("Could not fetch SSL Host from ODS.");
+      }
+    });
+  }
+});

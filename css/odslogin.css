@@ -1,0 +1,46 @@
+.odsloginMethodDiv {
+  margin: 10px;
+}
+
+.odsloginMethodTitle {
+  font-weight: bold;
+  padding: 5px 0 5px 0;
+  margin: 5px 0 5px 0;
+  border-bottom: 1px solid black;
+}
+
+.odsLoginInput {
+  padding: 3px;
+  height: 11px;
+}
+
+.odsButton {
+  text-decoration: none;
+  text-shadow: 0px 0px 1px #999;
+  filter: dropshadow(color=#999, offx=0, offy=0);
+  -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+  box-shadow:inset 0px 1px 0px 0px #ffffff;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+  border:1px solid #dcdcdc;
+  height: 21px;
+  float: right;
+  width: 60px;
+}
+
+.odsInputFull {
+  margin-bottom: 3px;
+  width: 230px;
+}
+
+.odsInputShort {
+  width: 165px;
+}
+
+.odsLoginLink {
+}
+
+.odsThirdPartyLogins {
+}

@@ -50,12 +50,7 @@ function newSessionCallback(session) {
     // save session id in cookie
     $.cookie("ods_session_id", s_odsSession.sessionId());
 
-    // make sure we have a clean URL
-    // TODO: I am sure this is a common issue, so find the "correct" way to do it
-    if(window.location.search.length > 0)
-      resetAndReload();
-    else
-      loadUserData();
+    loadUserData();
 }
 
 
@@ -109,7 +104,7 @@ function setupLoginLink() {
     // Login popup
     $("#loginLink a").qtip({
         position: {
-          my: "left center",
+          my: "left bottom",
           at: "right center"
         },
         content: {
@@ -124,41 +119,74 @@ function setupLoginLink() {
         }
       });
 
-    // Facebook login
-    $("#facebookLogin").click(function(event) {
-        // cancel default submit behaviour
-        event.preventDefault();
-        // construct our callback url
-        var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?login=facebook";
-        // try to login via OpenID
-        ODS.createFacebookSession(callbackUrl);
+    // For now we need to setup the digest authentication manually
+    var digestLoginFnc = function() {
+      $("#loginLink a").qtip('toggle', false);
+      ODS.createSession(document.digestLogin.usr.value, document.digestLogin.pwd.value, newSessionCallback, errorCallback);
+    };
+    $("form#digestLogin > input").click(function(event) {
+        event.stopPropagation();
+        digestLoginFnc();
+    }).keydown(function(event) {
+        event.stopPropagation();
+        if(event.keyCode == 13) {
+          digestLoginFnc();
+        }
     });
 
-    // Twitter login
-    $("#twitterLogin").click(function(event) {
-        // cancel default submit behaviour
-        event.preventDefault();
-        // construct our callback url
-        var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?login=twitter";
-        // try to login via OpenID
-        ODS.createTwitterSession(callbackUrl);
+    // determine the list of supported services
+    ODS.authenticationMethods(function(methods) {
+      for each (var method in methods) {
+        var loginUi = $("#" + method + "Login");
+        var registerUi = $("#" + method + "Register");
+        loginUi.show();
+        registerUi.show();
+
+        if(method == "openid") {
+            var openIdLoginFnc = function() {
+              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              ODS.createOpenIdSession(document.openidLogin.openidUrl.value, callbackUrl, newSessionCallback, errorCallback);
+            };
+            $("#openidLogin input").keydown(function(event) {
+              event.stopPropagation();
+              if(event.keyCode == 13) {
+                openIdLoginFnc();
+              }
+            });
+            $("#openidLoginBtn").click(function(event) {
+              event.preventDefault();
+              openIdLoginFnc();
+            });
+        }
+        else {
+          $("#otherLogins").show();
+          $("#otherRegistration").show();
+          loginUi.click(function(event) {
+            // cancel default submit behaviour
+            event.preventDefault();
+            if(method == "webid") {
+              ODS.createWebIDSession(newSessionCallback, errorCallback);
+            }
+            else {
+              // construct our callback url
+              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              // try to login via OpenID
+              ODS.createThirdPartyServiceSession(method, callbackUrl);
+            }
+          });
+        }
+      }
     });
 
-    // LinkedIn login
-    $("#linkedinLogin").click(function(event) {
-        // cancel default submit behaviour
-        event.preventDefault();
-        // construct our callback url
-        var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?login=linkedin";
-        // try to login via OpenID
-        ODS.createLinkedInSession(callbackUrl);
+    $("#odsNewAccount").click(function(event) {
+      event.preventDefault();
+      $("#odsLoginTab").hide();
+      $("#odsRegisterTab").show();
     });
-
-    // WebID login
-    // FIXME: reload on https with ?login=webid
-    $("#webIdLogin").click(function(event) {
-        // try to login via WebID
-        ODS.createWebIDSession(newSessionCallback, errorCallback);
+    $("#odsLogin").click(function(event) {
+      event.preventDefault();
+      $("#odsRegisterTab").hide();
+      $("#odsLoginTab").show();
     });
 
     $("#profileLink a").click(function(event) {
@@ -192,19 +220,10 @@ $(document).ready(function() {
 
     setupLoginLink();
 
-    // Check if we are being redirected from a login
-    var loginMethod = getParameterByName(window.location.href, 'login');
-    if(loginMethod == 'facebook') {
-      ODS.createFacebookSession(null, newSessionCallback, errorCallback);
-    }
-    if(loginMethod == 'twitter') {
-      ODS.createTwitterSession(null, newSessionCallback, errorCallback);
-    }
-    if(loginMethod == 'linkedin') {
-      ODS.createLinkedInkSession(null, newSessionCallback, errorCallback);
-    }
-    else if(loginMethod == 'openid') {
-      ODS.createOpenIdSession(null, null, newSessionCallback, errorCallback);
+    // Check if we have a sid parameter from a login redirect
+    var sid = getParameterByName(window.location.href, 'sid');
+    if(sid.length > 0) {
+      ODS.createSessionFromId(sid, newSessionCallback, errorCallback);
     }
     else {
       checkSession();
