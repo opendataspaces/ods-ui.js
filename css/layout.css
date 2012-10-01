@@ -747,31 +747,6 @@ footer.ods-container a {
   margin: 0;
 }
 
-#simplemodal-overlay {
-  background-color:#000;
-}
-
-#simplemodal-container {
-  text-align: left;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  padding:12px;
-  border: 1px solid #dee9f0;
-  background: #fff;
-}
-
-#simplemodal-container a.modalCloseImg {
-  background:url(../img/x.png) no-repeat; /* adjust url as required */
-  width:25px;
-  height:29px;
-  display:inline;
-  z-index:3200;
-  position:absolute;
-  top:-15px;
-  right:-18px;
-  cursor:pointer;
-}
-
 .odsloginMethodTitle {
   font-family: 'Museo700Regular', Arial;
 }
@@ -790,4 +765,6 @@ a:hover {
   height: 16px;
   width: 16px;
   display: inline;
+  float: left;
+  margin-right: 5px;
 }

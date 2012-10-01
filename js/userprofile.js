@@ -7,6 +7,9 @@ function loadUserProfile() {
     var davUrl = odsDavUrl("/home/" + userProps["name"]);
     $("#profileWebDavUrl").html(davUrl).attr("href", davUrl);*/
 
+    var name = userProps.fullName || userProps.name;
+    $("#odsUserProfileWindow .modal-header h3").append(' <small><a href="' + userProps.iri + '">' + name + "</a></small>");
+
     for(key in userProps) {
       // find the corresponding input element
       $('.profileDetail#' + key).each(function() {

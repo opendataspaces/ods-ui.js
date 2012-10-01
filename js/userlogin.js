@@ -76,6 +76,7 @@ function loadUserData() {
           usrLink = '<img class="minigravatar" src="' + usrInfo.photo + '" /> ' + usrLink;
         $('#profileLink a').html(usrLink);
         $('#profileLink').show();
+        $('#odsUserLogout').show();
       }, function() {
       // TODO: inform the user
     });
@@ -170,13 +171,14 @@ function setupLoginLink() {
       $("#odsLoginTab").hide();
       $("#odsRegisterTab").show();
     });
+
     $("#odsLogin").click(function(event) {
       event.preventDefault();
       $("#odsRegisterTab").hide();
       $("#odsLoginTab").show();
     });
 
-    /*$("#profileLink a").click(function(event) {
+    $("#odsUserLogout").click(function(event) {
         event.preventDefault();
 
         s_odsSession.logout(function() {
@@ -190,7 +192,7 @@ function setupLoginLink() {
           // reload the page to reset everything without any parameters
           resetAndReload();
         });
-    });*/
+    });
 }
 
 
