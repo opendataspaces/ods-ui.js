@@ -77,7 +77,7 @@ function loadUserData() {
         $('#profileLink a').html(usrLink);
         $('#odsUserCardName').html('<a href="' + result.iri + '">' + usrInfo.name + "</a>");
 
-        $('#loginLink').hide();
+        $('.odsLoginLink').hide();
         $('#profileLink').show();
         $('#odsUserLogout').show();
         $('#odsUserCard').show();
