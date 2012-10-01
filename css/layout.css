@@ -785,3 +785,9 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.minigravatar {
+  height: 16px;
+  width: 16px;
+  display: inline;
+}

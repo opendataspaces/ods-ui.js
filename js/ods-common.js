@@ -18,14 +18,6 @@ function odsApiUrl(methodName, ssl) {
 }
 
 
-/**
- * Create an ODS DAV URL.
- * @param path The path to the file in the DAV system.
- */
-function odsDavUrl(path) {
-    return "http://" + odsHost + "/DAV" + path;
-}
-
 function extractODSErrorMessage(result) {
     return $(result).find('message').text();
 }
@@ -203,6 +195,15 @@ var ODS = (function() {
 
         sslHost: function() {
           return odsSSLHost;
+        },
+
+        /**
+         * @brief Creates a URL to an ODS DAV resource.
+         *
+         * @param path The absolute path to the DAV resource.
+         */
+        davUrl: function(path) {
+          return "http://" + odsHost + "/DAV" + path;
         },
 
         /**

@@ -63,11 +63,18 @@ function loadUserData() {
         console.log(result);
 
         var usrInfo = { name: result["fullName"] != null ? result["fullName"] : result["name"] };
-
+        if(result["photo"] && result["photo"].length > 0) {
+            // build the photo URL which is a DAV path for now. later this could also be a public URL
+            usrInfo["photo"] = result.photo.substr(0, 1) == '/' ? ODS.davUrl(result.photo) : result.photo;
+        }
         console.log(usrInfo);
 
         $('#loginLink').hide();
-        $('#profileLink a').text("Logged in as " + usrInfo.name);
+
+        var usrLink = usrInfo.name;
+        if(usrInfo.photo)
+          usrLink = '<img class="minigravatar" src="' + usrInfo.photo + '" /> ' + usrLink;
+        $('#profileLink a').html(usrLink);
         $('#profileLink').show();
       }, function() {
       // TODO: inform the user
