@@ -99,9 +99,9 @@ function setupLoginLink() {
     // For now we need to setup the digest authentication manually
     var digestLoginFnc = function() {
       ODS.createSession(document.digestLogin.usr.value, document.digestLogin.pwd.value, newSessionCallback, errorCallback);
-      $.modal.close();
+      $("#loginPopup").modal("hide");
     };
-    $("form#digestLogin > input").click(function(event) {
+    $("form#digestLogin > input.odsButton").click(function(event) {
         event.stopPropagation();
         digestLoginFnc();
     }).keydown(function(event) {
