@@ -154,7 +154,7 @@ function setupLoginLink() {
               // and let the auto-login do its work
               //
               //ODS.createWebIDSession(newSessionCallback, errorCallback);
-              $.modal.close();
+              $("#loginPopup").modal("hide");
               if(window.crypto && window.crypto.logout)
                 window.crypto.logout();
               window.location.href = "https://" + ODS.sslHost() + window.location.pathname;
