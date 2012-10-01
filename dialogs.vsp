@@ -1,0 +1,210 @@
+<!-- The Login and registration window -->
+<div class="modal hide fade" id="loginPopup">
+<div class="modal-body">
+  <div class="odsTab" id="odsLoginTab">
+    <div class="odsloginMethodDiv">
+      <div class="odsloginMethodTitle">Login</div>
+      <form name="digestLogin" id="digestLogin">
+        <input id="digestLoginUsr" class="odsLoginInput odsInputFull" type="text" name="usr" placeholder="Username" />
+        <input id="digestLoginPwd" class="odsLoginInput odsInputShort" type="password" name="pwd" placeholder="Password" />
+        <input class="odsButton" type="button" name="digestLogin" value="Login" />
+      </form>
+    </div>
+    <div class="odsloginMethodDiv" id="openidLogin" style="display:none;">
+      <div class="odsloginMethodTitle">Login with Your OpenID</div>
+      <form name="openidLoginForm">
+        <input class="odsLoginInput odsInputShort" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" />
+        <input class="odsButton" type="button" name="openidLoginBtn" value="Login" title="Login with your OpenID" />
+      </form>
+    </div>
+    <div class="odsloginMethodDiv" id="otherLogins" style="display:none;">
+      <div class="odsloginMethodTitle">Login with Your 3rd-party Account</div>
+      <div class="odsThirdPartyLogins">
+        <a id="webidLogin" class="odsLoginLink" title="Login with your WebID" style="display:none;" href="#"><img src="img/webid16.png"/></a>
+        <a id="facebookLogin" class="odsLoginLink" title="Login via Facebook" style="display:none;" href="#"><img src="img/social16/facebook.png"/></a>
+        <a id="twitterLogin" class="odsLoginLink" title="Login via Twitter" style="display:none;" href="#"><img src="img/social16/twitter.png"/></a>
+        <a id="linkedinLogin" class="odsLoginLink" title="Login via LinkedIn" style="display:none;" href="#"><img src="img/social16/linkedin.png"/></a>
+        <a id="googleLogin" class="odsLoginLink" title="Login via Google" style="display:none;" href="#"><img src="img/social16/google.png"/></a>
+        <a id="windowsliveLogin" class="odsLoginLink" title="Login via Windows Live" style="display:none;" href="#"><img src="img/social16/microsoft.png"/></a>
+        <a id="wordpressLogin" class="odsLoginLink" title="Login via Wordpress" style="display:none;" href="#"><img src="img/social16/wordpress.png"/></a>
+      </div>
+    </div>
+    <a class="odsTabButton" id="odsNewAccount" href="#">Create new account</a>
+  </div>
+
+  <div class="odsTab" id="odsRegisterTab" style="display:none">
+    <div class="odsloginMethodDiv">
+      <div class="odsloginMethodTitle">Register</div>
+      <form name="odsDigestRegister" id="odsDigestRegister">
+        <input id="digestRegisterUsr" class="odsRegisterInput odsInputFull" type="text" name="usr" placeholder="Username" />
+        <input id="digestRegisterEmail" class="odsRegisterInput odsInputFull" type="text" name="email" placeholder="Email Address" />
+        <input id="digestRegisterPwd1" class="odsRegisterInput odsInputFull" type="password" name="pwd1" placeholder="Password" />
+        <input id="digestRegisterPwd2" class="odsRegisterInput odsInputShort" type="password" name="pwd2" placeholder="Repeat Password" />
+        <input class="odsButton" type="button" name="digestRegister" value="Register" />
+      </form>
+    </div>
+    <div class="odsloginMethodDiv" id="openidRegister" style="display:none;">
+      <div class="odsloginMethodTitle">Register with Your OpenID</div>
+      <form name="openidRegisterForm">
+        <input class="odsLoginInput odsInputShort" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" />
+        <input class="odsButton" type="button" name="openidRegisterBtn" value="Register" title="Register with your OpenID" />
+      </form>
+    </div>
+    <div class="odsloginMethodDiv" id="otherRegistration" style="display:none;">
+      <div class="odsloginMethodTitle">Register with Your 3rd-party Account</div>
+      <div class="odsThirdPartyLogins">
+        <a id="webidRegister" class="odsLoginLink" title="Register with your WebID" style="display:none;" href="#"><img src="img/webid16.png"/></a>
+        <a id="facebookRegister" class="odsLoginLink" title="Register via Facebook" style="display:none;" href="#"><img src="img/social16/facebook.png"/></a>
+        <a id="twitterRegister" class="odsLoginLink" title="Register via Twitter" style="display:none;" href="#"><img src="img/social16/twitter.png"/></a>
+        <a id="linkedinRegister" class="odsLoginLink" title="Register via LinkedIn" style="display:none;" href="#"><img src="img/social16/linkedin.png"/></a>
+        <a id="googleRegister" class="odsLoginLink" title="Register via Google" style="display:none;" href="#"><img src="img/social16/google.png"/></a>
+        <a id="windowsliveRegister" class="odsLoginLink" title="Register via Windows Live" style="display:none;" href="#"><img src="img/social16/microsoft.png"/></a>
+      </div>
+    </div>
+    <a class="odsTabButton" id="odsLogin" href="#">Log into an existing account</a>
+  </div>
+</div>
+</div>
+
+
+<!-- Fake result frame for the submitting of the form below -->
+<iframe id="fake_form_target" name="fake_form_target" src="#" style="width:0;height:0;border:0px solid #fff;" style="display:none;"></iframe>
+
+
+<!-- The profile editor dialog -->
+<div class="modal hide fade" id="odsUserProfileWindow">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>ODS User Profile</h3>
+  </div>
+  <div class="modal-body">
+    <form id="userProfile" class="form-horizontal" accept-charset="UTF-8" action="/ods/api/user.upload" method="post" enctype="multipart/form-data" target="fake_form_target" autocomplete="off">
+    <fieldset>
+        <!-- hidden authentication values used for the image upload -->
+        <input type="hidden" name="sid" id="sid" value="" />
+        <input type="hidden" name="realm" id="realm" value="wa" />
+
+        <!-- User Profile Tab navigation bar -->
+        <ul id="userProfileTab" class="nav nav-tabs">
+            <li class="active">
+                <a href="#userProfileTab1" data-toggle="tab">Personal Data</a>
+            </li>
+            <li>
+                <a href="#userProfileTab2" data-toggle="tab">Address Details</a>
+            </li>
+            <li>
+                <a href="#userProfileTab3" data-toggle="tab">Misc</a>
+            </li>
+        </ul>
+
+        <!-- User Profile Tab content -->
+        <div id="userProfileTabContent" class="tab-content">
+            <!-- User Profile Tab 1 -->
+            <div class="tab-pane fade in active" id="userProfileTab1">
+                <div class="control-group">
+                    <label class="control-label" for="nickName">Nick name</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="nickName" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="mail">Email Address</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="mail" />
+                        <p class="help-inline">Main mail address</p>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="fullName">Full name</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="fullName" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="photo">Photo</label>
+                    <div class="controls">
+                        <div class="input-append">
+                            <input class="profileDetail" type="text" id="photo" disabled="disabled"><button id="profilePhotoBtn" class="btn"><i class="icon-folder-open"></i> Choose file</button>
+                        </div>
+                        <br/>
+                        <input type="file" id="pf_photoContent" name="pf_photoContent" style="visibility:hidden;position:absolute;top:0;left:0" onchange="document.getElementById('photo').value=this.value"></input>
+                        <input type="hidden" name="pf_photo" id="pf_photo" value="" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="gender">Gender</label>
+                    <div class="controls">
+                        <select class="profileDetail" id="gender"><option value="male">male</option><option value="female">female</option></select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="birthday">Birthday</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="birthday" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Profile Tab 2 -->
+            <div class="tab-pane fade" id="userProfileTab2">
+                <div class="control-group">
+                    <label class="control-label" for="firstName">First name</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="firstName" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="lastName">Last name</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="lastName" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="homeAddress1">Address 1</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="homeAddress1" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="homeAddress2">Address 2</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="homeAddress2" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="homeCode">Postal Code</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="homeCode" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="homeCity">City</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="homeCity" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="homeState">State</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="homeState" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="homeCountry">Country</label>
+                    <div class="controls">
+                        <input class="profileDetail" type="text" id="homeCountry" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Profile Tab 3 -->
+            <div class="tab-pane fade" id="userProfileTab3"></div>
+        </div>
+    </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <a id="profileSaveButton" href="#" class="btn btn-primary">Save changes</a>
+    <a id="profileCancelButton" href="#" class="btn" data-dismiss="modal">Close</a>
+  </div>
+</div>

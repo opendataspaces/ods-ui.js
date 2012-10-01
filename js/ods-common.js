@@ -9,11 +9,11 @@ var odsSSLHost = null;
  * @param ssl If \p true the returned URL will use the https protocol.
  */
 function odsApiUrl(methodName, ssl) {
-    if(ssl == 1) {
+    if(ssl == 1 && odsSSLHost != null) {
         return "https://" + odsSSLHost + "/ods/api/" + methodName;
     }
     else {
-        return "http://" + odsHost + "/ods/api/" + methodName;
+        return window.location.protocol + "//" + odsHost + "/ods/api/" + methodName;
     }
 }
 
@@ -190,6 +190,21 @@ var ODS = (function() {
     // ===========================================================================
 
     return {
+        /**
+         * Bind a function to the custom event of ODS being ready for action.
+         */
+        ready: function(callback) {
+          $(document).bind('ods-ready-event', callback);
+        },
+
+        host: function() {
+          return odsHost;
+        },
+
+        sslHost: function() {
+          return odsSSLHost;
+        },
+
         /**
          * Construct an ODS API URL with optional ssl.
          * @param methodName The name of the method to call.
@@ -474,6 +489,8 @@ $(document).ready(function() {
       else {
         console.log("Could not fetch SSL Host from ODS.");
       }
+
+      $(document).trigger('ods-ready-event');
     });
   }
 });
