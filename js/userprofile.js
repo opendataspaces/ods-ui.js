@@ -47,12 +47,6 @@ function saveUserProfile() {
 
 
 function setupProfileWindow() {
-  // Use the jQuery Form plugin to submit our form and get a JS callback
-  $("form#userProfile").ajaxForm(function() {
-    // once the form upload is done (only for the photo) we follow up with the rest of the data
-    saveUserProfile();
-  });
-
   // use our hidden file input to select a new photo
   $("#profilePhotoBtn").click(function(event) {
     event.preventDefault();
@@ -70,7 +64,10 @@ function setupProfileWindow() {
         var file = $('#pf_photoContent').get(0).files[0];
         $('#pf_photo').val(file.name);
         $('#sid').val(s_odsSession.sessionId());
-        $("form#userProfile").ajaxSubmit();
+        $("form#userProfile").ajaxSubmit(function() {
+          // once the form upload is done (only for the photo) we follow up with the rest of the data
+          saveUserProfile();
+        });
     }
     else {
         saveUserProfile();

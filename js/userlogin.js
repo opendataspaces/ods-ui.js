@@ -69,14 +69,18 @@ function loadUserData() {
         }
         console.log(usrInfo);
 
-        $('#loginLink').hide();
-
         var usrLink = usrInfo.name;
-        if(usrInfo.photo)
+        if(usrInfo.photo) {
+          $('#odsUserCardPhoto').attr("src", usrInfo.photo);
           usrLink = '<img class="minigravatar" src="' + usrInfo.photo + '" /> ' + usrLink;
+        }
         $('#profileLink a').html(usrLink);
+        $('#odsUserCardName').html('<a href="' + result.iri + '">' + usrInfo.name + "</a>");
+
+        $('#loginLink').hide();
         $('#profileLink').show();
         $('#odsUserLogout').show();
+        $('#odsUserCard').show();
       }, function() {
       // TODO: inform the user
     });
@@ -178,7 +182,7 @@ function setupLoginLink() {
       $("#odsLoginTab").show();
     });
 
-    $("#odsUserLogout").click(function(event) {
+    $(".odsUserLogout").click(function(event) {
         event.preventDefault();
 
         s_odsSession.logout(function() {
