@@ -114,7 +114,8 @@
         <a id="wordpressAuto" class="odsLoginLink" title="Register or Login via Wordpress" style="display:none;" href="#"><img src="img/social16/wordpress.png"/></a>
         <a id="tumblrAuto" class="odsLoginLink" title="Register or Login via Tumblr" style="display:none;" href="#"><img src="img/social16/tumblr.png"/></a>
         <a id="yahooAuto" class="odsLoginLink" title="Register or Login via Yahoo" style="display:none;" href="#"><img src="img/social16/yahoo.png"/></a>
-        <a id="flickrAuto" class="odsLoginLink" title="Register or Login via Flickr" style="display:none;" href="#"><img src="img/social16/flickr.png"/></a>
+        <a id="disqusAuto" class="odsLoginLink" title="Register or Login via Disqus" style="display:none;" href="#"><img src="img/disqus16.png"/></a>
+        <a id="instagramAuto" class="odsLoginLink" title="Register or Login via Instagram" style="display:none;" href="#"><img src="img/social16/instagram.png"/></a>
       </div>
     </div>
   </div>
@@ -279,8 +280,8 @@
                 <a id="wordpressConnect" title="Connect ODS profile to Wordpress" href="#"><img src="img/social16/wordpress.png"/></a>
                 <a id="tumblrConnect" title="Connect ODS profile to Tumblr" href="#"><img src="img/social16/tumblr.png"/></a>
                 <a id="yahooConnect" title="Connect ODS profile to Yahoo" href="#"><img src="img/social16/yahoo.png"/></a>
-                <a id="disqusConnect" class="odsLoginLink" title="Connect ODS profile to Disqus" href="#"><img src="img/disqus16.png"/></a>
-                <a id="instagramConnect" class="odsLoginLink" title="Connect ODS profile to Instagram" href="#"><img src="img/social16/instagram.png"/></a>
+                <a id="disqusConnect" title="Connect ODS profile to Disqus" href="#"><img src="img/disqus16.png"/></a>
+                <a id="instagramConnect" title="Connect ODS profile to Instagram" href="#"><img src="img/social16/instagram.png"/></a>
               </div>
             </div>
         </div>
