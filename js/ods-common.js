@@ -86,8 +86,8 @@ var ODS = (function() {
              *
              * @return A jQuery jqXHR object. FIXME: do our own processing.
              */
-            apiCall: function(method, params) {
-                return $.get(odsApiUrl(method), $.extend({ realm: "wa", sid: m_sessionId }, params));
+            apiCall: function(method, params, type) {
+                return $.get(odsApiUrl(method), $.extend({ realm: "wa", sid: m_sessionId }, params), type);
             },
 
             sessionId: function() { return m_sessionId; },
@@ -147,6 +147,37 @@ var ODS = (function() {
                         error(jqErr);
                     }
                 });
+            },
+
+            connectToThirdPartyService: function(type, url, success, error) {
+              if(error == null) {
+                error = function(msg) { alert(msg); };
+              }
+
+              this.apiCall("user.authenticate.authenticationUrl", { action: "connect", service: type, "callback": url }).success(function(result) {
+                window.location.href = result;
+              }).error(function(jqXHR) {
+                // FIXME: handle HTTP errors
+                error("AJAX call failed.");
+              });
+            },
+
+            connectToOpenId: function(openid, url, success, error) {
+              if(error == null) {
+                error = function(msg) { alert(msg); };
+              }
+
+              this.apiCall("user.authenticate.authenticationUrl", { action: "connect", service: 'openid', "callback": url, data: openid }).success(function(result) {
+                window.location.href = result;
+              }).error(error);
+            },
+
+            connectToBrowserId: function(assertion, success, error) {
+              if(error == null) {
+                error = function(msg) { alert(msg); };
+              }
+
+              this.apiCall("user.authenticate.browserid", { action: "connect", "assertion": assertion }).success(success).error(error);
             },
 
             logout: function(success, error) {
@@ -218,8 +249,19 @@ var ODS = (function() {
         authenticationMethods: function(callback) {
             var methods = [];
             $.get(odsApiUrl("server.getInfo", 0), {info: "regData"}).success(function(result) {
-              for(a in result.authentication) {
-                if(result.authentication[a])
+              for(a in result.authenticate) {
+                if(result.authenticate[a])
+                  methods.push(a);
+              }
+              callback(methods);
+            });
+        },
+
+        registrationMethods: function(callback) {
+            var methods = [];
+            $.get(odsApiUrl("server.getInfo", 0), {info: "regData"}).success(function(result) {
+              for(a in result.register) {
+                if(result.register[a])
                   methods.push(a);
               }
               callback(methods);
@@ -228,7 +270,7 @@ var ODS = (function() {
 
         /**
          * @brief Create a new ODS session with password hash authentication.
-         * 
+         *
          * @param usr The user name.
          * @param pwd The password.
          * @param success A callback function which has one parameter: the new
@@ -269,10 +311,10 @@ var ODS = (function() {
 
         /**
          * @brief Create a new ODS session through WebID authentication.
-         * 
+         *
          * The browser will automatically request the WebID certificate from
          * the user.
-         * 
+         *
          * @param success A callback function with a single parameter: the new
          * Session object.
          * @param An optional error callback function which is called if the
@@ -350,98 +392,6 @@ var ODS = (function() {
         },
 
         /**
-         * @brief Create a new ODS session via Facebook login.
-         *
-         * This function allows to authenticate an ODS user via their Facebook account by simply
-         * calling it twice: once with the callback URL and once without any parameters besides
-         * the error handling functions.
-         *
-         * The first call will result in a redirection to the Facebook login page which in turn will
-         * redirect to the specified @p url adding an access_token hash parameter. This is then
-         * interpreted by the second call to this function resulting in the authentication to complete.
-         * 
-         * @param url The callback URL.
-         * @param success A callback function with a single parameter: the new
-         * Session object. This, however, is only called for the second step of the authentication.
-         * @param error An optional error callback function which is called if the ODS call failed.
-         */
-        createFacebookSession: function(url, success, error) {
-            if(error == null) {
-                error = function(msg) { alert(msg); };
-            }
-
-            console.log("createFacebookSession");
-            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: "facebook", "callback": url }, "text/plain").success(function(result) {
-              console.log("user.authenticate.authenticationUrl: " + result);
-              window.location.href = result;
-            }).error(function(jqXHR) {
-              // FIXME: handle HTTP errors
-              error("AJAX call failed.");
-            });
-        },
-
-        createTwitterSession: function(url, success, error) {
-            if(error == null) {
-                error = function(msg) { alert(msg); };
-            }
-
-            console.log("createTwitterSession Step 1");
-            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: 'twitter', "callback": url }, "text/plain").success(function(result) {
-              console.log("user.authenticate.authenticationUrl: " + result);
-              window.location.href = result;
-            }).error(function(jqXHR) {
-              // FIXME: handle HTTP errors
-              error("AJAX call failed.");
-            });
-        },
-
-        createLinkedInSession: function(url, success, error) {
-            if(error == null) {
-                error = function(msg) { alert(msg); };
-            }
-            // Check if there is already an OAuth session id in the URL
-            var sid = getParameterByName(window.location.href, 'sid');
-            if(sid.length > 0) {
-              // strip the expiration date
-              console.log("createLinkedInSession Step 2: " + sid);
-              // Step 2: Use the OAuth credentials to authenticate
-              $.get(odsApiUrl("user.authenticate", 0), {
-                  oauthMode: 'twitter',
-                  oauthToken: getParameterByName(window.location.href, 'oauth_token'),
-                  oauthVerifier: getParameterByName(window.location.href, 'oauth_verifier')
-              }).success(function(result) {
-                var s = $(result).find("sid").text();
-
-                console.log("Authentication result: " + s);
-
-                if(s.length > 0) {
-                    // login succeeded
-                    success(new Session(s));
-                }
-                else {
-                    // login failed
-                    console.log("createLinkedInSession: login failed: " + extractODSErrorMessage(result));
-                    error(extractODSErrorMessage(result));
-                }
-              }).error(function(jqXHR) {
-                  // FIXME: handle HTTP errors
-                  error("AJAX call failed.");
-              });
-            }
-            else {
-              console.log("createLinkedInSession Step 1");
-              // Step 1: Build the authentication url and navigate to it
-              $.get(odsApiUrl("user.oauth.linkedin.authenticationUrl", 0), { "hostUrl": url }, "text/plain").success(function(result) {
-                console.log("user.oauth.linkedin.authenticationUrl: " + result);
-                window.location.href = result;
-              }).error(function(jqXHR) {
-                // FIXME: handle HTTP errors
-                error("AJAX call failed.");
-              });
-            }
-        },
-
-        /**
          * @brief Create a new ODS session from an existing session id.
          *
          * This is for example useful for storing the session id in a cookie.
@@ -473,6 +423,45 @@ var ODS = (function() {
                 }
             }).error(function(jqxhr) {
                 // FIXME: handle error
+                error("AJAX call failed.");
+            });
+        },
+
+        registerViaThirdPartyService: function(type, url, success, error) {
+          if(error == null) {
+            error = function(msg) { alert(msg); };
+          }
+
+          $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: type, "callback": url }, "text/plain").success(function(result) {
+            window.location.href = result;
+          }).error(function(jqXHR) {
+            // FIXME: handle HTTP errors
+            error("AJAX call failed.");
+          });
+        },
+
+        registerOrLoginViaThirdPartyService: function(type, url, success, error) {
+          if(error == null) {
+            error = function(msg) { alert(msg); };
+          }
+
+          $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "auto", service: type, "callback": url }, "text/plain").success(function(result) {
+            window.location.href = result;
+          }).error(function(jqXHR) {
+            // FIXME: handle HTTP errors
+            error("AJAX call failed.");
+          });
+        },
+
+        registerViaOpenId: function(openid, url, success, error) {
+            if(error == null) {
+                error = function(msg) { alert(msg); };
+            }
+
+            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
+              window.location.href = result;
+            }).error(function(jqXHR) {
+              // FIXME: handle HTTP errors
                 error("AJAX call failed.");
             });
         }

@@ -1,4 +1,9 @@
 /**
+ * global variable to remember which action we took for browser id.
+ */
+var s_browserIdAction = null;
+
+/**
  * Callback function for successful ODS authentication.
  *
  * This function will store the session cookie and reflect the logged in
@@ -14,6 +19,7 @@ function newSessionCallback(session) {
     expire.setDate(expire.getDate() + 7); // one week expiration
     $.cookie("ods_session_id", s_odsSession.sessionId(), {expires: expire, path: '/'});
 
+    setupLogoutLink();
     $(document).trigger('ods-new-session', s_odsSession);
     loadUserData();
 }
@@ -24,7 +30,7 @@ function newSessionCallback(session) {
  */
 function attemptWebIDLogin() {
   console.log("Attempting automatic WebID login");
-  ODS.createWebIDSession(newSessionCallback, noop);
+  ODS.createWebIDSession(newSessionCallback, setupLoginLink);
 }
 
 
@@ -88,43 +94,85 @@ function loadUserData() {
 
 
 function setupLoginLink() {
-    // Login popup
-/*    $("#loginLink a").click(function(event) {
-      event.preventDefault();
-
-      // show a model login dlg
-      $("#loginPopup").modal();
-    });*/
+    console.log("setupLoginLink");
 
     // For now we need to setup the digest authentication manually
     var digestLoginFnc = function() {
       ODS.createSession(document.digestLogin.usr.value, document.digestLogin.pwd.value, newSessionCallback, errorCallback);
       $("#loginPopup").modal("hide");
     };
-    $("form#digestLogin > input.odsButton").click(function(event) {
+    $("form#digestLogin input.odsButton").click(function(event) {
         event.stopPropagation();
         digestLoginFnc();
-    }).keydown(function(event) {
+    });
+    $("form#digestLogin .odsLoginInput").keydown(function(event) {
         event.stopPropagation();
         if(event.keyCode == 13) {
           digestLoginFnc();
         }
     });
 
+
+    // ==========================================
+    // BrowserID
+    // ==========================================
+    $('#browseridLogin').click(function(event) {
+      event.preventDefault();
+      s_browserIdAction = 'authenticate';
+      navigator.id.request();
+    });
+    $('#browseridRegister').click(function(event) {
+      event.preventDefault();
+      s_browserIdAction = 'register';
+      navigator.id.request();
+    });
+    $('#browseridAuto').click(function(event) {
+      event.preventDefault();
+      s_browserIdAction = 'auto';
+      navigator.id.request();
+    });
+    navigator.id.watch({
+      // We use ODS' session management, thus the logged in user from the BrowserID point of view os always null
+      loggedInUser: null,
+
+      // the actual ODS BrowserID login
+      onlogin: function(assertion) {
+        // We use ODS session management, thus, we never want BrowserID auto-login
+        navigator.id.logout();
+
+          // Log into ODS via the BrowserID, requesting a new session ID
+        $.get(ODS.apiUrl('user.authenticate.browserid'), { assertion: assertion, action: s_browserIdAction }).success(function(result) {
+          console.log("Browser ID Login SID: " + result);
+         ODS.createSessionFromId(result, newSessionCallback, errorCallback);
+        }).error(errorCallback);
+
+        // hide the login dlg
+        $("#loginPopup").modal("hide");
+      },
+
+      // we do nothing here as we do logout the ods way
+      onlogout: function() {
+      }
+    });
+
     // determine the list of supported services
     ODS.authenticationMethods(function(methods) {
-      for each (var method in methods) {
+      console.log(methods);
+      for (var i = 0; i < methods.length; i++) {
+        var method = methods[i];
+        if (method == 'digest')
+          continue;
         var loginUi = $("#" + method + "Login");
-        var registerUi = $("#" + method + "Register");
+        var autoLoginUi = $("#" + method + "Auto");
         loginUi.show();
-        registerUi.show();
+        autoLoginUi.show();
 
         if(method == "openid") {
             var openIdLoginFnc = function() {
               var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-              ODS.createOpenIdSession(document.openidLogin.openidUrl.value, callbackUrl, newSessionCallback, errorCallback);
+              ODS.createOpenIdSession(document.openidLoginForm.openidUrl.value, callbackUrl, newSessionCallback, errorCallback);
             };
-            $("#openidLogin input").keydown(function(event) {
+            $("#openidLoginForm .odsLoginInput").keydown(function(event) {
               event.stopPropagation();
               if(event.keyCode == 13) {
                 openIdLoginFnc();
@@ -137,7 +185,6 @@ function setupLoginLink() {
         }
         else {
           $("#otherLogins").show();
-          $("#otherRegistration").show();
           loginUi.click(function(event) {
             // we extract the method from the id of the element
             // this is required since the "method" var scope spans all functions
@@ -166,22 +213,82 @@ function setupLoginLink() {
               ODS.createThirdPartyServiceSession(m, callbackUrl);
             }
           });
+
+          autoLoginUi.click(function(event) {
+            event.preventDefault();
+            // we extract the method from the id of the element
+            // this is required since the "method" var scope spans all functions
+            // created here and will always have the last value of the iteration
+            var m = this.id.substring(0,this.id.indexOf("Auto"));
+            // construct our callback url
+            var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            // try to login via OpenID
+            ODS.registerOrLoginViaThirdPartyService(m, callbackUrl);
+          });
         }
       }
     });
 
-    $("#odsNewAccount").click(function(event) {
-      event.preventDefault();
-      $("#odsLoginTab").hide();
-      $("#odsRegisterTab").show();
-    });
+    // determine the list of supported services
+    ODS.registrationMethods(function(methods) {
+      console.log(methods);
+      for (var i = 0; i < methods.length; i++) {
+        var method = methods[i];
+        var registerUi = $("#" + method + "Register");
+        registerUi.show();
 
-    $("#odsLogin").click(function(event) {
-      event.preventDefault();
-      $("#odsRegisterTab").hide();
-      $("#odsLoginTab").show();
-    });
+        if(method == "openid") {
+            var openIdRegFnc = function() {
+              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              ODS.registerViaOpenId(document.openidRegisterForm.openidUrl.value, callbackUrl, newSessionCallback, errorCallback);
+            };
+            $("#openidRegisterForm .odsLoginInput").keydown(function(event) {
+              event.stopPropagation();
+              if(event.keyCode == 13) {
+                openIdRegFnc();
+              }
+            });
+            $("#openidRegisterBtn").click(function(event) {
+              event.preventDefault();
+              openIdRegFnc();
+            });
+        }
+        else {
+          $("#otherRegistration").show();
+          registerUi.click(function(event) {
+            // we extract the method from the id of the element
+            // this is required since the "method" var scope spans all functions
+            // created here and will always have the last value of the iteration
+            var m = this.id.substring(0,this.id.indexOf("Register"));
+            console.log("Performing registration via " + m);
+            // cancel default submit behaviour
+            event.preventDefault();
 
+            if(m == "webid") {
+              //
+              // Sadly it is not possible yet to send a client certificate via AJAX calls.
+              // Thus, our only way out is to redirect to the https version of our page
+              // and let the auto-login do its work
+              //
+              //ODS.createWebIDSession(newSessionCallback, errorCallback);
+              $("#loginPopup").modal("hide");
+              if(window.crypto && window.crypto.logout)
+                window.crypto.logout();
+              window.location.href = "https://" + ODS.sslHost() + window.location.pathname;
+            }
+            else {
+              // construct our callback url
+              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              // try to login via OpenID
+              ODS.registerViaThirdPartyService(m, callbackUrl);
+            }
+          });
+        }
+      }
+    });
+}
+
+function setupLogoutLink() {
     $(".odsUserLogout").click(function(event) {
         event.preventDefault();
 
@@ -201,12 +308,21 @@ function setupLoginLink() {
 
 
 ODS.ready(function() {
-   setupLoginLink();
-
     // Check if we have a sid parameter from a login redirect
     var sid = getParameterByName(window.location.href, 'sid');
+    var err = getParameterByName(window.location.href, 'error_msg');
     if(sid.length > 0) {
       ODS.createSessionFromId(sid, newSessionCallback, attemptWebIDLogin());
+    }
+    else if(err.length > 0) {
+      var $errorDialog = $('#errorDialog');
+      $errorDialog.on('hide', function() {
+        // we remove the error message from the URL
+        resetAndReload();
+      });
+      // show an error message
+      $('#errorDialogMsg').text(err);
+      $errorDialog.modal();
     }
     else {
       checkSession();

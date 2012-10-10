@@ -8,7 +8,7 @@ function loadUserProfile() {
     $("#profileWebDavUrl").html(davUrl).attr("href", davUrl);*/
 
     var name = userProps.fullName || userProps.name;
-    $("#odsUserProfileWindow .modal-header h3").append(' <small><a href="' + userProps.iri + '">' + name + "</a></small>");
+    $("#odsUserProfileWindow .modal-header h3 small").html('<a href="' + userProps.iri + '">' + name + "</a>");
 
     for(key in userProps) {
       // find the corresponding input element
@@ -17,6 +17,27 @@ function loadUserProfile() {
         console.log(this);
         this.value = userProps[key];
       });
+    }
+  });
+
+  // load all connected online accounts
+  s_odsSession.apiCall('user.onlineAccounts.list', { type: 'P' }, "json").success(function(result) {
+    /* a JSON stream like so:
+    [
+    [
+        1,
+        "Facebook",
+        "http://www.facebook.com/sebastian.trug",
+        "http://localhost:8890/about/id/entity/http/www.facebook.com/trueg"
+    ],
+    We are only interested in the first 3.
+    */
+    console.log(result);
+    $coa = $('#connectedOnlineAccounts');
+    $coa.text('');
+    for(var i = 0; i < result.length; i++) {
+      var account = result[i];
+      $coa.append('<p id="onlineAccount_' + account[0] + '"><b>' + account[1] + '</b>: ' + account[2] + ' <a href="#" onclick="s_odsSession.apiCall(\'user.onlineAccounts.delete\', { id: ' + account[0] + '}); $(\'#onlineAccount_' + account[0] + '\').remove();">Disconnect</a></p>');
     }
   });
 }
@@ -87,6 +108,45 @@ function setupProfileWindow() {
   });
   $('#odsUserProfileWindow').on('hide', function() {
     $(this).data("odsModalShown", false);
+  });
+
+  $('#openidConnectBtn').click(function(e) {
+    e.preventDefault();
+    var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    s_odsSession.connectToOpenId(document.openidConnectForm.openidUrl.value, callbackUrl);
+  });
+
+  $('#thirdPartyProfileConnect a').click(function(e) {
+    e.preventDefault();
+
+    // get service type from id
+    var service = this.id.substring(0,this.id.indexOf("Connect"));
+    var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+
+    s_odsSession.connectToThirdPartyService(service, callbackUrl);
+  });
+
+  $('#browseridConnect').click(function(event) {
+    event.preventDefault();
+    s_browserIdAction = 'connect';
+    navigator.id.request();
+  });
+
+  navigator.id.watch({
+    // We use ODS' session management, thus the logged in user from the BrowserID point of view os always null
+    loggedInUser: null,
+
+    // the actual ODS BrowserID login
+    onlogin: function(assertion) {
+      // We use ODS session management, thus, we never want BrowserID auto-login
+      navigator.id.logout();
+
+      s_odsSession.connectToBrowserId(assertion, function() {}, errorCallback);
+    },
+
+    // we do nothing here as we do logout the ods way
+    onlogout: function() {
+    }
   });
 }
 

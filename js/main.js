@@ -8,8 +8,10 @@ var s_odsSession = null;
 /**
  * Generic callback for AJAX calls and the like
  */
-var errorCallback = function() {
-  // TODO: inform the user
+var errorCallback = function(result) {
+  console.log(result);
+  // TODO: need better error handling
+  alert(result.responseText);
 };
 
 
