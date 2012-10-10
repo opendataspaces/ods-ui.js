@@ -41,7 +41,7 @@
         <input class="odsButton btn" type="button" id="openidLoginBtn" value="OpenID Login" title="Login with your OpenID" />
       </form>
     </div>
-    <a id="browseridLogin" title="Login with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
+    <a id="browseridLogin" style="display:none;" title="Login with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
     <div class="odsloginMethodDiv" id="otherLogins" style="display:none;">
       <div class="odsloginMethodTitle">Login with Your 3rd-party Account</div>
       <div class="odsThirdPartyLogins">
@@ -80,7 +80,7 @@
         <input class="odsButton btn" type="button" name="openidRegisterBtn" id="openidRegisterBtn" value="Register" title="Register with your OpenID" />
       </form>
     </div>
-    <a id="browseridRegister" title="Register with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
+    <a id="browseridRegister" style="display:none;" title="Register with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
     <div class="odsloginMethodDiv" id="otherRegistration" style="display:none;">
       <div class="odsloginMethodTitle">Register with Your 3rd-party Account</div>
       <div class="odsThirdPartyLogins">

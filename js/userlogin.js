@@ -1,9 +1,4 @@
 /**
- * global variable to remember which action we took for browser id.
- */
-var s_browserIdAction = null;
-
-/**
  * Callback function for successful ODS authentication.
  *
  * This function will store the session cookie and reflect the logged in
@@ -113,48 +108,6 @@ function setupLoginLink() {
     });
 
 
-    // ==========================================
-    // BrowserID
-    // ==========================================
-    $('#browseridLogin').click(function(event) {
-      event.preventDefault();
-      s_browserIdAction = 'authenticate';
-      navigator.id.request();
-    });
-    $('#browseridRegister').click(function(event) {
-      event.preventDefault();
-      s_browserIdAction = 'register';
-      navigator.id.request();
-    });
-    $('#browseridAuto').click(function(event) {
-      event.preventDefault();
-      s_browserIdAction = 'auto';
-      navigator.id.request();
-    });
-    navigator.id.watch({
-      // We use ODS' session management, thus the logged in user from the BrowserID point of view os always null
-      loggedInUser: null,
-
-      // the actual ODS BrowserID login
-      onlogin: function(assertion) {
-        // We use ODS session management, thus, we never want BrowserID auto-login
-        navigator.id.logout();
-
-          // Log into ODS via the BrowserID, requesting a new session ID
-        $.get(ODS.apiUrl('user.authenticate.browserid'), { assertion: assertion, action: s_browserIdAction }).success(function(result) {
-          console.log("Browser ID Login SID: " + result);
-         ODS.createSessionFromId(result, newSessionCallback, errorCallback);
-        }).error(errorCallback);
-
-        // hide the login dlg
-        $("#loginPopup").modal("hide");
-      },
-
-      // we do nothing here as we do logout the ods way
-      onlogout: function() {
-      }
-    });
-
     // determine the list of supported services
     ODS.authenticationMethods(function(methods) {
       console.log(methods);
@@ -166,6 +119,9 @@ function setupLoginLink() {
         var autoLoginUi = $("#" + method + "Auto");
         loginUi.show();
         autoLoginUi.show();
+
+        if(method == "browserid")
+          continue;
 
         if(method == "openid") {
             var openIdLoginFnc = function() {
@@ -236,6 +192,9 @@ function setupLoginLink() {
         var method = methods[i];
         var registerUi = $("#" + method + "Register");
         registerUi.show();
+
+        if(method == "browserid")
+          continue;
 
         if(method == "openid") {
             var openIdRegFnc = function() {
@@ -312,7 +271,7 @@ ODS.ready(function() {
     var sid = getParameterByName(window.location.href, 'sid');
     var err = getParameterByName(window.location.href, 'error_msg');
     if(sid.length > 0) {
-      ODS.createSessionFromId(sid, newSessionCallback, attemptWebIDLogin());
+      ODS.createSessionFromId(sid, newSessionCallback, checkSession);
     }
     else if(err.length > 0) {
       var $errorDialog = $('#errorDialog');

@@ -125,29 +125,6 @@ function setupProfileWindow() {
 
     s_odsSession.connectToThirdPartyService(service, callbackUrl);
   });
-
-  $('#browseridConnect').click(function(event) {
-    event.preventDefault();
-    s_browserIdAction = 'connect';
-    navigator.id.request();
-  });
-
-  navigator.id.watch({
-    // We use ODS' session management, thus the logged in user from the BrowserID point of view os always null
-    loggedInUser: null,
-
-    // the actual ODS BrowserID login
-    onlogin: function(assertion) {
-      // We use ODS session management, thus, we never want BrowserID auto-login
-      navigator.id.logout();
-
-      s_odsSession.connectToBrowserId(assertion, function() {}, errorCallback);
-    },
-
-    // we do nothing here as we do logout the ods way
-    onlogout: function() {
-    }
-  });
 }
 
 
