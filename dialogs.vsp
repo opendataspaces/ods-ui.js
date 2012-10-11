@@ -56,6 +56,7 @@
         <a id="yahooLogin" class="odsLoginLink" title="Login via Yahoo" style="display:none;" href="#"><img src="img/social16/yahoo.png"/></a>
         <a id="disqusLogin" class="odsLoginLink" title="Login via Disqus" style="display:none;" href="#"><img src="img/disqus16.png"/></a>
         <a id="instagramLogin" class="odsLoginLink" title="Login via Instagram" style="display:none;" href="#"><img src="img/social16/instagram.png"/></a>
+        <a id="bitlyLogin" class="odsLoginLink" title="Login via Bitly" style="display:none;" href="#"><img src="img/bitly16.png"/></a>
       </div>
     </div>
   </div>
@@ -95,6 +96,7 @@
         <a id="yahooRegister" class="odsLoginLink" title="Register via Yahoo" style="display:none;" href="#"><img src="img/social16/yahoo.png"/></a>
         <a id="disqusRegister" class="odsLoginLink" title="Register via Disqus" style="display:none;" href="#"><img src="img/disqus16.png"/></a>
         <a id="instagramRegister" class="odsLoginLink" title="Register via Instagram" style="display:none;" href="#"><img src="img/social16/instagram.png"/></a>
+        <a id="bitlyRegister" class="odsLoginLink" title="Register via Bitly" style="display:none;" href="#"><img src="img/bitly16.png"/></a>
       </div>
     </div>
   </div>
@@ -116,6 +118,7 @@
         <a id="yahooAuto" class="odsLoginLink" title="Register or Login via Yahoo" style="display:none;" href="#"><img src="img/social16/yahoo.png"/></a>
         <a id="disqusAuto" class="odsLoginLink" title="Register or Login via Disqus" style="display:none;" href="#"><img src="img/disqus16.png"/></a>
         <a id="instagramAuto" class="odsLoginLink" title="Register or Login via Instagram" style="display:none;" href="#"><img src="img/social16/instagram.png"/></a>
+        <a id="bitlyAuto" class="odsLoginLink" title="Register or Login via Bitly" style="display:none;" href="#"><img src="img/bitly16.png"/></a>
       </div>
     </div>
   </div>
@@ -282,6 +285,7 @@
                 <a id="yahooConnect" title="Connect ODS profile to Yahoo" href="#"><img src="img/social16/yahoo.png"/></a>
                 <a id="disqusConnect" title="Connect ODS profile to Disqus" href="#"><img src="img/disqus16.png"/></a>
                 <a id="instagramConnect" title="Connect ODS profile to Instagram" href="#"><img src="img/social16/instagram.png"/></a>
+                <a id="bitlyConnect" title="Connect ODS profile to Bitly" href="#"><img src="img/bitly16.png"/></a>
               </div>
             </div>
         </div>
