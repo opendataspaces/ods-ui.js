@@ -777,6 +777,25 @@ a:hover {
   padding-right: 5px;
 }
 
+#ods-profile-box {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  -webkit-border-radius: 0px 0px 5px 5px;
+  border-radius: 0px 0px 5px 5px;
+  background-color: #116080;
+  color: white;
+  padding: 2px 10px;
+
+}
+a.profileBoxLink {
+  color: white;
+}
+a.profileBoxLink:hover {
+  color: white;
+  text-decoration: none;
+}
+
 /* Bootstrap + jQueryUI overrides for modal resize
  */
 .modal-body {

@@ -68,7 +68,7 @@
       <div class="odsloginMethodTitle blue">Register</div>
       <form name="odsDigestRegister" class="form-inline" id="odsDigestRegister">
         <input id="digestRegisterUsr" class="odsDigestRegisterInput" type="text" name="usr" placeholder="Username" /><input id="digestRegisterPwd1" class="odsDigestRegisterInput" type="password" name="pwd1" placeholder="Password" />
-        <input id="digestRegisterEmail" class="odsDigestRegisterInput" type="text" name="email" placeholder="Email Address" /><input id="digestRegisterPwd2" class="odsDigestRegisterInput" type="password" name="pwd2" placeholder="Repeat Password" /><input class="odsButton odsFormButton btn" type="button" name="digestRegister" value="Register" />
+        <input id="digestRegisterEmail" class="odsDigestRegisterInput" type="text" name="email" placeholder="Email Address" /><input id="digestRegisterPwd2" class="odsDigestRegisterInput" type="password" name="pwd2" placeholder="Repeat Password" /><input id="odsDigestRegisterButton" class="odsButton odsFormButton btn" type="button" name="digestRegister" value="Register" />
       </form>
     </div>
     <div class="odsloginMethodDiv" id="openidRegister" style="display:none;">

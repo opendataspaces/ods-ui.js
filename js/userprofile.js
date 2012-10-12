@@ -141,7 +141,6 @@ function setupProfileWindow() {
  * Checks in the input on the register form and optionally marks the input fields.
  */
 function verifyPasswordChangeDlgInput(form) {
-    console.log("verifyPwdChInput");
     var pwd1 = form.password1.value;
     var pwd2 = form.password2.value;
 

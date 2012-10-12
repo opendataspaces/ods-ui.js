@@ -75,11 +75,11 @@ function loadUserData() {
           $('#odsUserCardPhoto').attr("src", usrInfo.photo);
           usrLink = '<img class="minigravatar" src="' + usrInfo.photo + '" /> ' + usrLink;
         }
-        $('#profileLink a').html(usrLink);
+        $('#profileLinkUserName').html(usrInfo.name);
         $('#odsUserCardName').html('<a href="' + result.iri + '">' + usrInfo.name + "</a>");
 
         $('.odsLoginLink').hide();
-        $('#profileLink').show();
+        $('#userProfileLinks').show();
         $('#odsUserLogout').show();
         $('#odsUserCard').show();
       }, function() {

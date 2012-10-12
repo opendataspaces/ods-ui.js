@@ -17,6 +17,9 @@ form .odsDigestRegisterInput:nth-child(1),
 form .odsDigestRegisterInput:nth-child(2) {
   margin-bottom: 2px;
 }
+#odsDigestRegisterButton {
+  width: 84px;
+}
 
 .odsloginMethodDiv {
   margin: 10px;
