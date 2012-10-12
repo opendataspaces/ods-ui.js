@@ -1,3 +1,26 @@
+// load all connected online accounts
+function loadOnlineAccounts() {
+  s_odsSession.apiCall('user.onlineAccounts.list', { type: 'P' }, "json").success(function(result) {
+    /* a JSON stream like so:
+    [
+    [
+        1,
+        "Facebook",
+        "http://www.facebook.com/sebastian.trug",
+        "http://localhost:8890/about/id/entity/http/www.facebook.com/trueg"
+    ],
+    We are only interested in the first 3.
+    */
+    console.log(result);
+    $coa = $('#connectedOnlineAccounts');
+    $coa.text('');
+    for(var i = 0; i < result.length; i++) {
+      var account = result[i];
+      $coa.append('<p class="odsOnlineAccount" id="onlineAccount_' + account[0] + '"><img class="odsOnlineAccountCell" src="img/social16/' + account[1].toLowerCase() + '.png"/><span class="odsOnlineAccountCell"><b>' + account[1] + '</b>: ' + account[2] + '</span><span class="odsOnlineAccountCell"><a href="#" onclick="s_odsSession.apiCall(\'user.onlineAccounts.delete\', { id: ' + account[0] + '}); $(\'#onlineAccount_' + account[0] + '\').remove();" title="Disconnect this ' + account[1] + ' account from the ODS profile">Disconnect</a></span></p>');
+    }
+  });
+}
+
 function loadUserProfile() {
   s_odsSession.userInfo(function(userProps) {
     console.log("loadProfile");
@@ -20,26 +43,7 @@ function loadUserProfile() {
     }
   });
 
-  // load all connected online accounts
-  s_odsSession.apiCall('user.onlineAccounts.list', { type: 'P' }, "json").success(function(result) {
-    /* a JSON stream like so:
-    [
-    [
-        1,
-        "Facebook",
-        "http://www.facebook.com/sebastian.trug",
-        "http://localhost:8890/about/id/entity/http/www.facebook.com/trueg"
-    ],
-    We are only interested in the first 3.
-    */
-    console.log(result);
-    $coa = $('#connectedOnlineAccounts');
-    $coa.text('');
-    for(var i = 0; i < result.length; i++) {
-      var account = result[i];
-      $coa.append('<p id="onlineAccount_' + account[0] + '"><b>' + account[1] + '</b>: ' + account[2] + ' <a href="#" onclick="s_odsSession.apiCall(\'user.onlineAccounts.delete\', { id: ' + account[0] + '}); $(\'#onlineAccount_' + account[0] + '\').remove();">Disconnect</a></p>');
-    }
-  });
+  loadOnlineAccounts();
 }
 
 

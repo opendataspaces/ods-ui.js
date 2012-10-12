@@ -5,17 +5,17 @@ var s_browserIdAction = null;
 
 ODS.ready(function() {
   console.log("BROWSERID READY");
-  $('#browseridLogin').click(function(event) {
+  $('#browseridLogin a').click(function(event) {
     event.preventDefault();
     s_browserIdAction = 'authenticate';
     navigator.id.request();
   });
-  $('#browseridRegister').click(function(event) {
+  $('#browseridRegister a').click(function(event) {
     event.preventDefault();
     s_browserIdAction = 'register';
     navigator.id.request();
   });
-  $('#browseridAuto').click(function(event) {
+  $('#browseridAuto a').click(function(event) {
     event.preventDefault();
     s_browserIdAction = 'auto';
     navigator.id.request();

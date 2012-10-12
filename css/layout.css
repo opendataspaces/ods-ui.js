@@ -767,3 +767,12 @@ a:hover {
   float: left;
   margin-right: 5px;
 }
+
+.odsOnlineAccount {
+  display: table;
+}
+.odsOnlineAccountCell {
+  display: table-cell;
+  vertical-align: middle;
+  padding-right: 5px;
+}

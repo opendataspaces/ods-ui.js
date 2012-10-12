@@ -25,7 +25,7 @@
   <!-- ================ USER LOGIN ================  -->
   <div class="odsTab tab-pane in active" id="authenticate">
     <div class="odsloginMethodDiv">
-      <div class="odsloginMethodTitle">Login</div>
+      <div class="odsloginMethodTitle blue">Login</div>
       <form name="digestLogin" class="form-inline" id="digestLogin">
         <div class="controls controls-row">
           <input id="digestLoginUsr" class="odsLoginInput odsDigestLoginInput" type="text" name="usr" placeholder="Username" /><input id="digestLoginPwd" class="odsLoginInput odsDigestLoginInput" type="password" name="pwd" placeholder="Password" /><input class="odsButton odsFormButton btn" type="button" name="digestLogin" value="Login" />
@@ -33,14 +33,17 @@
       </form>
     </div>
     <div class="odsloginMethodDiv" id="openidLogin" style="display:none;">
-      <div class="odsloginMethodTitle">Login with Your OpenID</div>
+      <div class="odsloginMethodTitle blue">Login with Your OpenID</div>
       <form name="openidLoginForm" class="form-inline" id="openidLoginForm">
         <input class="odsLoginInput" style="width:366px; margin-right:2px;" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" id="openidLoginBtn" value="OpenID Login" title="Login with your OpenID" />
       </form>
     </div>
-    <a id="browseridLogin" style="display:none;" title="Login with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
+    <div class="odsloginMethodDiv" id="browseridLogin" style="display:none;">
+      <div class="odsloginMethodTitle blue">Login with Your Persona/BrowserID</div>
+      <a title="Login with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
+    </div>
     <div class="odsloginMethodDiv" id="otherLogins" style="display:none;">
-      <div class="odsloginMethodTitle">Login with Your 3rd-party Account</div>
+      <div class="odsloginMethodTitle blue">Login with Your 3rd-party Account</div>
       <div class="odsThirdPartyLogins">
         <a id="webidLogin" class="odsLoginLink" title="Login with your WebID" style="display:none;" href="#"><img src="img/webid16.png"/></a>
         <a id="facebookLogin" class="odsLoginLink" title="Login via Facebook" style="display:none;" href="#"><img src="img/social16/facebook.png"/></a>
@@ -62,21 +65,24 @@
   <!-- ================ USER REGISTER ================  -->
   <div class="odsTab tab-pane" id="register">
     <div class="odsloginMethodDiv">
-      <div class="odsloginMethodTitle">Register</div>
+      <div class="odsloginMethodTitle blue">Register</div>
       <form name="odsDigestRegister" class="form-inline" id="odsDigestRegister">
         <input id="digestRegisterUsr" class="odsDigestRegisterInput" type="text" name="usr" placeholder="Username" /><input id="digestRegisterPwd1" class="odsDigestRegisterInput" type="password" name="pwd1" placeholder="Password" />
         <input id="digestRegisterEmail" class="odsDigestRegisterInput" type="text" name="email" placeholder="Email Address" /><input id="digestRegisterPwd2" class="odsDigestRegisterInput" type="password" name="pwd2" placeholder="Repeat Password" /><input class="odsButton odsFormButton btn" type="button" name="digestRegister" value="Register" />
       </form>
     </div>
     <div class="odsloginMethodDiv" id="openidRegister" style="display:none;">
-      <div class="odsloginMethodTitle">Register with Your OpenID</div>
+      <div class="odsloginMethodTitle blue">Register with Your OpenID</div>
       <form name="openidRegisterForm" class="form-inline" id="openidRegisterForm">
         <input class="odsLoginInput" style="width:366px; margin-right:2px;" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" name="openidRegisterBtn" id="openidRegisterBtn" value="OpenID Register" title="Register with your OpenID" />
       </form>
     </div>
-    <a id="browseridRegister" style="display:none;" title="Register with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
+    <div class="odsloginMethodDiv" id="browseridRegister" style="display:none;">
+      <div class="odsloginMethodTitle blue">Register with Your Persona/BrowserID</div>
+      <a title="Register with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
+    </div>
     <div class="odsloginMethodDiv" id="otherRegistration" style="display:none;">
-      <div class="odsloginMethodTitle">Register with Your 3rd-party Account</div>
+      <div class="odsloginMethodTitle blue">Register with Your 3rd-party Account</div>
       <div class="odsThirdPartyLogins">
         <a id="webidRegister" class="odsLoginLink" title="Register with your WebID" style="display:none;" href="#"><img src="img/webid16.png"/></a>
         <a id="facebookRegister" class="odsLoginLink" title="Register via Facebook" style="display:none;" href="#"><img src="img/social16/facebook.png"/></a>
@@ -98,8 +104,9 @@
   <!-- ================ USER AUTO LOGIN/REGISTER ================  -->
   <div class="odsTab tab-pane" id="auto">
     <div class="odsloginMethodDiv" id="autoRegistration">
+      <div class="odsloginMethodTitle blue">Register or Login with Your Persona/BrowserID</div>
       <a id="browseridAuto" title="Register or Login with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
-      <div class="odsloginMethodTitle">Register or Login with Your 3rd-party Account</div>
+      <div class="odsloginMethodTitle blue">Register or Login with Your 3rd-party Account</div>
       <div class="odsThirdPartyLogins">
         <a id="facebookAuto" class="odsLoginLink" title="Register or Login via Facebook" style="display:none;" href="#"><img src="img/social16/facebook.png"/></a>
         <a id="twitterAuto" class="odsLoginLink" title="Register or Login via Twitter" style="display:none;" href="#"><img src="img/social16/twitter.png"/></a>
@@ -256,16 +263,16 @@
 
             <!-- User Profile Tab 3 -->
             <div class="tab-pane" id="userProfileTab3">
-              <div class="odsloginMethodTitle">Connected Online Accounts</div>
+              <div class="odsloginMethodTitle blue">Connected Online Accounts</div>
               <div id="connectedOnlineAccounts">
               </div>
 
-              <div class="odsloginMethodTitle">Connect your ODS profile to your OpenID</div>
+              <div class="odsloginMethodTitle blue">Connect your ODS profile to your OpenID</div>
               <form name="openidConnectForm" class="form-inline" id="openidConnectForm">
                 <input class="odsLoginInput" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" />
                 <input class="odsButton btn" type="button" id="openidConnectBtn" value="OpenID Connect" title="Connect to your OpenID" />
               </form>
-              <div class="odsloginMethodTitle">Connect your ODS profile to a 3rd-party Account</div>
+              <div class="odsloginMethodTitle blue">Connect your ODS profile to a 3rd-party Account</div>
               <a id="browseridConnect" title="Connect ODS Profile to your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
               <div id="thirdPartyProfileConnect" class="odsThirdPartyLogins">
                 <a id="facebookConnect" title="Connect ODS profile to Facebook" href="#"><img src="img/social16/facebook.png"/></a>

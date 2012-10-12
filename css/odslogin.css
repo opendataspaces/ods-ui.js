@@ -24,7 +24,8 @@ form .odsDigestRegisterInput:nth-child(2) {
 
 .odsloginMethodTitle {
   font-weight: bold;
-  padding: 5px 0 5px 0;
-  margin: 5px 0 5px 0;
-  border-bottom: 1px solid black;
+  font-size: 0.8em;
+  color: white;
+  padding: 2px 5px;
+  margin: 5px 0;
 }
