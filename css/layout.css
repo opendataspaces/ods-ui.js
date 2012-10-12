@@ -776,3 +776,15 @@ a:hover {
   vertical-align: middle;
   padding-right: 5px;
 }
+
+/* Bootstrap + jQueryUI overrides for modal resize
+ */
+.modal-body {
+  max-height: none;
+}
+.ui-resizable-s {
+  bottom: 0;
+}
+.ui-resizable-e {
+  right: 0;
+}

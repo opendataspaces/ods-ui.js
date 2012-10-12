@@ -129,11 +129,20 @@ function setupProfileWindow() {
 
     s_odsSession.connectToThirdPartyService(service, callbackUrl);
   });
+
+  // react to resize events on the profile window and re-center the modal
+  $(".modal").on("resize", function(event, ui) {
+    ui.element.css("margin-left", -ui.size.width/2);
+    ui.element.css("margin-top", -ui.size.height/2);
+  });
 }
 
 
 ODS.ready(function() {
     setupProfileWindow();
+
+    // make our profile dlg resizable
+    $("#odsUserProfileWindow").resizable();
 
     $(".profileDetail#firstName").change(function(event) {
       console.log("This is where you break!!!");
