@@ -289,10 +289,41 @@
                 <a id="bitlyConnect" title="Connect ODS profile to Bitly" href="#"><img src="img/bitly16.png"/></a>
               </div>
             </div>
-        </div>
-  </div>
+
+        </div> <!-- tab-content -->
+  </div> <!-- modal-body -->
   <div class="modal-footer">
     <a id="profileSaveButton" href="#" class="btn btn-primary">Save changes</a>
     <a id="profileCancelButton" href="#" class="btn" data-dismiss="modal">Close</a>
+  </div>
+</div>
+
+
+<div id="odsPasswordDlg" class="modal hide">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>ODS User Password <small>Change the login password</small></h3>
+  </div>
+  <div class="modal-body">
+    <form id="passwordChangeForm" name="passwordChangeForm" class="form-horizontal">
+      <fieldset>
+        <div class="control-group">
+          <label class="control-label" for="password1">New Password</label>
+          <div class="controls">
+            <input type="password" id="password1" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="password2">Repeat Password</label>
+          <div class="controls">
+            <input type="password" id="password2" />
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div> <!-- modal-body -->
+  <div class="modal-footer">
+    <a id="passwordSaveButton" href="#" class="btn btn-primary">Update Password</a>
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
   </div>
 </div>

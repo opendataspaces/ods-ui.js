@@ -137,9 +137,73 @@ function setupProfileWindow() {
   });
 }
 
+/**
+ * Checks in the input on the register form and optionally marks the input fields.
+ */
+function verifyPasswordChangeDlgInput(form) {
+    console.log("verifyPwdChInput");
+    var pwd1 = form.password1.value;
+    var pwd2 = form.password2.value;
+
+    var $form = $(form);
+
+    // compare passwords if we have input in pwd2
+    if(pwd2.length > 0 && pwd1 != pwd2) {
+        var $pwd2 = $form.find("div.control-group").has(":input#password2");
+        if(!$pwd2.hasClass("error")) {
+            $pwd2.addClass("error");
+            $pwd2.find("div.controls").append('<p class="help-inline">Passwords do not match</p>');
+        }
+    }
+    else {
+        var $pwd2 = $form.find("div.control-group").has(":input#password2");
+        $pwd2.removeClass("error");
+        $pwd2.find("p.help-inline").remove();
+    }
+};
+
+function setupPasswordDialog() {
+  var chPwdFct = function() {
+    // verify that both pwds are the same
+    var pwd1 = document.passwordChangeForm.password1.value;
+    var pwd2 = document.passwordChangeForm.password2.value;
+
+    if(pwd1 != pwd2) {
+      alert("The password repeat did not match the password");
+    }
+    else {
+      // send the new password
+      s_odsSession.apiCall("user.password_change", { old_password: "foobar", new_password: pwd1 }).done(function(result) {
+        if(!hasError(result, true)) {
+          alert("Password successfully updated");
+          $("#odsPasswordDlg").modal("hide");
+        }
+      }).fail(function() {
+        console.log("We should normally not reach this.");
+      });
+    }
+  };
+
+  $("#passwordSaveButton").click(function(e) {
+    e.preventDefault();
+    chPwdFct();
+  });
+  $("#odsPasswordDlg input").keydown(function(event) {
+    event.stopPropagation();
+    if(event.keyCode == 13) {
+      chPwdFct();
+    }
+  });
+
+  /* Call the verifyPasswordChangeDlgInput whenever the contents change. */
+  $(document.passwordChangeForm).find(':input').change(function() {
+      verifyPasswordChangeDlgInput(document.passwordChangeForm);
+  });
+}
 
 ODS.ready(function() {
     setupProfileWindow();
+    setupPasswordDialog();
 
     // make our profile dlg resizable
     $("#odsUserProfileWindow").resizable();

@@ -38,10 +38,15 @@ function hasError(root, showMessage) {
     if (error) {
         var message = extractODSErrorMessage(root);
         if (message && showMessage) {
+          if($.showMessageBox) {
             $.showMessageBox({
                 content: message,
                 type: "warning"
             });
+          }
+          else {
+            alert(message);
+          }
         }
         return true;
     }
