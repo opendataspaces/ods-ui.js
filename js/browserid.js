@@ -37,7 +37,7 @@ ODS.ready(function() {
 
         // connect requires authentication...
         if(s_browserIdAction == "connect") {
-          s_odsSession.connectToBrowserId(assertion, loadUserProfile, errorCallback);
+          s_odsSession.connectToBrowserId(assertion, loadOnlineAccounts, errorCallback);
         }
 
         // ...everything else does not

@@ -272,8 +272,9 @@
                 <input class="odsLoginInput" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" />
                 <input class="odsButton btn" type="button" id="openidConnectBtn" value="OpenID Connect" title="Connect to your OpenID" />
               </form>
-              <div class="odsloginMethodTitle blue">Connect your ODS profile to a 3rd-party Account</div>
+              <div class="odsloginMethodTitle blue">Connect your ODS profile to a Persona/BrowserID</div>
               <a id="browseridConnect" title="Connect ODS Profile to your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
+              <div class="odsloginMethodTitle blue">Connect your ODS profile to a 3rd-party Account</div>
               <div id="thirdPartyProfileConnect" class="odsThirdPartyLogins">
                 <a id="facebookConnect" title="Connect ODS profile to Facebook" href="#"><img src="img/social16/facebook.png"/></a>
                 <a id="twitterConnect" title="Connect ODS profile to Twitter" href="#"><img src="img/social16/twitter.png"/></a>
