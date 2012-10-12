@@ -1,3 +1,23 @@
+.odsFormButton {
+  height: 30px;
+}
+
+.odsDigestLoginInput {
+  margin-right: 2px;
+  width: 205px;
+}
+
+.odsDigestRegisterInput {
+  width: 197px;
+  margin-right: 2px;
+
+}
+
+form .odsDigestRegisterInput:nth-child(1),
+form .odsDigestRegisterInput:nth-child(2) {
+  margin-bottom: 2px;
+}
+
 .odsloginMethodDiv {
   margin: 10px;
 }

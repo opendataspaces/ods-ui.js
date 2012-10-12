@@ -28,17 +28,14 @@
       <div class="odsloginMethodTitle">Login</div>
       <form name="digestLogin" class="form-inline" id="digestLogin">
         <div class="controls controls-row">
-          <input id="digestLoginUsr" class="odsLoginInput" type="text" name="usr" placeholder="Username" />
-          <input id="digestLoginPwd" class="odsLoginInput" type="password" name="pwd" placeholder="Password" />
-          <input class="odsButton btn" type="button" name="digestLogin" value="Login" />
+          <input id="digestLoginUsr" class="odsLoginInput odsDigestLoginInput" type="text" name="usr" placeholder="Username" /><input id="digestLoginPwd" class="odsLoginInput odsDigestLoginInput" type="password" name="pwd" placeholder="Password" /><input class="odsButton odsFormButton btn" type="button" name="digestLogin" value="Login" />
         </div>
       </form>
     </div>
     <div class="odsloginMethodDiv" id="openidLogin" style="display:none;">
       <div class="odsloginMethodTitle">Login with Your OpenID</div>
       <form name="openidLoginForm" class="form-inline" id="openidLoginForm">
-        <input class="odsLoginInput" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" />
-        <input class="odsButton btn" type="button" id="openidLoginBtn" value="OpenID Login" title="Login with your OpenID" />
+        <input class="odsLoginInput" style="width:366px; margin-right:2px;" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" id="openidLoginBtn" value="OpenID Login" title="Login with your OpenID" />
       </form>
     </div>
     <a id="browseridLogin" style="display:none;" title="Login with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
@@ -66,19 +63,15 @@
   <div class="odsTab tab-pane" id="register">
     <div class="odsloginMethodDiv">
       <div class="odsloginMethodTitle">Register</div>
-      <form name="odsDigestRegister" id="odsDigestRegister">
-        <input id="digestRegisterUsr" class="odsRegisterInput odsInputFull" type="text" name="usr" placeholder="Username" />
-        <input id="digestRegisterEmail" class="odsRegisterInput odsInputFull" type="text" name="email" placeholder="Email Address" />
-        <input id="digestRegisterPwd1" class="odsRegisterInput odsInputFull" type="password" name="pwd1" placeholder="Password" />
-        <input id="digestRegisterPwd2" class="odsRegisterInput odsInputShort" type="password" name="pwd2" placeholder="Repeat Password" />
-        <input class="odsButton btn" type="button" name="digestRegister" value="Register" />
+      <form name="odsDigestRegister" class="form-inline" id="odsDigestRegister">
+        <input id="digestRegisterUsr" class="odsDigestRegisterInput" type="text" name="usr" placeholder="Username" /><input id="digestRegisterPwd1" class="odsDigestRegisterInput" type="password" name="pwd1" placeholder="Password" />
+        <input id="digestRegisterEmail" class="odsDigestRegisterInput" type="text" name="email" placeholder="Email Address" /><input id="digestRegisterPwd2" class="odsDigestRegisterInput" type="password" name="pwd2" placeholder="Repeat Password" /><input class="odsButton odsFormButton btn" type="button" name="digestRegister" value="Register" />
       </form>
     </div>
     <div class="odsloginMethodDiv" id="openidRegister" style="display:none;">
       <div class="odsloginMethodTitle">Register with Your OpenID</div>
-      <form name="openidRegisterForm" id="openidRegisterForm">
-        <input class="odsLoginInput odsInputShort" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" />
-        <input class="odsButton btn" type="button" name="openidRegisterBtn" id="openidRegisterBtn" value="Register" title="Register with your OpenID" />
+      <form name="openidRegisterForm" class="form-inline" id="openidRegisterForm">
+        <input class="odsLoginInput" style="width:366px; margin-right:2px;" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" name="openidRegisterBtn" id="openidRegisterBtn" value="OpenID Register" title="Register with your OpenID" />
       </form>
     </div>
     <a id="browseridRegister" style="display:none;" title="Register with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
