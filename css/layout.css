@@ -798,9 +798,6 @@ a.profileBoxLink:hover {
 
 /* Bootstrap + jQueryUI overrides for modal resize
  */
-.modal-body {
-  max-height: none;
-}
 .ui-resizable-s {
   bottom: 0;
 }

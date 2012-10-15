@@ -146,6 +146,11 @@ function setupProfileWindow() {
     ui.element.css("margin-top", -ui.size.height/2);
     ui.element.css("top", "50%");
     ui.element.css("left", "50%");
+
+    // set a fixed size for the modal-body for proper overflow
+    $(ui.element).find(".modal-body").each(function() {
+      $(this).css("max-height", 400 + ui.size.height - ui.originalSize.height);
+    });
   });
 }
 
