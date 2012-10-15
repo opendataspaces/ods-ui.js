@@ -10,8 +10,14 @@ var s_odsSession = null;
  */
 var errorCallback = function(result) {
   console.log(result);
-  // TODO: need better error handling
-  alert(result.responseText);
+
+  if (result.responseText)
+    result = result.responseText;
+
+  if(hasError(result, false))
+    alert(extractODSErrorMessage(result));
+  else
+    alert(result);
 };
 
 

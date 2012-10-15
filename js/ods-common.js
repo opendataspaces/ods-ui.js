@@ -19,24 +19,29 @@ function odsApiUrl(methodName, ssl) {
 
 
 function extractODSErrorMessage(result) {
+  if(!result.getElementsByTagName)
+      result = $.parseXML(result);
     return $(result).find('message').text();
 }
 
 /**
  * Check if a standard ODS error code result is an error or not.
- * 
- * @param root The root XML element as returned by the ODS REST call.
+ *
+ * @param result The result XML element as returned by the ODS REST call.
  * @param showMessage If \p true a message box will pop up with the error message.
- * 
+ *
  * @return \p true if it is in fact an error.
  */
-function hasError(root, showMessage) {
+function hasError(result, showMessage) {
     if (showMessage != false)
         showMessage = true;
 
-    var error = root.getElementsByTagName('failed')[0];
+    if(!result.getElementsByTagName)
+      result = $.parseXML(result);
+
+    var error = result.getElementsByTagName('failed')[0];
     if (error) {
-        var message = extractODSErrorMessage(root);
+        var message = extractODSErrorMessage(result);
         if (message && showMessage) {
           if($.showMessageBox) {
             $.showMessageBox({
@@ -122,7 +127,7 @@ var ODS = (function() {
                 if(typeof arguments[i] === "function") {
                     success = arguments[i];
                     if(typeof arguments[i+1] === "function") {
-                        error= arguments[i+1];
+                        error = arguments[i+1];
                     }
                 }
 
@@ -183,6 +188,14 @@ var ODS = (function() {
               }
 
               this.apiCall("user.authenticate.browserid", { action: "connect", "assertion": assertion }).success(success).error(error);
+            },
+
+            connectToWebID: function(success, error) {
+              if(error == null) {
+                error = function(msg) { alert(msg); };
+              }
+
+              this.apiCall("user.authenticate.webid", { action: "connect" }).success(success).error(error);
             },
 
             logout: function(success, error) {
@@ -326,29 +339,16 @@ var ODS = (function() {
          * session is no longer valid or the ODS call failed.
          */
         createWebIDSession: function(success, error) {
-            var authenticationUrl = odsApiUrl("user.authenticate", 1);
-
             if(error == null) {
                 error = function(msg) { alert(msg); };
             }
 
-            $.get(authenticationUrl, {}).success(function(result) {
-                var s = $(result).find("sid").text();
+            $.get(odsApiUrl("user.authenticate.webid", 1), {}).success(function(result) {
+                var s = result;
 
                 console.log("Authentication result: " + s);
-
-                if(s.length > 0) {
-                    // login succeeded
-                    success(new Session(s));
-                }
-                else {
-                    // login failed
-                    error(extractODSErrorMessage(result));
-                }
-            }).error(function(jqXHR) {
-                // FIXME: handle HTTP errors
-                error("AJAX call failed.");
-            });
+                success(new Session(s));
+            }).error(error);
         },
 
         /**
@@ -445,6 +445,16 @@ var ODS = (function() {
           });
         },
 
+        registerViaWebID: function(success, error) {
+          if(error == null) {
+            error = function(msg) { alert(msg); };
+          }
+
+          $.get(odsApiUrl("user.authenticate.webid", 1), { action: "register" }).success(function(sid) {
+            success(new Session(sid));
+          }).error(error);
+        },
+
         registerOrLoginViaThirdPartyService: function(type, url, success, error) {
           if(error == null) {
             error = function(msg) { alert(msg); };
@@ -456,6 +466,15 @@ var ODS = (function() {
             // FIXME: handle HTTP errors
             error("AJAX call failed.");
           });
+        },
+
+        registerOrLoginViaWebID: function(success, error) {
+          if(error == null) {
+            error = function(msg) { alert(msg); };
+          }
+          $.get(odsApiUrl("user.authenticate.webid", 0), { action: "auto" }, "text/plain").success(function(sid) {
+            success(new Session(sid));
+          }).error(error);
         },
 
         registerViaOpenId: function(openid, url, success, error) {
@@ -487,5 +506,9 @@ $(document).ready(function() {
 
       $(document).trigger('ods-ready-event');
     });
+  }
+  else {
+    // nothing to do
+    $(document).trigger('ods-ready-event');
   }
 });

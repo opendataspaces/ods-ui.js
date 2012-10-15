@@ -59,9 +59,10 @@ function checkSession() {
  * Will load user details and display them on the page tp refect the logged in status.
  */
 function loadUserData() {
+    console.log("loadUserInfo");
+
     s_odsSession.userInfo(function(result) {
-        console.log("loadUserInfo");
-        console.log(result);
+      console.log(result);
 
         var usrInfo = { name: result["fullName"] != null ? result["fullName"] : result["name"] };
         if(result["photo"] && result["photo"].length > 0) {
@@ -108,6 +109,12 @@ function setupLoginLink() {
     });
 
 
+    //
+    // ====================================================
+    // LOGIN AND AUTO LINKS
+    // ====================================================
+    //
+
     // determine the list of supported services
     ODS.authenticationMethods(function(methods) {
       console.log(methods);
@@ -153,14 +160,15 @@ function setupLoginLink() {
             if(m == "webid") {
               //
               // Sadly it is not possible yet to send a client certificate via AJAX calls.
-              // Thus, our only way out is to redirect to the https version of our page
-              // and let the auto-login do its work
               //
               //ODS.createWebIDSession(newSessionCallback, errorCallback);
               $("#loginPopup").modal("hide");
               if(window.crypto && window.crypto.logout)
                 window.crypto.logout();
-              window.location.href = "https://" + ODS.sslHost() + window.location.pathname;
+              if(window.location.protocol == "https:")
+                ODS.createWebIDSession(newSessionCallback, errorCallback);
+              else
+                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?login=webid";
             }
             else {
               // construct our callback url
@@ -176,14 +184,36 @@ function setupLoginLink() {
             // this is required since the "method" var scope spans all functions
             // created here and will always have the last value of the iteration
             var m = this.id.substring(0,this.id.indexOf("Auto"));
-            // construct our callback url
-            var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            // try to login via OpenID
-            ODS.registerOrLoginViaThirdPartyService(m, callbackUrl);
+
+            if(m == "webid") {
+              //
+              // Sadly it is not possible yet to send a client certificate via AJAX calls.
+              //
+              $("#loginPopup").modal("hide");
+              if(window.crypto && window.crypto.logout)
+                window.crypto.logout();
+              if(window.location.protocol == "https:")
+                ODS.registerOrLoginViaWebID(newSessionCallback, errorCallback);
+              else
+                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?auto=webid";
+            }
+            else {
+              // construct our callback url
+              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              // try to login via OpenID
+              ODS.registerOrLoginViaThirdPartyService(m, callbackUrl);
+            }
           });
         }
       }
     });
+
+
+    //
+    // ====================================================
+    // REGISTER LINKS
+    // ====================================================
+    //
 
     // determine the list of supported services
     ODS.registrationMethods(function(methods) {
@@ -196,7 +226,7 @@ function setupLoginLink() {
         if(method == "browserid")
           continue;
 
-        if(method == "openid") {
+        else if(method == "openid") {
             var openIdRegFnc = function() {
               var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               ODS.registerViaOpenId(document.openidRegisterForm.openidUrl.value, callbackUrl, newSessionCallback, errorCallback);
@@ -226,14 +256,15 @@ function setupLoginLink() {
             if(m == "webid") {
               //
               // Sadly it is not possible yet to send a client certificate via AJAX calls.
-              // Thus, our only way out is to redirect to the https version of our page
-              // and let the auto-login do its work
               //
               //ODS.createWebIDSession(newSessionCallback, errorCallback);
               $("#loginPopup").modal("hide");
               if(window.crypto && window.crypto.logout)
                 window.crypto.logout();
-              window.location.href = "https://" + ODS.sslHost() + window.location.pathname;
+              if(window.location.protocol == "https:")
+                ODS.registerViaWebID(newSessionCallback, errorCallback);
+              else
+                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?register=webid";
             }
             else {
               // construct our callback url
@@ -270,6 +301,9 @@ ODS.ready(function() {
     // Check if we have a sid parameter from a login redirect
     var sid = getParameterByName(window.location.href, 'sid');
     var err = getParameterByName(window.location.href, 'error_msg');
+    var login = getParameterByName(window.location.href, 'login');
+    var register = getParameterByName(window.location.href, 'register');
+    var auto = getParameterByName(window.location.href, 'auto');
     if(sid.length > 0) {
       ODS.createSessionFromId(sid, newSessionCallback, checkSession);
     }
@@ -282,6 +316,24 @@ ODS.ready(function() {
       // show an error message
       $('#errorDialogMsg').text(err);
       $errorDialog.modal();
+    }
+    else if(login == "webid") {
+      ODS.createWebIDSession(newSessionCallback, function(error) {
+        setupLoginLink();
+        errorCallback(error)
+      });
+    }
+    else if(register == "webid") {
+      ODS.registerViaWebId(newSessionCallback, function(error) {
+        setupLoginLink();
+        errorCallback(error)
+      });
+    }
+    else if(auto == "webid") {
+      ODS.registerOrLoginViaWebID(newSessionCallback, function(error) {
+        setupLoginLink();
+        errorCallback(error)
+      });
     }
     else {
       checkSession();

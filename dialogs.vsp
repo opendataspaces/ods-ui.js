@@ -108,6 +108,7 @@
       <a id="browseridAuto" title="Register or Login with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
       <div class="odsloginMethodTitle blue">Register or Login with Your 3rd-party Account</div>
       <div class="odsThirdPartyLogins">
+        <a id="webidAuto" class="odsLoginLink" title="Register Or Login with your WebID" style="display:none;" href="#"><img src="img/webid16.png"/></a>
         <a id="facebookAuto" class="odsLoginLink" title="Register or Login via Facebook" style="display:none;" href="#"><img src="img/social16/facebook.png"/></a>
         <a id="twitterAuto" class="odsLoginLink" title="Register or Login via Twitter" style="display:none;" href="#"><img src="img/social16/twitter.png"/></a>
         <a id="linkedinAuto" class="odsLoginLink" title="Register or Login via LinkedIn" style="display:none;" href="#"><img src="img/social16/linkedin.png"/></a>
@@ -276,6 +277,7 @@
               <a id="browseridConnect" title="Connect ODS Profile to your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
               <div class="odsloginMethodTitle blue">Connect your ODS profile to a 3rd-party Account</div>
               <div id="thirdPartyProfileConnect" class="odsThirdPartyLogins">
+                <a id="webidConnect" title="Connect ODS profile to a WebID" href="#"><img src="img/webid16.png"/></a>
                 <a id="facebookConnect" title="Connect ODS profile to Facebook" href="#"><img src="img/social16/facebook.png"/></a>
                 <a id="twitterConnect" title="Connect ODS profile to Twitter" href="#"><img src="img/social16/twitter.png"/></a>
                 <a id="linkedinConnect" title="Connect ODS profile to LinkedIn" href="#"><img src="img/social16/linkedin.png"/></a>

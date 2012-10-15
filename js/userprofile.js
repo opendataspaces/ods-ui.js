@@ -125,15 +125,27 @@ function setupProfileWindow() {
 
     // get service type from id
     var service = this.id.substring(0,this.id.indexOf("Connect"));
-    var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
 
-    s_odsSession.connectToThirdPartyService(service, callbackUrl);
+    if (service == "webid") {
+      if(window.crypto && window.crypto.logout)
+        window.crypto.logout();
+      if(window.location.protocol == "https:")
+        s_odsSession.connectToWebID(loadOnlineAccounts, errorCallback);
+      else
+        window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?connect=webid";
+    }
+    else {
+      var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      s_odsSession.connectToThirdPartyService(service, callbackUrl);
+    }
   });
 
   // react to resize events on the profile window and re-center the modal
   $(".modal").on("resize", function(event, ui) {
     ui.element.css("margin-left", -ui.size.width/2);
     ui.element.css("margin-top", -ui.size.height/2);
+    ui.element.css("top", "50%");
+    ui.element.css("left", "50%");
   });
 }
 
@@ -210,4 +222,11 @@ ODS.ready(function() {
     $(".profileDetail#firstName").change(function(event) {
       console.log("This is where you break!!!");
     });
+});
+
+$(document).bind('ods-new-session', function(s) {
+  console.log('Checking for webid connect parameter');
+  if(window.location.protocol == "https:" && getParameterByName(window.location.href, 'connect') == "webid") {
+    s_odsSession.connectToWebID(loadOnlineAccounts, errorCallback);
+  }
 });
