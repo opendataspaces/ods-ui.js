@@ -130,7 +130,7 @@
 
 
 <!-- Fake result frame for the submitting of the form below -->
-<iframe id="fake_form_target" name="fake_form_target" src="#" style="width:0;height:0;border:0px solid #fff;" style="display:none;"></iframe>
+<iframe id="fake_form_target" name="fake_form_target" src="blank.html" style="width:0;height:0;border:0px solid #fff;" style="display:none;"></iframe>
 
 
 <!-- The profile editor dialog -->
