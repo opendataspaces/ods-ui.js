@@ -3,6 +3,23 @@
 var odsHost = window.location.host;
 var odsSSLHost = null;
 
+
+/**
+ * Generic callback for AJAX calls and the like
+ */
+var odsGenericErrorHandler = function(result) {
+  console.log(result);
+
+  if (result.responseText)
+    result = result.responseText;
+
+  if(hasError(result, false))
+    alert(extractODSErrorMessage(result));
+  else
+    alert(result);
+};
+
+
 /**
  * Construct an ODS API URL with optional ssl.
  * @param methodName The name of the method to call.
@@ -161,20 +178,20 @@ var ODS = (function() {
 
             connectToThirdPartyService: function(type, url, success, error) {
               if(error == null) {
-                error = function(msg) { alert(msg); };
+                error = odsGenericErrorHandler;
               }
 
               this.apiCall("user.authenticate.authenticationUrl", { action: "connect", service: type, "callback": url }).success(function(result) {
                 window.location.href = result;
               }).error(function(jqXHR) {
                 // FIXME: handle HTTP errors
-                error("AJAX call failed.");
+                error(jqXHR);
               });
             },
 
             connectToOpenId: function(openid, url, success, error) {
               if(error == null) {
-                error = function(msg) { alert(msg); };
+                error = odsGenericErrorHandler;
               }
 
               this.apiCall("user.authenticate.authenticationUrl", { action: "connect", service: 'openid', "callback": url, data: openid }).success(function(result) {
@@ -184,7 +201,7 @@ var ODS = (function() {
 
             connectToBrowserId: function(assertion, success, error) {
               if(error == null) {
-                error = function(msg) { alert(msg); };
+                error = odsGenericErrorHandler;
               }
 
               this.apiCall("user.authenticate.browserid", { action: "connect", "assertion": assertion }).success(success).error(error);
@@ -192,7 +209,7 @@ var ODS = (function() {
 
             connectToWebID: function(success, error) {
               if(error == null) {
-                error = function(msg) { alert(msg); };
+                error = odsGenericErrorHandler;
               }
 
               this.apiCall("user.authenticate.webid", { action: "connect" }).success(success).error(error);
@@ -225,7 +242,7 @@ var ODS = (function() {
     };
 
 
-    
+
     // ===========================================================================
     // PUBLIC API of namespace "ODS"
     // ===========================================================================
@@ -305,7 +322,7 @@ var ODS = (function() {
             };
 
             if(error == null) {
-                error = function(msg) { alert(msg); };
+                error = odsGenericErrorHandler;
             }
 
             $.get(authenticationUrl, authenticationParams).success(function(result) {
@@ -323,7 +340,7 @@ var ODS = (function() {
                 }
             }).error(function(jqXHR) {
                 // FIXME: handle HTTP errors
-                error("AJAX call failed.");
+                error(jqXHR);
             });
         },
 
@@ -340,7 +357,7 @@ var ODS = (function() {
          */
         createWebIDSession: function(success, error) {
             if(error == null) {
-                error = function(msg) { alert(msg); };
+                error = odsGenericErrorHandler;
             }
 
             $.get(odsApiUrl("user.authenticate.webid", 1), {}).success(function(result) {
@@ -363,7 +380,7 @@ var ODS = (function() {
          * was sucessful. This function will then navigate the user to the OpenID provider's login page.
          * Once the redirection is done this function needs to be called again, this time leaving both
          * parameters empty.
-         * 
+         *
          * @param openid The OpenID the user wants to login with. This needs to be specified for step 1.
          * @param url The callback URL.
          * @param success A callback function with a single parameter: the new
@@ -372,27 +389,27 @@ var ODS = (function() {
          */
         createOpenIdSession: function(openid, url, success, error) {
             if(error == null) {
-                error = function(msg) { alert(msg); };
+                error = odsGenericErrorHandler;
             }
 
             $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
               window.location.href = result;
             }).error(function(jqXHR) {
               // FIXME: handle HTTP errors
-                error("AJAX call failed.");
+                error(jqXHR);
             });
         },
 
         createThirdPartyServiceSession: function(type, url, success, error) {
           if(error == null) {
-            error = function(msg) { alert(msg); };
+            error = odsGenericErrorHandler;
           }
 
           $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: type, "callback": url }, "text/plain").success(function(result) {
             window.location.href = result;
           }).error(function(jqXHR) {
             // FIXME: handle HTTP errors
-            error("AJAX call failed.");
+            error(jqXHR);
           });
         },
 
@@ -411,7 +428,7 @@ var ODS = (function() {
          */
         createSessionFromId: function(sessionId, success, error) {
             if(error == null) {
-                error = function(msg) { alert(msg); };
+                error = odsGenericErrorHandler;
             }
 
             // check if the session is still valid by fetching user details
@@ -426,28 +443,30 @@ var ODS = (function() {
                 else {
                     success(new Session(sessionId));
                 }
-            }).error(function(jqxhr) {
+            }).error(function(jqXHR) {
                 // FIXME: handle error
-                error("AJAX call failed.");
+                error(jqXHR);
             });
         },
 
+        // FIXME: let the register and auto methods actually create session objects, including the redirect handling.
+
         registerViaThirdPartyService: function(type, url, success, error) {
           if(error == null) {
-            error = function(msg) { alert(msg); };
+            error = odsGenericErrorHandler;
           }
 
           $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: type, "callback": url }, "text/plain").success(function(result) {
             window.location.href = result;
           }).error(function(jqXHR) {
             // FIXME: handle HTTP errors
-            error("AJAX call failed.");
+            error(jqXHR);
           });
         },
 
         registerViaWebID: function(success, error) {
           if(error == null) {
-            error = function(msg) { alert(msg); };
+            error = odsGenericErrorHandler;
           }
 
           $.get(odsApiUrl("user.authenticate.webid", 1), { action: "register" }).success(function(sid) {
@@ -457,20 +476,20 @@ var ODS = (function() {
 
         registerOrLoginViaThirdPartyService: function(type, url, success, error) {
           if(error == null) {
-            error = function(msg) { alert(msg); };
+            error = odsGenericErrorHandler;
           }
 
           $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "auto", service: type, "callback": url }, "text/plain").success(function(result) {
             window.location.href = result;
           }).error(function(jqXHR) {
             // FIXME: handle HTTP errors
-            error("AJAX call failed.");
+            error(jqXHR);
           });
         },
 
         registerOrLoginViaWebID: function(success, error) {
           if(error == null) {
-            error = function(msg) { alert(msg); };
+            error = odsGenericErrorHandler;
           }
           $.get(odsApiUrl("user.authenticate.webid", 0), { action: "auto" }, "text/plain").success(function(sid) {
             success(new Session(sid));
@@ -479,14 +498,14 @@ var ODS = (function() {
 
         registerViaOpenId: function(openid, url, success, error) {
             if(error == null) {
-                error = function(msg) { alert(msg); };
+                error = odsGenericErrorHandler;
             }
 
             $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
               window.location.href = result;
             }).error(function(jqXHR) {
               // FIXME: handle HTTP errors
-                error("AJAX call failed.");
+                error(jqXHR);
             });
         }
     }

@@ -5,22 +5,6 @@
 var s_odsSession = null;
 
 
-/**
- * Generic callback for AJAX calls and the like
- */
-var errorCallback = function(result) {
-  console.log(result);
-
-  if (result.responseText)
-    result = result.responseText;
-
-  if(hasError(result, false))
-    alert(extractODSErrorMessage(result));
-  else
-    alert(result);
-};
-
-
 var noop = function() {
   /* do nothing */
 };

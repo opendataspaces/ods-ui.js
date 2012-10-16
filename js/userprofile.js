@@ -130,7 +130,7 @@ function setupProfileWindow() {
       if(window.crypto && window.crypto.logout)
         window.crypto.logout();
       if(window.location.protocol == "https:")
-        s_odsSession.connectToWebID(loadOnlineAccounts, errorCallback);
+        s_odsSession.connectToWebID(loadOnlineAccounts);
       else
         window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?connect=webid";
     }
@@ -232,6 +232,6 @@ ODS.ready(function() {
 $(document).bind('ods-new-session', function(s) {
   console.log('Checking for webid connect parameter');
   if(window.location.protocol == "https:" && getParameterByName(window.location.href, 'connect') == "webid") {
-    s_odsSession.connectToWebID(loadOnlineAccounts, errorCallback);
+    s_odsSession.connectToWebID(loadOnlineAccounts);
   }
 });
