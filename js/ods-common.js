@@ -10,7 +10,7 @@ function extractODSErrorMessage(result) {
  * @param result The result XML element as returned by the ODS REST call.
  * @param showMessage If \p true a message box will pop up with the error message.
  *
- * @return \p true if it is in fact an error.
+ * @returns \p true if it is in fact an error.
  */
 function hasError(result, showMessage) {
     if (showMessage != false)
@@ -45,7 +45,7 @@ function hasError(result, showMessage) {
  * The central object is the {@link ODS.Session} which can be created through one
  * of the session creation functions provided by ODS.
  *
- * @class
+ * @namespace
  * @name ODS
  */
 var ODS = (function() {
@@ -87,7 +87,9 @@ var ODS = (function() {
 
           // connect requires authentication...
           if(s_browserIdAction == "connect") {
-            s_browserIdOdsSession.apiCall("user.authenticate.browserid", { action: "connect", "assertion": assertion }).success(s_browseridSuccessHandler).error(s_browseridErrorHandler);
+            s_browserIdOdsSession.apiCall("user.authenticate.browserid", { action: "connect", "assertion": assertion }).success(function() {
+              s_browseridSuccessHandler(s_browserIdOdsSession);
+            }).error(s_browseridErrorHandler);
           }
 
           // ...everything else does not
@@ -95,7 +97,7 @@ var ODS = (function() {
             // Log into ODS via the BrowserID, requesting a new session ID
             $.get(ODS.apiUrl('user.authenticate.browserid'), { assertion: assertion, action: s_browserIdAction }).success(function(result) {
               console.log("Browser ID Login SID: " + result);
-              ODS.createSessionFromId(result, s_browseridSuccessHandler, s_browseridErrorHandler || ODS.genericErrorHandler);
+              s_browseridSuccessHandler(new Session(result));
             }).error(s_browseridErrorHandler || ODS.genericErrorHandler);
           }
         },
@@ -179,14 +181,26 @@ var ODS = (function() {
         /** @lends ODS.Session# */
         return {
             /**
-             * Perform a REST request against this ODS session.
+             * <p>Perform an HTTP request against this ODS session.</p>
              *
-             * @return A jQuery jqXHR object. FIXME: do our own processing.
+             * <p>The request will be authenticated using the session ID.</p>
+             *
+             * @param method The ODS method to call (Example: <em>user.onlineAccounts.list</em>).
+             * @param params The query parameters as a dictionary.
+             * @param type The type of data that is expected as result. Can be one of <em>text</em>, <em>json</em>, or <em>xml</em>.
+             * @returns A jQuery jqXHR object which can be used to add handlers.
              */
             apiCall: function(method, params, type) {
                 return $.get(odsApiUrl(method), $.extend({ realm: "wa", sid: m_sessionId }, params), type);
             },
 
+            /**
+             * The ODS session ID accociated with this Session object.
+             * Normally there is no need to access the ID as it is used automatically
+             * in any ODS API call made via {@link ODS.Session#apiCall}.
+             *
+             * @returns {String} The session ID.
+             */
             sessionId: function() { return m_sessionId; },
 
             /**
@@ -246,7 +260,24 @@ var ODS = (function() {
                 });
             },
 
-            connectToThirdPartyService: function(type, url, success, error) {
+            /**
+             * <p>Connect an ODS account to a third-party account to enable authentication.</p>
+             *
+             * <p>ODS supports a variety of services (a list can be obtained via {@link ODS#authenticationMethods})
+             * for registration and authentication. This method is used to connect an account from one of
+             * those services to the authenticated ODS account.</p>
+             *
+             * <p>A successful call to this method results in a redirect to the third-party service's authentication
+             * page which in turn will result in yet another redirect to the given url.</p>
+             *
+             * <p>The helper function {@link ODS#handleAuthenticationCallback} will help with completing the
+             * connection.</p>
+             *
+             * @param {String} type The name of the third-party service to connect to.
+             * @param {String} url The callback URL ODS should redirect the user to after completing the process.
+             * @param {Function} error An optional error handler in case of a failure.
+             */
+            connectToThirdPartyService: function(type, url, error) {
               if(error == null) {
                 error = ODS.genericErrorHandler;
               }
@@ -259,7 +290,23 @@ var ODS = (function() {
               });
             },
 
-            connectToOpenId: function(openid, url, success, error) {
+            /**
+             * <p>Connect an ODS account to an OpenID to enable authentication.</p>
+             *
+             * <p>ODS supports a variety of services (a list can be obtained via {@link ODS#authenticationMethods})
+             * for registration and authentication. This method is used to connect an OpenID to the authenticated ODS account.</p>
+             *
+             * <p>A successful call to this method results in a redirect to the OpenID service's authentication
+             * page which in turn will result in yet another redirect to the given url.</p>
+             *
+             * <p>The helper function {@link ODS#handleAuthenticationCallback} will help with completing the
+             * connection.</p>
+             *
+             * @param {String} openid The OpenID to connect to.
+             * @param {String} url The callback URL ODS should redirect the user to after completing the process.
+             * @param {Function} error An optional error handler in case of a failure.
+             */
+            connectToOpenId: function(openid, url, error) {
               if(error == null) {
                 error = ODS.genericErrorHandler;
               }
@@ -270,7 +317,15 @@ var ODS = (function() {
             },
 
             /**
-             * Connect this session's account to a BrowserID.
+             * <p>Connect this session's account to a BrowserID.</p>
+             *
+             * <p>In case the client includes the BrowserID JavaScript library as below this call will initiate
+             * BrowserID login resulting in a connection of the BrowserID with the current ODS account.</p>
+             *
+             * <pre>&lt;script src="https://login.persona.org/include.js"&gt;&lt;/script&gt;</pre>
+             *
+             * @param {Function} success A handler function which is called on success with one parameter: the current Session object.
+             * @param {Function} error A handler function which is called in case of an error.
              */
             connectToBrowserId: function(success, error) {
               if(navigator.id) {
@@ -282,21 +337,38 @@ var ODS = (function() {
               }
             },
 
+            /**
+             * <p>Connect this session's account to a WebID via an X.509 certificate.</p>
+             *
+             * <p>This method should be called in an SSL context for ODS to be able to request
+             * a client certificate.</p>
+             *
+             * @param {Function} success A handler function which is called on success with one parameter: the current Session object.
+             * @param {Function} error A handler function which is called in case of an error.
+             */
             connectToWebID: function(success, error) {
               if(error == null) {
                 error = ODS.genericErrorHandler;
               }
 
-              this.apiCall("user.authenticate.webid", { action: "connect" }).success(success).error(error);
+              this.apiCall("user.authenticate.webid", { action: "connect" }).success(function() {
+                success(this);
+              }).error(error);
             },
 
+            /**
+             * <p>Log out of this session.</p>
+             *
+             * <p>This will invalidate the session ID and this Session instance.</p>
+             *
+             * @param {Function} success A handler function which is called on successful logout.
+             * @param {Function} error A handler function which is called in case of an error.
+             */
             logout: function(success, error) {
                 this.apiCall("user.logout").success(function() {
                     this.m_sessionId = null;
                     success();
-                }).error(function(jqxhr) {
-                    error();
-                });
+                }).error(error);
             }
         };
     };
@@ -625,7 +697,7 @@ var ODS = (function() {
          * @param error A function which handles the error case. It has one parameter:
          * the error message.
          *
-         * @return If there was a result to process <em>true</em> is returned, <em>false</em>
+         * @returns If there was a result to process <em>true</em> is returned, <em>false</em>
          * otherwise. In the latter case none of the handler functions is called. Thus, this
          * method can also be used to check if the current URL contains any ODS authentication
          * result.
@@ -651,7 +723,7 @@ var ODS = (function() {
          *
          * @param {String} email The candidate email address.
          *
-         * @return <em>true</em> if the email address is properly formatted.
+         * @returns <em>true</em> if the email address is properly formatted.
          */
         verifyEmailAddressFormat: function(email) {
             var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
