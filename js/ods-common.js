@@ -1,44 +1,3 @@
-function extractODSErrorMessage(result) {
-  if(!result.getElementsByTagName)
-      result = $.parseXML(result);
-    return $(result).find('message').text();
-}
-
-/**
- * Check if a standard ODS error code result is an error or not.
- *
- * @param result The result XML element as returned by the ODS REST call.
- * @param showMessage If \p true a message box will pop up with the error message.
- *
- * @returns \p true if it is in fact an error.
- */
-function hasError(result, showMessage) {
-    if (showMessage != false)
-        showMessage = true;
-
-    if(!result.getElementsByTagName)
-      result = $.parseXML(result);
-
-    var error = result.getElementsByTagName('failed')[0];
-    if (error) {
-        var message = extractODSErrorMessage(result);
-        if (message && showMessage) {
-          if($.showMessageBox) {
-            $.showMessageBox({
-                content: message,
-                type: "warning"
-            });
-          }
-          else {
-            alert(message);
-          }
-        }
-        return true;
-    }
-    return false;
-}
-
-
 /**
  * The Openlink Data Spaces client lib.
  *
@@ -151,7 +110,7 @@ var ODS = (function() {
     /**
      * Construct an ODS API URL with optional ssl.
      * @param methodName The name of the method to call.
-     * @param ssl If \p true the returned URL will use the https protocol.
+     * @param ssl If <em>true</em> the returned URL will use the https protocol.
      *
      * @private
      */
@@ -204,9 +163,9 @@ var ODS = (function() {
             sessionId: function() { return m_sessionId; },
 
             /**
-             * Fetch information about a user.
+             * <p>Fetch information about a user.</p>
              *
-             * The function has up to three parameters:
+             * <p>The function has up to three parameters:</p>
              * <li>An optional first parameter which refers to the username, by default the
              * authenticated user is assumed.</li>
              * <li>An optional function to be called on successful retrieval of the user info.
@@ -234,10 +193,8 @@ var ODS = (function() {
 
                 // perform the call
                 this.apiCall("user.info", parameters).success(function(result) {
-                    if(hasError(result, error == null)) {
-                        if(error) {
-                            error(extractODSErrorMessage(result));
-                        }
+                    if(ODS.isErrorResult(result)) {
+                      (error || ODS.genericErrorHandler)(result);
                     }
                     else {
                         // build our dict
@@ -253,11 +210,7 @@ var ODS = (function() {
                             success(propDict);
                         }
                     }
-                }).error(function(jqErr) {
-                    if(error) {
-                        error(jqErr);
-                    }
-                });
+                }).error(error || ODS.genericErrorHandler);
             },
 
             /**
@@ -416,8 +369,8 @@ var ODS = (function() {
           if (result.responseText)
             result = result.responseText;
 
-          if(hasError(result, false))
-            alert(extractODSErrorMessage(result));
+          if(isErrorResult(result))
+            alert(ODS.extractErrorResultMessage(result));
           else
             alert(result);
         },
@@ -728,6 +681,35 @@ var ODS = (function() {
         verifyEmailAddressFormat: function(email) {
             var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             return filter.test(email);
+        },
+
+        /**
+         * Check if a standard ODS error code result is an error or not.
+         *
+         * @param result The result XML element as returned by the ODS REST call.
+         *
+         * @returns <em>true</em> if it is in fact an error.
+         */
+        isErrorResult: function(result) {
+          if(!result.getElementsByTagName)
+            result = $.parseXML(result);
+
+          var error = result.getElementsByTagName('failed')[0];
+          if (error)
+            return true;
+          else
+            return false;
+        },
+
+        /**
+         * Extract the error message from an ODS XML result block.
+         *
+         * @param result The XML block as returned by many ODS functions.
+         */
+         extractErrorResultMessage: function(result) {
+          if(!result.getElementsByTagName)
+             result = $.parseXML(result);
+          return $(result).find('message').text();
         }
     }
 })();

@@ -190,9 +190,12 @@ function setupPasswordDialog() {
     else {
       // send the new password
       s_odsSession.apiCall("user.password_change", { old_password: "foobar", new_password: pwd1 }).done(function(result) {
-        if(!hasError(result, true)) {
+        if(!ODS.isErrorResult(result)) {
           alert("Password successfully updated");
           $("#odsPasswordDlg").modal("hide");
+        }
+        else {
+          alert(ODS.extractErrorResultMessage(result));
         }
       }).fail(function() {
         console.log("We should normally not reach this.");
