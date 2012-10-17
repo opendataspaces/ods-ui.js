@@ -301,44 +301,42 @@ function setupLogoutLink() {
 
 
 ODS.ready(function() {
-    // Check if we have a sid parameter from a login redirect
-    var sid = getParameterByName(window.location.href, 'sid');
-    var err = getParameterByName(window.location.href, 'error_msg');
-    var login = getParameterByName(window.location.href, 'login');
-    var register = getParameterByName(window.location.href, 'register');
-    var auto = getParameterByName(window.location.href, 'auto');
-    if(sid.length > 0) {
-      ODS.createSessionFromId(sid, newSessionCallback, checkSession);
-    }
-    else if(err.length > 0) {
-      var $errorDialog = $('#errorDialog');
-      $errorDialog.on('hide', function() {
-        // we remove the error message from the URL
+    var $errorDialog = $('#errorDialog');
+    // we remove the error message from the URL after showing the error
+    $errorDialog.on('hide', function() {
+      if(window.location.search.length > 0)
         resetAndReload();
-      });
-      // show an error message
-      $('#errorDialogMsg').text(err);
+    });
+    var errHdl = function(msg) {
+      $('#errorDialogMsg').text(msg);
       $errorDialog.modal();
-    }
-    else if(login == "webid") {
-      ODS.createWebIDSession(newSessionCallback, function(error) {
-        setupLoginLink();
-        ODS.genericErrorHandler(error)
-      });
-    }
-    else if(register == "webid") {
-      ODS.registerViaWebId(newSessionCallback, function(error) {
-        setupLoginLink();
-        ODS.genericErrorHandler(error)
-      });
-    }
-    else if(auto == "webid") {
-      ODS.registerOrLoginViaWebID(newSessionCallback, function(error) {
-        setupLoginLink();
-        ODS.genericErrorHandler(error)
-      });
-    }
-    else {
-      checkSession();
+    };
+
+    if(!ODS.handleAuthenticationCallback(newSessionCallback, errHdl)) {
+      var login = getParameterByName(window.location.href, 'login');
+      var register = getParameterByName(window.location.href, 'register');
+      var auto = getParameterByName(window.location.href, 'auto');
+
+      if(login == "webid") {
+        ODS.createWebIDSession(newSessionCallback, function(error) {
+          setupLoginLink();
+          ODS.genericErrorHandler(error)
+        });
+      }
+      else if(register == "webid") {
+        ODS.registerViaWebId(newSessionCallback, function(error) {
+          setupLoginLink();
+          ODS.genericErrorHandler(error)
+        });
+      }
+      else if(auto == "webid") {
+        ODS.registerOrLoginViaWebID(newSessionCallback, function(error) {
+          setupLoginLink();
+          ODS.genericErrorHandler(error)
+        });
+      }
+      else {
+        checkSession();
+      }
     }
 });

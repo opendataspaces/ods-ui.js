@@ -593,11 +593,44 @@ var ODS = (function() {
         },
 
         /**
+         * A callback handler which interprets the results from an authentication call
+         * via methods like {@link createThirdPartyServiceSession} or {@link registerViaOpenId}.
+         *
+         * The method will parse the result from the current URL and provide it to the
+         * given handler functions in an appropriate form.
+         *
+         * @param success A function which handles a successful authentication. It has one
+         * parameter: the new {@link ODS.Session} object.
+         * @param error A function which handles the error case. It has one parameter:
+         * the error message.
+         *
+         * @return If there was a result to process <em>true</em> is returned, <em>false</em>
+         * otherwise. In the latter case none of the handler functions is called. Thus, this
+         * method can also be used to check if the current URL contains any ODS authentication
+         * result.
+         */
+        handleAuthenticationCallback: function(success, error) {
+          error = error || ODS.genericErrorHandler;
+          var sid = getParameterByName(window.location.href, 'sid');
+          var err = getParameterByName(window.location.href, 'error_msg');
+          if(sid.length > 0) {
+            success(new Session(sid));
+          }
+          else if(err.length > 0) {
+            error(err);
+            return true;
+          }
+          else {
+            return false;
+          }
+        },
+
+        /**
          * Check if an email address is properly formatted.
          *
          * @param {String} email The candidate email address.
          *
-         * @return \p true if the email address is properly formatted.
+         * @return <em>true</em> if the email address is properly formatted.
          */
         verifyEmailAddressFormat: function(email) {
             var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
