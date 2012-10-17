@@ -40,14 +40,15 @@ function hasError(result, showMessage) {
 
 
 /**
- * @brief The Openlink Data Spaces client lib.
+ * The Openlink Data Spaces client lib.
  *
- * The central object is the Session which can be created through one
+ * The central object is the {@link ODS.Session} which can be created through one
  * of the session creation functions provided by ODS.
+ *
+ * @class
+ * @name ODS
  */
 var ODS = (function() {
-
-    console.log("!!!CONSTRUCTING ODS...");
 
     /// The ODS instance host (private vars)
     // TODO: add a way to change this without having the SSL host being fetched twice!
@@ -66,6 +67,12 @@ var ODS = (function() {
     /// the error callback for browserid
     var s_browseridErrorHandler = null;
 
+    /**
+     * Setup the BrowserID integration. This will be called when the document
+     * is ready. See below.
+     *
+     * @private
+     */
     var setupBrowserId = function() {
       console.log("ODS: Setting up BrowserID integration");
       navigator.id.watch({
@@ -102,6 +109,12 @@ var ODS = (function() {
     /*********************** BrowserID end*/
 
 
+    /**
+     * Fetch the SSL host if it is not set and when done fire the ODS.ready event.
+     * This will be called when the document is ready. See below.
+     *
+     * @private
+     */
     var fetchSslHost = function() {
         console.log("ODS: Fetching SSL host from ODS instance");
         // fetch the SSL host and port from ODS
@@ -125,7 +138,7 @@ var ODS = (function() {
     };
 
     /**
-     * Fetch the SSL host at the beginning.
+     * ODS initialization.
      */
     $(document).ready(function() {
       if(navigator.id)
@@ -137,6 +150,8 @@ var ODS = (function() {
      * Construct an ODS API URL with optional ssl.
      * @param methodName The name of the method to call.
      * @param ssl If \p true the returned URL will use the https protocol.
+     *
+     * @private
      */
     var odsApiUrl = function(methodName, ssl) {
       if(ssl == 1 && odsSSLHost != null) {
@@ -147,21 +162,24 @@ var ODS = (function() {
       }
     };
 
-
-    /**
-     * @brief ODS Session main object
-     *
-     * The main ODS session object provides methods to all the ODS
-     * functionality.
-     *
-     * Create an instance of a session via one of the ODS.authenticate methods.
-     */
+    /** @private */
     var Session = function(sessionId) {
+        /**
+         * ODS Session main object.
+         * The main ODS session object provides methods to all the ODS
+         * functionality.
+         *
+         * Create an instance of a session via one of the ODS.authenticate methods.
+         *
+         * @class
+         * @name ODS.Session
+         */
         var m_sessionId = sessionId;
 
+        /** @lends ODS.Session# */
         return {
             /**
-             * @brief Perform a REST request against this ODS session.
+             * Perform a REST request against this ODS session.
              *
              * @return A jQuery jqXHR object. FIXME: do our own processing.
              */
@@ -172,15 +190,15 @@ var ODS = (function() {
             sessionId: function() { return m_sessionId; },
 
             /**
-             * @brief Fetch information about a user.
+             * Fetch information about a user.
              *
              * The function has up to three parameters:
-             * - An optional first parameter which refers to the username, by default the
-             * authenticated user is assumed.
-             * - An optional function to be called on successful retrieval of the user info.
-             * This function has one parameter: the map of user details.
-             * - An optional error function which is called in case the call fails. This
-             * function has one parameter: the error message.
+             * <li>An optional first parameter which refers to the username, by default the
+             * authenticated user is assumed.</li>
+             * <li>An optional function to be called on successful retrieval of the user info.
+             * This function has one parameter: the map of user details.</li>
+             * <li>An optional error function which is called in case the call fails. This
+             * function has one parameter: the error message.</li>
              */
             userInfo: function() {
                 var success = null,
@@ -286,6 +304,8 @@ var ODS = (function() {
 
     /**
      * Extract query parameters from a URL
+     *
+     * @private
      */
     var getParameterByName = function(url, name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -304,9 +324,12 @@ var ODS = (function() {
     // PUBLIC API of namespace "ODS"
     // ===========================================================================
 
+    /** @lends ODS# */
     return {
         /**
          * Bind a function to the custom event of ODS being ready for action.
+         *
+         * @param callback The function to call once ODS is ready.
          */
         ready: function(callback) {
           $(document).bind('ods-ready-event', callback);
@@ -337,7 +360,7 @@ var ODS = (function() {
         },
 
         /**
-         * @brief Creates a URL to an ODS DAV resource.
+         * Creates a URL to an ODS DAV resource.
          *
          * @param path The absolute path to the DAV resource.
          */
@@ -348,7 +371,7 @@ var ODS = (function() {
         /**
          * Construct an ODS API URL with optional ssl.
          * @param methodName The name of the method to call.
-         * @param ssl If \p true the returned URL will use the https protocol.
+         * @param ssl If <em>true</em> the returned URL will use the https protocol.
          */
         apiUrl: function(methodName, ssl) {
             return odsApiUrl(methodName, ssl);
@@ -377,15 +400,15 @@ var ODS = (function() {
         },
 
         /**
-         * @brief Create a new ODS session with password hash authentication.
+         * Create a new ODS session with password hash authentication.
          *
          * @param usr The user name.
          * @param pwd The password.
          * @param success A callback function which has one parameter: the new
-         * ODS instance object.
+         * ODS {@link ODS.Session} object.
          * @param error A callback function which has two parameters:
-         * - An error code
-         * - A human readable error message. TODO: translate the error message.
+         * <li>An error code</li>
+         * <li>A human readable error message.</li>
          */
         createSession: function(usr, pwd, success, error) {
             var authenticationUrl = odsApiUrl("user.authenticate", 0),
@@ -418,13 +441,13 @@ var ODS = (function() {
         },
 
         /**
-         * @brief Create a new ODS session through WebID authentication.
+         * Create a new ODS session through WebID authentication.
          *
          * The browser will automatically request the WebID certificate from
          * the user.
          *
          * @param success A callback function with a single parameter: the new
-         * Session object.
+         * {@link ODS.Session} object.
          * @param An optional error callback function which is called if the
          * session is no longer valid or the ODS call failed.
          */
@@ -442,13 +465,13 @@ var ODS = (function() {
         },
 
         /**
-         * @brief Create a new ODS session via an existing OpenID.
+         * Create a new ODS session via an existing OpenID.
          *
          * Creating an ODS session via OpenID is a two-step process:
-         * -# Request the authentication URL from ODS and let the user authenticate and get the redirection
-         * -# Pass the redirection URL to this function to complete the authentication
+         * <li>Request the authentication URL from ODS and let the user authenticate and get the redirection</li>
+         * <li>Get the new session ID from the redirected URL parameter or parse the error.</li>
          *
-         * For the first step pass the \p openid the user wants to login with to this function as well as
+         * For the first step pass the <em>openid</em> the user wants to login with to this function as well as
          * the redirection URL to which the OpenID provider should redirect once the OpenID authentication
          * was sucessful. This function will then navigate the user to the OpenID provider's login page.
          * Once the redirection is done this function needs to be called again, this time leaving both
@@ -456,11 +479,9 @@ var ODS = (function() {
          *
          * @param openid The OpenID the user wants to login with. This needs to be specified for step 1.
          * @param url The callback URL.
-         * @param success A callback function with a single parameter: the new
-         * Session object. This, however, is only called for the second step of the authentication.
          * @param error An optional error callback function which is called if the ODS call failed.
          */
-        createOpenIdSession: function(openid, url, success, error) {
+        createOpenIdSession: function(openid, url, error) {
             if(error == null) {
                 error = ODS.genericErrorHandler;
             }
@@ -490,7 +511,7 @@ var ODS = (function() {
         },
 
         /**
-         * @brief Create a new ODS session from an existing session id.
+         * Create a new ODS session from an existing session id.
          *
          * This is for example useful for storing the session id in a cookie.
          * The function will check if the session is still valid and if so
