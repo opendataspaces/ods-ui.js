@@ -35,18 +35,19 @@ function attemptWebIDLogin() {
  * If so the logged in state will be reflected in the page.
  */
 function checkSession() {
+    console.log("Checking for existing session cookie...");
     if(s_odsSession) {
         loadUserData();
     }
     else {
         var sessionId = $.cookie("ods_session_id");
         if(sessionId != null) {
-            console.log("Have session id " + sessionId);
+            console.log("Found session cookie " + sessionId);
             // check if the session is still valid
             ODS.createSessionFromId(sessionId, newSessionCallback, attemptWebIDLogin);
         }
         else {
-            console.log("No session id stored.");
+            console.log("No session cookie stored.");
             attemptWebIDLogin();
         }
     }
@@ -94,8 +95,10 @@ function setupLoginLink() {
 
     // For now we need to setup the digest authentication manually
     var digestLoginFnc = function() {
-      ODS.createSession(document.digestLogin.usr.value, document.digestLogin.pwd.value, newSessionCallback);
-      $("#loginPopup").modal("hide");
+      ODS.createSession(document.digestLogin.usr.value, document.digestLogin.pwd.value, function(result) {
+        $("#loginPopup").modal("hide");
+        newSessionCallback(result);
+      });
     };
     $("form#digestLogin input.odsButton").click(function(event) {
         event.stopPropagation();
@@ -320,19 +323,19 @@ ODS.ready(function() {
     else if(login == "webid") {
       ODS.createWebIDSession(newSessionCallback, function(error) {
         setupLoginLink();
-        odsGenericErrorHandler(error)
+        ODS.genericErrorHandler(error)
       });
     }
     else if(register == "webid") {
       ODS.registerViaWebId(newSessionCallback, function(error) {
         setupLoginLink();
-        odsGenericErrorHandler(error)
+        ODS.genericErrorHandler(error)
       });
     }
     else if(auto == "webid") {
       ODS.registerOrLoginViaWebID(newSessionCallback, function(error) {
         setupLoginLink();
-        odsGenericErrorHandler(error)
+        ODS.genericErrorHandler(error)
       });
     }
     else {

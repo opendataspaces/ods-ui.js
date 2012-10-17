@@ -1,40 +1,3 @@
-
-/// The ODS instance host
-var odsHost = window.location.host;
-var odsSSLHost = null;
-
-
-/**
- * Generic callback for AJAX calls and the like
- */
-var odsGenericErrorHandler = function(result) {
-  console.log(result);
-
-  if (result.responseText)
-    result = result.responseText;
-
-  if(hasError(result, false))
-    alert(extractODSErrorMessage(result));
-  else
-    alert(result);
-};
-
-
-/**
- * Construct an ODS API URL with optional ssl.
- * @param methodName The name of the method to call.
- * @param ssl If \p true the returned URL will use the https protocol.
- */
-function odsApiUrl(methodName, ssl) {
-    if(ssl == 1 && odsSSLHost != null) {
-        return "https://" + odsSSLHost + "/ods/api/" + methodName;
-    }
-    else {
-        return window.location.protocol + "//" + odsHost + "/ods/api/" + methodName;
-    }
-}
-
-
 function extractODSErrorMessage(result) {
   if(!result.getElementsByTagName)
       result = $.parseXML(result);
@@ -75,26 +38,115 @@ function hasError(result, showMessage) {
     return false;
 }
 
-/**
- * Check if an email address is properly formatted.
- * 
- * @param {String} email The candidate email address.
- * 
- * @return \p true if the email address is properly formatted.
- */
-function checkEmailAddress(email) {
-    var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    return filter.test(email);
-}
-
 
 /**
  * @brief The Openlink Data Spaces client lib.
- * 
+ *
  * The central object is the Session which can be created through one
  * of the session creation functions provided by ODS.
  */
 var ODS = (function() {
+
+    console.log("!!!CONSTRUCTING ODS...");
+
+    /// The ODS instance host (private vars)
+    // TODO: add a way to change this without having the SSL host being fetched twice!
+    var odsHost = window.location.host;
+    var odsSSLHost = null;
+
+
+    /* BROWSER ID ************************************/
+
+    /// global variable to remember which action we took for browser id.
+    var s_browserIdAction = null;
+    /// the ODS session from which the connection call was made
+    var s_browserIdOdsSession = null;
+    /// the success callback for browserid
+    var s_browseridSuccessHandler = null;
+    /// the error callback for browserid
+    var s_browseridErrorHandler = null;
+
+    var setupBrowserId = function() {
+      console.log("ODS: Setting up BrowserID integration");
+      navigator.id.watch({
+        // We use ODS' session management, thus the logged in user from the BrowserID point of view os always null
+        loggedInUser: null,
+
+        // the actual ODS BrowserID login
+        onlogin: function(assertion) {
+          console.log("ODS BrowserID login: " + s_browserIdAction);
+          // We use ODS session management, thus, we never want BrowserID auto-login
+          navigator.id.logout();
+
+          // connect requires authentication...
+          if(s_browserIdAction == "connect") {
+            s_browserIdOdsSession.apiCall("user.authenticate.browserid", { action: "connect", "assertion": assertion }).success(s_browseridSuccessHandler).error(s_browseridErrorHandler);
+          }
+
+          // ...everything else does not
+          else {
+            // Log into ODS via the BrowserID, requesting a new session ID
+            $.get(ODS.apiUrl('user.authenticate.browserid'), { assertion: assertion, action: s_browserIdAction }).success(function(result) {
+              console.log("Browser ID Login SID: " + result);
+              ODS.createSessionFromId(result, s_browseridSuccessHandler, s_browseridErrorHandler || ODS.genericErrorHandler);
+            }).error(s_browseridErrorHandler || ODS.genericErrorHandler);
+          }
+        },
+
+        // we do nothing here as we do logout the ods way
+        onlogout: function() {
+        }
+      });
+    };
+
+    /*********************** BrowserID end*/
+
+
+    var fetchSslHost = function() {
+        console.log("ODS: Fetching SSL host from ODS instance");
+        // fetch the SSL host and port from ODS
+        if(odsSSLHost == null) {
+          $.get(odsApiUrl("server.getInfo", 0), {info: "sslPort"}).success(function(result) {
+            if(result["sslHost"]) {
+              odsSSLHost = result["sslHost"] + ":" + result["sslPort"];
+              console.log("Fetched SSL Host from ODS: " + odsSSLHost);
+              }
+            else {
+              console.log("Could not fetch SSL Host from ODS.");
+            }
+
+            $(document).trigger('ods-ready-event');
+          });
+        }
+        else {
+            // nothing to do
+          $(document).trigger('ods-ready-event');
+        }
+    };
+
+    /**
+     * Fetch the SSL host at the beginning.
+     */
+    $(document).ready(function() {
+      if(navigator.id)
+        setupBrowserId();
+      fetchSslHost();
+    });
+
+    /**
+     * Construct an ODS API URL with optional ssl.
+     * @param methodName The name of the method to call.
+     * @param ssl If \p true the returned URL will use the https protocol.
+     */
+    var odsApiUrl = function(methodName, ssl) {
+      if(ssl == 1 && odsSSLHost != null) {
+        return "https://" + odsSSLHost + "/ods/api/" + methodName;
+      }
+      else {
+          return window.location.protocol + "//" + odsHost + "/ods/api/" + methodName;
+      }
+    };
+
 
     /**
      * @brief ODS Session main object
@@ -178,7 +230,7 @@ var ODS = (function() {
 
             connectToThirdPartyService: function(type, url, success, error) {
               if(error == null) {
-                error = odsGenericErrorHandler;
+                error = ODS.genericErrorHandler;
               }
 
               this.apiCall("user.authenticate.authenticationUrl", { action: "connect", service: type, "callback": url }).success(function(result) {
@@ -191,7 +243,7 @@ var ODS = (function() {
 
             connectToOpenId: function(openid, url, success, error) {
               if(error == null) {
-                error = odsGenericErrorHandler;
+                error = ODS.genericErrorHandler;
               }
 
               this.apiCall("user.authenticate.authenticationUrl", { action: "connect", service: 'openid', "callback": url, data: openid }).success(function(result) {
@@ -199,17 +251,22 @@ var ODS = (function() {
               }).error(error);
             },
 
-            connectToBrowserId: function(assertion, success, error) {
-              if(error == null) {
-                error = odsGenericErrorHandler;
+            /**
+             * Connect this session's account to a BrowserID.
+             */
+            connectToBrowserId: function(success, error) {
+              if(navigator.id) {
+                s_browserIdOdsSession = this;
+                s_browserIdAction = 'connect';
+                s_browseridSuccessHandler = success;
+                s_browseridErrorHandler = error || ODS.genericErrorHandler;
+                navigator.id.request();
               }
-
-              this.apiCall("user.authenticate.browserid", { action: "connect", "assertion": assertion }).success(success).error(error);
             },
 
             connectToWebID: function(success, error) {
               if(error == null) {
-                error = odsGenericErrorHandler;
+                error = ODS.genericErrorHandler;
               }
 
               this.apiCall("user.authenticate.webid", { action: "connect" }).success(success).error(error);
@@ -254,6 +311,22 @@ var ODS = (function() {
         ready: function(callback) {
           $(document).bind('ods-ready-event', callback);
         },
+
+        /**
+         * Generic callback for AJAX calls and the like
+         */
+        genericErrorHandler: function(result) {
+          console.log(result);
+
+          if (result.responseText)
+            result = result.responseText;
+
+          if(hasError(result, false))
+            alert(extractODSErrorMessage(result));
+          else
+            alert(result);
+        },
+
 
         host: function() {
           return odsHost;
@@ -322,7 +395,7 @@ var ODS = (function() {
             };
 
             if(error == null) {
-                error = odsGenericErrorHandler;
+                error = ODS.genericErrorHandler;
             }
 
             $.get(authenticationUrl, authenticationParams).success(function(result) {
@@ -336,7 +409,7 @@ var ODS = (function() {
                 }
                 else {
                     // login failed
-                    error(extractODSErrorMessage(result));
+                    error(result);
                 }
             }).error(function(jqXHR) {
                 // FIXME: handle HTTP errors
@@ -357,7 +430,7 @@ var ODS = (function() {
          */
         createWebIDSession: function(success, error) {
             if(error == null) {
-                error = odsGenericErrorHandler;
+                error = ODS.genericErrorHandler;
             }
 
             $.get(odsApiUrl("user.authenticate.webid", 1), {}).success(function(result) {
@@ -389,28 +462,31 @@ var ODS = (function() {
          */
         createOpenIdSession: function(openid, url, success, error) {
             if(error == null) {
-                error = odsGenericErrorHandler;
+                error = ODS.genericErrorHandler;
             }
 
             $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
               window.location.href = result;
-            }).error(function(jqXHR) {
-              // FIXME: handle HTTP errors
-                error(jqXHR);
-            });
+            }).error(error);
         },
 
         createThirdPartyServiceSession: function(type, url, success, error) {
           if(error == null) {
-            error = odsGenericErrorHandler;
+            error = ODS.genericErrorHandler;
           }
 
           $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: type, "callback": url }, "text/plain").success(function(result) {
             window.location.href = result;
-          }).error(function(jqXHR) {
-            // FIXME: handle HTTP errors
-            error(jqXHR);
-          });
+          }).error(error);
+        },
+
+        createBrowserIdSession: function(success, error) {
+          if(navigator.id) {
+            s_browserIdAction = 'authenticate';
+            s_browseridSuccessHandler = success;
+            s_browseridErrorHandler = error || ODS.genericErrorHandler;
+            navigator.id.request();
+          }
         },
 
         /**
@@ -427,8 +503,9 @@ var ODS = (function() {
          * session is no longer valid or the ODS call failed.
          */
         createSessionFromId: function(sessionId, success, error) {
+            console.log("ODS: createSessionFromId: " + sessionId);
             if(error == null) {
-                error = odsGenericErrorHandler;
+                error = ODS.genericErrorHandler;
             }
 
             // check if the session is still valid by fetching user details
@@ -443,30 +520,24 @@ var ODS = (function() {
                 else {
                     success(new Session(sessionId));
                 }
-            }).error(function(jqXHR) {
-                // FIXME: handle error
-                error(jqXHR);
-            });
+            }).error(error);
         },
 
         // FIXME: let the register and auto methods actually create session objects, including the redirect handling.
 
         registerViaThirdPartyService: function(type, url, success, error) {
           if(error == null) {
-            error = odsGenericErrorHandler;
+            error = ODS.genericErrorHandler;
           }
 
           $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: type, "callback": url }, "text/plain").success(function(result) {
             window.location.href = result;
-          }).error(function(jqXHR) {
-            // FIXME: handle HTTP errors
-            error(jqXHR);
-          });
+          }).error(error);
         },
 
         registerViaWebID: function(success, error) {
           if(error == null) {
-            error = odsGenericErrorHandler;
+            error = ODS.genericErrorHandler;
           }
 
           $.get(odsApiUrl("user.authenticate.webid", 1), { action: "register" }).success(function(sid) {
@@ -474,60 +545,63 @@ var ODS = (function() {
           }).error(error);
         },
 
+        registerViaOpenId: function(openid, url, success, error) {
+            if(error == null) {
+                error = ODS.genericErrorHandler;
+            }
+
+            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
+              window.location.href = result;
+            }).error(error);
+        },
+
+        registerViaBrowserId: function(success, error) {
+          if(navigator.id) {
+            s_browserIdAction = 'register';
+            s_browseridSuccessHandler = success;
+            s_browseridErrorHandler = error || ODS.genericErrorHandler;
+            navigator.id.request();
+          }
+        },
+
         registerOrLoginViaThirdPartyService: function(type, url, success, error) {
           if(error == null) {
-            error = odsGenericErrorHandler;
+            error = ODS.genericErrorHandler;
           }
 
           $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "auto", service: type, "callback": url }, "text/plain").success(function(result) {
             window.location.href = result;
-          }).error(function(jqXHR) {
-            // FIXME: handle HTTP errors
-            error(jqXHR);
-          });
+          }).error(error);
         },
 
         registerOrLoginViaWebID: function(success, error) {
           if(error == null) {
-            error = odsGenericErrorHandler;
+            error = ODS.genericErrorHandler;
           }
           $.get(odsApiUrl("user.authenticate.webid", 0), { action: "auto" }, "text/plain").success(function(sid) {
             success(new Session(sid));
           }).error(error);
         },
 
-        registerViaOpenId: function(openid, url, success, error) {
-            if(error == null) {
-                error = odsGenericErrorHandler;
-            }
+        registerOrLoginViaBrowserId: function(success, error) {
+          if(navigator.id) {
+            s_browserIdAction = 'auto';
+            s_browseridSuccessHandler = success;
+            s_browseridErrorHandler = error || ODS.genericErrorHandler;
+            navigator.id.request();
+          }
+        },
 
-            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
-              window.location.href = result;
-            }).error(function(jqXHR) {
-              // FIXME: handle HTTP errors
-                error(jqXHR);
-            });
+        /**
+         * Check if an email address is properly formatted.
+         *
+         * @param {String} email The candidate email address.
+         *
+         * @return \p true if the email address is properly formatted.
+         */
+        verifyEmailAddressFormat: function(email) {
+            var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            return filter.test(email);
         }
     }
 })();
-
-$(document).ready(function() {
-  // fetch the SSL host and port from ODS
-  if(odsSSLHost == null) {
-    $.get(odsApiUrl("server.getInfo", 0), {info: "sslPort"}).success(function(result) {
-      if(result["sslHost"]) {
-        odsSSLHost = result["sslHost"] + ":" + result["sslPort"];
-        console.log("Fetched SSL Host from ODS: " + odsSSLHost);
-      }
-      else {
-        console.log("Could not fetch SSL Host from ODS.");
-      }
-
-      $(document).trigger('ods-ready-event');
-    });
-  }
-  else {
-    // nothing to do
-    $(document).trigger('ods-ready-event');
-  }
-});
