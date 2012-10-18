@@ -9,7 +9,7 @@ function Link() {
 	this.innerName = "";
 	this.classLink = false;
 	this.targetName = "";
-	
+
 	this.target = function(targetName) {
 		if (defined(targetName)) this.targetName = targetName;
 		return this;
@@ -38,7 +38,7 @@ function Link() {
 		if (defined(file)) this.file = file;
 		return this;
 	}
-	
+
 	this.toString = function() {
 		var linkString;
 		var thisLink = this;

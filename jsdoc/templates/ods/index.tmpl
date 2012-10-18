@@ -34,7 +34,26 @@
         library makes it even easier by giving the client developer a set of simple functions to access the ODS authentication functionality.</p>
       <p>The following list contains all classes that make up the ODS JavaScript library. The <a href="jods_ods.vsp">ODS namespace</a> is the starting point for any client.</p>
 
-			<h1 class="classTitle">Class Index</h1>
+      <h2>Quick Start</h2>
+
+      <p>To start using the ODS JS Library in a client, one first needs to include the source file:
+        <pre>&lt;script src="http://web.ods.openlinksw.com/js/jods.js"&gt;&lt;/script&gt;</pre></p>
+      <p>Then one can optionally set the host of the ODS instance one wants to interface with:
+        <pre>{+new Link().toSymbol("ODS#setOdsHost")+}("mydomain.com", "mydomain.com");</pre></p>
+      <p>Login buttons should be connected to the corresponding functions in ODS. If one, for example,
+        wants to allow login via Twitter one would connect the button to the following function:
+        <pre>function() {
+  {+new Link().toSymbol("ODS#createThirdPartyServiceSession")+}("twitter",
+                                     "http://mydomain.com/index.html");
+}</pre>
+      The execution of that function will result in a redirect, allowing the user to log into Twitter
+      and return to the client callback URL, in this case <em>index.html</em>. The URL will then contain
+      query parameters informing about success of failure. These parameters are best processed via:
+      <pre>{+new Link().toSymbol("ODS#handleAuthenticationCallback")+}(mySuccessFunction, myErrorFunction);</pre>
+      On a successful login the <em>mySuccessFunction</em> function will be called with one parameter:
+      the new <a href="jods_ods_session.vsp">ODS.Session</a> object.</p>
+
+			<h2 class="classTitle">Class Index</h2>
 
 			<for each="thisClass" in="data">
         <if test="thisClass.methods.length > 0 || thisClass.events.length > 0">
