@@ -726,6 +726,22 @@ var ODS = (function() {
           if(!result.getElementsByTagName)
              result = $.parseXML(result);
           return $(result).find('message').text();
+        },
+
+        /**
+         * <p>Set the host the ODS instance is running on.</p>
+         *
+         * <p>By default the client's host address is assumed and the
+         * SSL host is determined by calling ODS' <em>server.getInfo</em>.</p>
+         *
+         * <p>This method can be used to override the defaults and avoid
+         * the additional HTTP call mentioned above. It is recommended to set
+         * the ODS host before the document is fully loaded, ie. <em>not</em>
+         * in a handler of the document.ready event.</p>
+         */
+        setOdsHost: function(host, sslHost) {
+          odsHost = host;
+          odsSSLHost = sslHost;
         }
     }
 })();
