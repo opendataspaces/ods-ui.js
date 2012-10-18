@@ -1,0 +1,68 @@
+<?include header.vsp ?>
+
+    <style type="text/css">
+      {+include("static/default.css")+}
+    </style>
+
+<body class="sub">
+
+<div class="wrapper">
+
+  <?include branding.html ?>
+
+  <div class="ods-container rc bs" role="main">
+
+    <div class="navigation-container">
+
+      <?include navigation.vsp ?>
+
+    </div>
+
+    <div class="content-container rc">
+
+      <div class="content clearfix">
+
+        <article>
+          <header>
+            <h1 class="classTitle">ODS JavaScript Client Library</h1>
+          </header>
+
+    <div id="content">
+      <p class="first">The JavaScript ODS Library provides easy authentication and registration for ODS clients.</p>
+
+      <p>ODS already provides a very convinient authentication and registration API as part of the <a href="odsdox/">ODS HTTP API</a>. This JavaScript client
+        library makes it even easier by giving the client developer a set of simple functions to access the ODS authentication functionality.</p>
+      <p>The following list contains all classes that make up the ODS JavaScript library. The <a href="jods_ods.vsp">ODS namespace</a> is the starting point for any client.</p>
+
+			<h1 class="classTitle">Class Index</h1>
+
+			<for each="thisClass" in="data">
+        <if test="thisClass.methods.length > 0 || thisClass.events.length > 0">
+          <div>
+            <h2>{+(new Link().toSymbol(thisClass.alias))+}</h2>
+            {+resolveLinks(summarize(thisClass.desc))+}
+          </div>
+          <hr />
+        </if>
+			</for>
+
+
+</article>
+
+
+  <aside>
+<!-- ============================== classes index ============================ -->
+    <div id="index">
+      <!-- begin publish.classesIndex -->
+      {+publish.classesIndex+}
+      <!-- end publish.classesIndex -->
+    </div>
+    <?include sidebar.vsp ?>
+  </aside>
+
+
+  </div>
+ </div>
+</div>
+
+<?include footer.vsp ?>

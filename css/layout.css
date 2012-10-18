@@ -287,7 +287,7 @@ nav a {
 }
 
 article header + p,
-.hp p.first {
+p.first {
 	font-family: Arial;
 	color: #006081;
 	font-size:1.333em
@@ -803,4 +803,8 @@ a.profileBoxLink:hover {
 }
 .ui-resizable-e {
   right: 0;
+}
+
+li {
+  list-style-position: inside;
 }
