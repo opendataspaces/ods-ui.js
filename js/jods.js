@@ -516,7 +516,23 @@ var ODS = (function() {
             }).error(error);
         },
 
-        createThirdPartyServiceSession: function(type, url, success, error) {
+        /**
+         * Create a new ODS session by authenticating via a third-party account.
+         *
+         * <p>ODS supports a variety of services (a list can be obtained via {@link ODS#authenticationMethods})
+         * for registration and authentication.</p>
+         *
+         * <p>A successful call to this method results in a redirect to the third-party service's authentication
+         * page which in turn will result in yet another redirect to the given url.</p>
+         *
+         * <p>The helper function {@link ODS#handleAuthenticationCallback} will help with completing the
+         * connection.</p>
+         *
+         * @param {String} type The name of the third-party service to connect to.
+         * @param {String} url The callback URL ODS should redirect the user to after completing the process.
+         * @param {Function} error An optional error handler in case of a failure.
+         */
+        createThirdPartyServiceSession: function(type, url, error) {
           if(error == null) {
             error = ODS.genericErrorHandler;
           }
@@ -571,7 +587,7 @@ var ODS = (function() {
 
         // FIXME: let the register and auto methods actually create session objects, including the redirect handling.
 
-        registerViaThirdPartyService: function(type, url, success, error) {
+        registerViaThirdPartyService: function(type, url, error) {
           if(error == null) {
             error = ODS.genericErrorHandler;
           }
@@ -591,7 +607,7 @@ var ODS = (function() {
           }).error(error);
         },
 
-        registerViaOpenId: function(openid, url, success, error) {
+        registerViaOpenId: function(openid, url, error) {
             if(error == null) {
                 error = ODS.genericErrorHandler;
             }
@@ -610,7 +626,7 @@ var ODS = (function() {
           }
         },
 
-        registerOrLoginViaThirdPartyService: function(type, url, success, error) {
+        registerOrLoginViaThirdPartyService: function(type, url, error) {
           if(error == null) {
             error = ODS.genericErrorHandler;
           }
