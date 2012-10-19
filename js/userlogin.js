@@ -148,6 +148,22 @@ function setupLoginLink() {
               event.preventDefault();
               openIdLoginFnc();
             });
+
+            var openIdAutoRegFnc = function() {
+              var confirm = $('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
+              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              ODS.registerOrLoginViaOpenId(document.openidAutoRegisterForm.openidUrl.value, callbackUrl, confirm);
+            };
+            $("#openidAutoRegisterForm .odsLoginInput").keydown(function(event) {
+              event.stopPropagation();
+              if(event.keyCode == 13) {
+                openIdAutoRegFnc();
+              }
+            });
+            $("#openidAutoRegisterBtn").click(function(event) {
+              event.preventDefault();
+              openIdAutoRegFnc();
+            });
         }
         else {
           $("#otherLogins").show();
@@ -164,12 +180,12 @@ function setupLoginLink() {
               //
               // Sadly it is not possible yet to send a client certificate via AJAX calls.
               //
-              //ODS.createWebIDSession(newSessionCallback);
+              //ODS.createWebIdSession(newSessionCallback);
               $("#loginPopup").modal("hide");
               if(window.crypto && window.crypto.logout)
                 window.crypto.logout();
               if(window.location.protocol == "https:")
-                ODS.createWebIDSession(newSessionCallback);
+                ODS.createWebIdSession(newSessionCallback);
               else
                 window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?login=webid";
             }
@@ -188,6 +204,8 @@ function setupLoginLink() {
             // created here and will always have the last value of the iteration
             var m = this.id.substring(0,this.id.indexOf("Auto"));
 
+            var confirm = $('#forceAutoRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
+
             if(m == "webid") {
               //
               // Sadly it is not possible yet to send a client certificate via AJAX calls.
@@ -196,15 +214,15 @@ function setupLoginLink() {
               if(window.crypto && window.crypto.logout)
                 window.crypto.logout();
               if(window.location.protocol == "https:")
-                ODS.registerOrLoginViaWebID(newSessionCallback);
+                ODS.registerOrLoginViaWebId(confirm, newSessionCallback, authConfirmCallback);
               else
-                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?auto=webid";
+                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?auto=webid&confirm=" + confirm;
             }
             else {
               // construct our callback url
               var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               // try to login via OpenID
-              ODS.registerOrLoginViaThirdPartyService(m, callbackUrl);
+              ODS.registerOrLoginViaThirdPartyService(m, callbackUrl, confirm);
             }
           });
         }
@@ -231,8 +249,9 @@ function setupLoginLink() {
 
         else if(method == "openid") {
             var openIdRegFnc = function() {
+              var confirm = $('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
               var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-              ODS.registerViaOpenId(document.openidRegisterForm.openidUrl.value, callbackUrl, newSessionCallback);
+              ODS.registerViaOpenId(document.openidRegisterForm.openidUrl.value, callbackUrl, confirm);
             };
             $("#openidRegisterForm .odsLoginInput").keydown(function(event) {
               event.stopPropagation();
@@ -256,24 +275,26 @@ function setupLoginLink() {
             // cancel default submit behaviour
             event.preventDefault();
 
+            var confirm = $('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
+
             if(m == "webid") {
               //
               // Sadly it is not possible yet to send a client certificate via AJAX calls.
               //
-              //ODS.createWebIDSession(newSessionCallback);
+              //ODS.createWebIdSession(newSessionCallback);
               $("#loginPopup").modal("hide");
               if(window.crypto && window.crypto.logout)
                 window.crypto.logout();
               if(window.location.protocol == "https:")
-                ODS.registerViaWebID(newSessionCallback);
+                ODS.registerViaWebId(confirm, newSessionCallback, authConfirmCallback);
               else
-                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?register=webid";
+                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?register=webid&confirm=" + confirm;
             }
             else {
               // construct our callback url
               var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               // try to login via OpenID
-              ODS.registerViaThirdPartyService(m, callbackUrl);
+              ODS.registerViaThirdPartyService(m, callbackUrl, confirm);
             }
           });
         }
@@ -307,30 +328,44 @@ ODS.ready(function() {
       if(window.location.search.length > 0)
         resetAndReload();
     });
+    $("#odsAuthConfirmDialog").on('hide', function() {
+      if(window.location.search.length > 0)
+        resetAndReload();
+    });
     var errHdl = function(msg) {
       $('#errorDialogMsg').text(msg);
       $errorDialog.modal();
     };
 
-    if(!ODS.handleAuthenticationCallback(newSessionCallback, errHdl)) {
+    // setup the authentication confirmation dialog
+    $("#odsAuthConfirmButton").click(function(e) {
+      e.preventDefault();
+      ODS.confirmAuthentication(document.odsAuthConfirmForm.cid.value, document.odsAuthConfirmForm.usr.value, document.odsAuthConfirmForm.email.value, function(result) {
+        $("#odsAuthConfirmDialog").modal("hide");
+        newSessionCallback(result);
+      });
+    });
+
+    if(!ODS.handleAuthenticationCallback(newSessionCallback, authConfirmCallback, errHdl)) {
       var login = getParameterByName(window.location.href, 'login');
       var register = getParameterByName(window.location.href, 'register');
       var auto = getParameterByName(window.location.href, 'auto');
+      var confirm = getParameterByName(window.location.href, 'confirm');
 
       if(login == "webid") {
-        ODS.createWebIDSession(newSessionCallback, function(error) {
+        ODS.createWebIdSession(newSessionCallback, function(error) {
           setupLoginLink();
           ODS.genericErrorHandler(error)
         });
       }
       else if(register == "webid") {
-        ODS.registerViaWebId(newSessionCallback, function(error) {
+        ODS.registerViaWebId(confirm, newSessionCallback, authConfirmCallback, function(error) {
           setupLoginLink();
           ODS.genericErrorHandler(error)
         });
       }
       else if(auto == "webid") {
-        ODS.registerOrLoginViaWebID(newSessionCallback, function(error) {
+        ODS.registerOrLoginViaWebId(confirm, newSessionCallback, authConfirmCallback, function(error) {
           setupLoginLink();
           ODS.genericErrorHandler(error)
         });

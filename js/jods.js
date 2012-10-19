@@ -15,14 +15,43 @@ var ODS = (function() {
     var odsSSLHost = null;
 
 
+    /**
+     * Parses a session result from ODS authentication methods.
+     * @return the session id on success, null on error
+     */
+    var parseOdsSession = function(sessXml) {
+      var x = $(sessXml);
+      return x.find('userSession sid').text() || null;
+    };
+
+    var parseOdsAuthConfirmSession = function(sessXml) {
+      var x = $(sessXml);
+      x = $(x.find('confirmSession'));
+      return {
+        cid: x.find('cid').text(),
+        user: {
+          name: x.find('user name').text(),
+          email: x.find('user email').text()
+        },
+        onlineAccount: {
+          service: x.find('onlineAccount service').text(),
+          uid: x.find('onlineAccount uid').text(),
+        }
+      };
+    };
+
     /* BROWSER ID ************************************/
 
     /// global variable to remember which action we took for browser id.
     var s_browserIdAction = null;
+    /// global variable to remember which comfirmation mode we took for browser id
+    var s_browserIdConfirm = null;
     /// the ODS session from which the connection call was made
     var s_browserIdOdsSession = null;
     /// the success callback for browserid
     var s_browseridSuccessHandler = null;
+    /// the auth confirm handler for broswerid
+    var s_browseridAuthConfirmHandler = null;
     /// the error callback for browserid
     var s_browseridErrorHandler = null;
 
@@ -54,9 +83,17 @@ var ODS = (function() {
           // ...everything else does not
           else {
             // Log into ODS via the BrowserID, requesting a new session ID
-            $.get(ODS.apiUrl('user.authenticate.browserid'), { assertion: assertion, action: s_browserIdAction }).success(function(result) {
-              console.log("Browser ID Login SID: " + result);
-              s_browseridSuccessHandler(new Session(result));
+            $.get(ODS.apiUrl('user.authenticate.browserid'), { assertion: assertion, action: s_browserIdAction, confirm: (s_browserIdConfirm || 'auto') }).success(function(result) {
+              console.log("Browser ID Login result:");
+              console.log(result);
+              var sid = parseOdsSession(result);
+              if(!sid) {
+                // confirm session
+                s_browseridAuthConfirmHandler(parseOdsAuthConfirmSession(result));
+              }
+              else {
+                s_browseridSuccessHandler(new Session(sid));
+              }
             }).error(s_browseridErrorHandler || ODS.genericErrorHandler);
           }
         },
@@ -257,16 +294,12 @@ var ODS = (function() {
              *
              * @param {String} openid The OpenID to connect to.
              * @param {String} url The callback URL ODS should redirect the user to after completing the process.
-             * @param {Function} error An optional error handler in case of a failure.
+             * @param {Function} errorHandler An optional error handler in case of a failure.
              */
-            connectToOpenId: function(openid, url, error) {
-              if(error == null) {
-                error = ODS.genericErrorHandler;
-              }
-
+            connectToOpenId: function(openid, url, errorHandler) {
               this.apiCall("user.authenticate.authenticationUrl", { action: "connect", service: 'openid', "callback": url, data: openid }).success(function(result) {
                 window.location.href = result;
-              }).error(error);
+              }).error(errorHandler || ODS.genericErrorHandler);
             },
 
             /**
@@ -277,15 +310,15 @@ var ODS = (function() {
              *
              * <pre>&lt;script src="https://login.persona.org/include.js"&gt;&lt;/script&gt;</pre>
              *
-             * @param {Function} success A handler function which is called on success with one parameter: the current Session object.
-             * @param {Function} error A handler function which is called in case of an error.
+             * @param {Function} successHandler A handler function which is called on success with one parameter: the current Session object.
+             * @param {Function} errorHandler A handler function which is called in case of an error.
              */
-            connectToBrowserId: function(success, error) {
+            connectToBrowserId: function(successHandler, errorHandler) {
               if(navigator.id) {
                 s_browserIdOdsSession = this;
                 s_browserIdAction = 'connect';
-                s_browseridSuccessHandler = success;
-                s_browseridErrorHandler = error || ODS.genericErrorHandler;
+                s_browseridSuccessHandler = newSessionHandler;
+                s_browseridErrorHandler = errorHandler || ODS.genericErrorHandler;
                 navigator.id.request();
               }
             },
@@ -296,17 +329,13 @@ var ODS = (function() {
              * <p>This method should be called in an SSL context for ODS to be able to request
              * a client certificate.</p>
              *
-             * @param {Function} success A handler function which is called on success with one parameter: the current Session object.
-             * @param {Function} error A handler function which is called in case of an error.
+             * @param {Function} successHandler A handler function which is called on success with one parameter: the current Session object.
+             * @param {Function} errorHandler A handler function which is called in case of an error.
              */
-            connectToWebID: function(success, error) {
-              if(error == null) {
-                error = ODS.genericErrorHandler;
-              }
-
+            connectToWebId: function(successHandler, errorHandler) {
               this.apiCall("user.authenticate.webid", { action: "connect" }).success(function() {
-                success(this);
-              }).error(error);
+                successHandler(this);
+              }).error(errorHandler || ODS.genericErrorHandler);
             },
 
             /**
@@ -317,11 +346,11 @@ var ODS = (function() {
              * @param {Function} success A handler function which is called on successful logout.
              * @param {Function} error A handler function which is called in case of an error.
              */
-            logout: function(success, error) {
+            logout: function(successHandler, errorHandler) {
                 this.apiCall("user.logout").success(function() {
                     this.m_sessionId = null;
-                    success();
-                }).error(error);
+                    successHandler();
+                }).error(errorHandler || ODS.genericErrorHandler);
             }
         };
     };
@@ -369,7 +398,7 @@ var ODS = (function() {
           if (result.responseText)
             result = result.responseText;
 
-          if(isErrorResult(result))
+          if(ODS.isErrorResult(result))
             alert(ODS.extractErrorResultMessage(result));
           else
             alert(result);
@@ -471,22 +500,18 @@ var ODS = (function() {
          * The browser will automatically request the WebID certificate from
          * the user.
          *
-         * @param success A callback function with a single parameter: the new
+         * @param newSessionHandler A callback function with a single parameter: the new
          * {@link ODS.Session} object.
-         * @param An optional error callback function which is called if the
+         * @param errorHandler optional error callback function which is called if the
          * session is no longer valid or the ODS call failed.
          */
-        createWebIDSession: function(success, error) {
-            if(error == null) {
-                error = ODS.genericErrorHandler;
-            }
-
+        createWebIdSession: function(newSessionHandler, errorHandler) {
             $.get(odsApiUrl("user.authenticate.webid", 1), {}).success(function(result) {
-                var s = result;
+                var s = parseOdsSession(result);
 
                 console.log("Authentication result: " + s);
-                success(new Session(s));
-            }).error(error);
+                newSessionHandler(new Session(s));
+            }).error(errorHandler || ODS.genericErrorHandler);
         },
 
         /**
@@ -507,13 +532,9 @@ var ODS = (function() {
          * @param error An optional error callback function which is called if the ODS call failed.
          */
         createOpenIdSession: function(openid, url, error) {
-            if(error == null) {
-                error = ODS.genericErrorHandler;
-            }
-
             $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
               window.location.href = result;
-            }).error(error);
+            }).error(error || ODS.genericErrorHandler);
         },
 
         /**
@@ -533,15 +554,16 @@ var ODS = (function() {
          * @param {Function} error An optional error handler in case of a failure.
          */
         createThirdPartyServiceSession: function(type, url, error) {
-          if(error == null) {
-            error = ODS.genericErrorHandler;
-          }
-
           $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: type, "callback": url }, "text/plain").success(function(result) {
             window.location.href = result;
-          }).error(error);
+          }).error(error || ODS.genericErrorHandler);
         },
 
+        /**
+         *
+         * @param {String} confirm The confirmation setting, can be one of "auto", "always", or "never".
+         * See <a href="FIXME">the ODS API documentation</a> for details.
+         */
         createBrowserIdSession: function(success, error) {
           if(navigator.id) {
             s_browserIdAction = 'authenticate';
@@ -559,16 +581,13 @@ var ODS = (function() {
          * create a corresponding Session object.
          *
          * @param sessionId The id of the session.
-         * @param success A callback function with a single parameter: the new
-         * Session object.
-         * @param An optional error callback function which is called if the
+         * @param newSessionHandler A function which handles a successful authentication. It has one
+         * parameter: the new {@link ODS.Session} object.
+         * @param errorHandler An optional error callback function which is called if the
          * session is no longer valid or the ODS call failed.
          */
-        createSessionFromId: function(sessionId, success, error) {
+        createSessionFromId: function(sessionId, newSessionHandler, errorHandler) {
             console.log("ODS: createSessionFromId: " + sessionId);
-            if(error == null) {
-                error = ODS.genericErrorHandler;
-            }
 
             // check if the session is still valid by fetching user details
             $.get(odsApiUrl("user.info"), { realm: "wa", sid: sessionId }).success(function(result) {
@@ -577,81 +596,168 @@ var ODS = (function() {
                 var photo = $(result).find("photo").text();
                 if(name == null || name == "") {
                     sessionId = null;
-                    error("Session timed out: " + sessionId);
+                    errorHandler("Session timed out: " + sessionId);
                 }
                 else {
-                    success(new Session(sessionId));
+                    newSessionHandler(new Session(sessionId));
                 }
-            }).error(error);
+            }).error(errorHandler || ODS.genericErrorHandler);
         },
 
-        // FIXME: let the register and auto methods actually create session objects, including the redirect handling.
-
-        registerViaThirdPartyService: function(type, url, error) {
-          if(error == null) {
-            error = ODS.genericErrorHandler;
-          }
-
-          $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: type, "callback": url }, "text/plain").success(function(result) {
+        /**
+         * @param {String} type The type of service to register with.
+         * See <a href="https://web.ods.openlinksw.com/odsdox/group__ods__module__user.html#ods_authentication_url_services">the ODS API documentation</a> for details.
+         * @param {String} confirm The confirmation setting, can be one of "auto", "always", or "never".
+         * See <a href="FIXME">the ODS API documentation</a> for details.
+         */
+        registerViaThirdPartyService: function(type, url, confirm, errorHandler) {
+          $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", "confirm": confirm || 'auto', "service": type, "callback": url }, "text/plain").success(function(result) {
             window.location.href = result;
-          }).error(error);
+          }).error(errorHandler || ODS.genericErrorHandler);
         },
 
-        registerViaWebID: function(success, error) {
-          if(error == null) {
-            error = ODS.genericErrorHandler;
+        /**
+         * Create a new ODS account by identifying with a WebID (X.509 certificate).
+         *
+         * <p>See also <a href="https://web.ods.openlinksw.com/odsdox/group__ods__module__user.html#gacc9b0a34fd501b1723e780fc6b520a46">
+         * The ODS HTTP API: user.authenticate.webid</a>.</p>
+         *
+         * @param {String} confirm The optional confirmation setting, can be one of "auto", "always", or "never".
+         * See <a href="FIXME">the ODS API documentation</a> for details.
+         * @param newSessionHandler A function which handles a successful authentication. It has one
+         * parameter: the new {@link ODS.Session} object.
+         * @param confirmHandler A function which handles an authentication confirmation. This is only
+         * required if a registration has been started with <em>confirm</em> mode <em>auto</em> or
+         * <em>always</em>. The function gets one Json object parameter as follows:
+         * <pre>{
+         *   cid: "xxxxxxxxxxxxx",
+         *   user: {
+         *     name: "foobar",
+         *     email: "foobar@gmail.com"
+         *   },
+         *   onlineAccount: {
+         *     service: "webid",
+         *     uid: "http://foobar.com/people/foobar#this"
+         *   }
+         * }</pre>
+         * The confirmation session id <em>cid</em> as well as the confirmed and optionally modified values of
+         * <em>user.name</em> and <em>user.email</em> should be passed to {@link ODS.confirmAuthentication} to
+         * complete the authentication/registration.
+         * @param errorHandler A function which handles the error case. It has one parameter:
+         * the error message.
+         */
+        registerViaWebId: function(confirm, newSessionHandler, confirmHandler, errorHandler) {
+          if(typeof confirm === Function) {
+            confirmHandler = errorHandler;
+            errorHandler = newSessionHandler;
+            newSessionHandler = confirm;
+            confirm = 'auto';
           }
 
-          $.get(odsApiUrl("user.authenticate.webid", 1), { action: "register" }).success(function(sid) {
-            success(new Session(sid));
-          }).error(error);
-        },
-
-        registerViaOpenId: function(openid, url, error) {
-            if(error == null) {
-                error = ODS.genericErrorHandler;
+          $.get(odsApiUrl("user.authenticate.webid", 1), { action: "register", "confirm": confirm }).success(function(result) {
+            var sid = parseOdsSession(result);
+            if(!sid) {
+              // confirm session
+              confirmHandler(parseOdsAuthConfirmSession(result));
             }
-
-            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
-              window.location.href = result;
-            }).error(error);
+            else {
+              newSessionHandler(new Session(sid));
+            }
+          }).error(errorHandler || ODS.genericErrorHandler);
         },
 
-        registerViaBrowserId: function(success, error) {
+        registerViaOpenId: function(openid, url, confirm, errorHandler) {
+            $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", service: "openid", "confirm": confirm || 'auto', callback: url, data: openid }, "text/plain").success(function(result) {
+              window.location.href = result;
+            }).error(errorHandler || ODS.genericErrorHandler);
+        },
+
+        registerViaBrowserId: function(confirm, success, authConfirm, error) {
+          if(typeof confirm === Function) {
+            authConfirm = error;
+            error = success;
+            success = confirm;
+            confirm = null;
+          }
           if(navigator.id) {
             s_browserIdAction = 'register';
+            s_browserIdConfirm = confirm;
             s_browseridSuccessHandler = success;
+            s_browseridAuthConfirmHandler = authConfirm;
             s_browseridErrorHandler = error || ODS.genericErrorHandler;
             navigator.id.request();
           }
         },
 
-        registerOrLoginViaThirdPartyService: function(type, url, error) {
-          if(error == null) {
-            error = ODS.genericErrorHandler;
-          }
-
-          $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "auto", service: type, "callback": url }, "text/plain").success(function(result) {
+        registerOrLoginViaThirdPartyService: function(type, url, confirm, errorHandler) {
+          $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "auto", service: type, "confirm": confirm || 'auto', "callback": url }, "text/plain").success(function(result) {
             window.location.href = result;
-          }).error(error);
+          }).error(error || ODS.genericErrorHandler);
         },
 
-        registerOrLoginViaWebID: function(success, error) {
-          if(error == null) {
-            error = ODS.genericErrorHandler;
+        /**
+         * <p>Register or login via a WebID (X.509 client certificate).</p>
+         *
+         * <p>The parameters are exactly the same as in {@link ODS#registerViaWebId}. The only
+         * difference is that this method will simply log into ODS if the given WebID is already
+         * connected to an ODS account.</p>
+         *
+         * @param {String} confirm The optional confirmation setting, can be one of "auto", "always", or "never".
+         * See <a href="FIXME">the ODS API documentation</a> for details.
+         * @param newSessionHandler A function which handles a successful authentication. It has one
+         * parameter: the new {@link ODS.Session} object.
+         * @param confirmHandler A function which handles an authentication confirmation. This is only
+         * required if a registration has been started with <em>confirm</em> mode <em>auto</em> or
+         * <em>always</em>. See {@link ODS#registerViaWebId} for details.
+         * @param errorHandler A function which handles the error case. It has one parameter:
+         * the error message.
+         */
+        registerOrLoginViaWebId: function(confirm, newSessionHandler, confirmHandler, errorHandler) {
+          if(typeof confirm === Function) {
+            confirmHandler = errorHandler;
+            errorHandler = newSessionHandler;
+            newSessionHandler = confirm;
+            confirm = 'auto';
           }
-          $.get(odsApiUrl("user.authenticate.webid", 0), { action: "auto" }, "text/plain").success(function(sid) {
-            success(new Session(sid));
-          }).error(error);
+
+          $.get(odsApiUrl("user.authenticate.webid", 1), { action: "auto", "confirm": confirm }).success(function(result) {
+            var sid = parseOdsSession(result);
+            if(!sid) {
+              // confirm session
+              confirmHandler(parseOdsAuthConfirmSession(result));
+            }
+            else {
+              newSessionHandler(new Session(sid));
+            }
+          }).error(errorHandler);
         },
 
-        registerOrLoginViaBrowserId: function(success, error) {
+        registerOrLoginViaBrowserId: function(confirm, newSessionHandler, confirmHandler, errorHandler) {
+          if(typeof confirm === Function) {
+            confirmHandler = errorHandler;
+            errorHandler = newSessionHandler;
+            newSessionHandler = confirm;
+            confirm = 'auto';
+          }
           if(navigator.id) {
             s_browserIdAction = 'auto';
-            s_browseridSuccessHandler = success;
-            s_browseridErrorHandler = error || ODS.genericErrorHandler;
+            s_browserIdConfirm = confirm;
+            s_browseridSuccessHandler = newSessionHandler;
+            s_browseridErrorHandler = errorHandler || ODS.genericErrorHandler;
             navigator.id.request();
           }
+        },
+
+        registerOrLoginViaOpenId: function(openid, url, confirm, errorHandler) {
+          $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "auto", service: "openid", "confirm": confirm || 'auto', callback: url, data: openid }, "text/plain").success(function(result) {
+            window.location.href = result;
+          }).error(errorHandler || ODS.genericErrorHandler);
+        },
+
+        confirmAuthentication: function(cid, username, email, success, error) {
+          $.get(odsApiUrl("user.authenticate.confirm"), { "cid": cid, "username": username, "email": email }).success(function(result) {
+            success(new Session(parseOdsSession(result)));
+          }).error(error || ODS.genericErrorHandler);
         },
 
         /**
@@ -661,9 +767,12 @@ var ODS = (function() {
          * The method will parse the result from the current URL and provide it to the
          * given handler functions in an appropriate form.
          *
-         * @param success A function which handles a successful authentication. It has one
+         * @param newSessionHandler A function which handles a successful authentication. It has one
          * parameter: the new {@link ODS.Session} object.
-         * @param error A function which handles the error case. It has one parameter:
+         * @param confirmHandler A function which handles an authentication confirmation. This is only
+         * required if a registration has been started with <em>confirm</em> mode <em>auto</em> or
+         * <em>always</em>. The function gets one parameter as described in {@link ODS#registerViaWebId}.
+         * @param errorHandler A function which handles the error case. It has one parameter:
          * the error message.
          *
          * @returns If there was a result to process <em>true</em> is returned, <em>false</em>
@@ -671,15 +780,30 @@ var ODS = (function() {
          * method can also be used to check if the current URL contains any ODS authentication
          * result.
          */
-        handleAuthenticationCallback: function(success, error) {
-          error = error || ODS.genericErrorHandler;
-          var sid = getParameterByName(window.location.href, 'sid');
-          var err = getParameterByName(window.location.href, 'error_msg');
+        handleAuthenticationCallback: function(newSessionHandler, confirmHandler, errorHandler) {
+          errorHandler = errorHandler || ODS.genericErrorHandler;
+          var sid = getParameterByName(window.location.href, 'userSession.sid');
+          var cid = getParameterByName(window.location.href, 'confirmSession.cid');
+          var err = getParameterByName(window.location.href, 'error.msg');
           if(sid.length > 0) {
-            success(new Session(sid));
+            newSessionHandler(new Session(sid));
+          }
+          else if(cid.length > 0) {
+            confirmHandler({
+              "cid": cid,
+              "user": {
+                "name": getParameterByName(window.location.href, "user.name"),
+                "email": getParameterByName(window.location.href, "user.email")
+              },
+              "onlineAccount": {
+                "service": getParameterByName(window.location.href, "onlineAccount.service"),
+                "uid": getParameterByName(window.location.href, "onlineAccount.uid")
+              }
+            });
+            return true;
           }
           else if(err.length > 0) {
-            error(err);
+            errorHandler(err);
             return true;
           }
           else {

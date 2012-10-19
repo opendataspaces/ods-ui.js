@@ -97,12 +97,22 @@
         <a id="instagramRegister" class="odsLoginLink" title="Register via Instagram" style="display:none;" href="#"><img src="img/social16/instagram.png"/></a>
         <a id="bitlyRegister" class="odsLoginLink" title="Register via Bitly" style="display:none;" href="#"><img src="img/bitly16.png"/></a>
       </div>
+      <hr/>
+    <label class="checkbox">
+      <input id="forceRegistrationConfirmation" type="checkbox"> Force registration confirmation
+    </label>
     </div>
   </div>
 
 
   <!-- ================ USER AUTO LOGIN/REGISTER ================  -->
   <div class="odsTab tab-pane" id="auto">
+    <div class="odsloginMethodDiv" id="openidAuto" style="display:none;">
+      <div class="odsloginMethodTitle blue">Register or Login with Your OpenID</div>
+      <form name="openidAutoRegisterForm" class="form-inline" id="openidRegisterForm">
+        <input class="odsLoginInput" style="width:366px; margin-right:2px;" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" name="openidAutoRegisterBtn" id="openidAutoRegisterBtn" value="OpenID Auto" title="Register or Login with your OpenID" />
+      </form>
+    </div>
     <div class="odsloginMethodDiv" id="autoRegistration">
       <div class="odsloginMethodTitle blue">Register or Login with Your Persona/BrowserID</div>
       <a id="browseridAuto" title="Register or Login with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
@@ -121,6 +131,10 @@
         <a id="instagramAuto" class="odsLoginLink" title="Register or Login via Instagram" style="display:none;" href="#"><img src="img/social16/instagram.png"/></a>
         <a id="bitlyAuto" class="odsLoginLink" title="Register or Login via Bitly" style="display:none;" href="#"><img src="img/bitly16.png"/></a>
       </div>
+      <hr/>
+      <label class="checkbox">
+        <input id="forceAutoRegistrationConfirmation" type="checkbox"> Force registration confirmation
+      </label>
     </div>
   </div>
 
@@ -297,6 +311,40 @@
   <div class="modal-footer">
     <a id="profileSaveButton" href="#" class="btn btn-primary">Save changes</a>
     <a id="profileCancelButton" href="#" class="btn" data-dismiss="modal">Close</a>
+  </div>
+</div>
+
+
+
+<div id="odsAuthConfirmDialog" class="modal hide">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>ODS Account Creation <small>Confirm and complete the login parameters</small></h3>
+  </div>
+  <div class="modal-body">
+    <p>Please confirm or complete the values below to create the new ODS account which
+      will be connected to <em id="odsAuthConfirmOnlineAccountService"></em> account <em id="odsAuthConfirmOnlineAccountUid"></em>.</p>
+    <form id="odsAuthConfirmForm" name="odsAuthConfirmForm" class="form-horizontal">
+      <fieldset>
+        <div class="control-group">
+          <label class="control-label" for="usr">User name</label>
+          <div class="controls">
+            <input type="text" name="usr" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="email">Email Address</label>
+          <div class="controls">
+            <input type="text" name="email" />
+          </div>
+        </div>
+        <input type="hidden" name="cid" />
+      </fieldset>
+    </form>
+  </div> <!-- modal-body -->
+  <div class="modal-footer">
+    <a id="odsAuthConfirmButton" href="#" class="btn btn-primary">Register</a>
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
   </div>
 </div>
 

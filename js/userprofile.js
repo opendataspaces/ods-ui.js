@@ -14,9 +14,18 @@ function loadOnlineAccounts() {
     console.log(result);
     $coa = $('#connectedOnlineAccounts');
     $coa.text('');
+
+    // sort the accounts
+    result.sort(function(a, b) {
+      if (a[1].toLowerCase() == b[1].toLowerCase())
+        return a[2].localeCompare(b[2]);
+      else
+        return a[1].localeCompare(b[1]);
+    });
+
     for(var i = 0; i < result.length; i++) {
       var account = result[i];
-      $coa.append('<p class="odsOnlineAccount" id="onlineAccount_' + account[0] + '"><img class="odsOnlineAccountCell" src="img/social16/' + account[1].toLowerCase() + '.png"/><span class="odsOnlineAccountCell"><b>' + account[1] + '</b>: ' + account[2] + '</span><span class="odsOnlineAccountCell"><a href="#" onclick="s_odsSession.apiCall(\'user.onlineAccounts.delete\', { id: ' + account[0] + '}); $(\'#onlineAccount_' + account[0] + '\').remove();" title="Disconnect this ' + account[1] + ' account from the ODS profile">Disconnect</a></span></p>');
+      $coa.append('<p class="odsOnlineAccount" id="onlineAccount_' + account[0] + '"><img class="odsOnlineAccountCell" src="img/social16/' + account[1].toLowerCase() + '.png"/><span class="odsOnlineAccountCell"><b>' + account[1] + '</b>: ' + account[2] + '</span><span class="odsOnlineAccountCell"><a href="#" onclick="s_odsSession.apiCall(\'user.onlineAccounts.delete\', { id: ' + account[0] + ', type: \'P\'}); $(\'#onlineAccount_' + account[0] + '\').remove();" title="Disconnect this ' + account[1] + ' account from the ODS profile">Disconnect</a></span></p>');
     }
   });
 }
@@ -130,7 +139,7 @@ function setupProfileWindow() {
       if(window.crypto && window.crypto.logout)
         window.crypto.logout();
       if(window.location.protocol == "https:")
-        s_odsSession.connectToWebID(loadOnlineAccounts);
+        s_odsSession.connectToWebId(loadOnlineAccounts);
       else
         window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?connect=webid";
     }
@@ -235,6 +244,6 @@ ODS.ready(function() {
 $(document).bind('ods-new-session', function(s) {
   console.log('Checking for webid connect parameter');
   if(window.location.protocol == "https:" && getParameterByName(window.location.href, 'connect') == "webid") {
-    s_odsSession.connectToWebID(loadOnlineAccounts);
+    s_odsSession.connectToWebId(loadOnlineAccounts);
   }
 });
