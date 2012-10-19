@@ -12,7 +12,7 @@ ODS.ready(function() {
   $('#browseridAuto').click(function(event) {
     event.preventDefault();
     $("#loginPopup").modal("hide");
-    ODS.registerOrLoginViaBrowserId(newSessionCallback);
+    ODS.registerOrLoginViaBrowserId($('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto', newSessionCallback, authConfirmCallback);
   });
   $('#browseridConnect').click(function(event) {
     event.preventDefault();

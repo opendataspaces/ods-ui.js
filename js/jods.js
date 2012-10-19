@@ -83,7 +83,8 @@ var ODS = (function() {
           // ...everything else does not
           else {
             // Log into ODS via the BrowserID, requesting a new session ID
-            $.get(ODS.apiUrl('user.authenticate.browserid'), { assertion: assertion, action: s_browserIdAction, confirm: (s_browserIdConfirm || 'auto') }).success(function(result) {
+            s_browserIdConfirm = s_browserIdConfirm || 'auto';
+            $.get(ODS.apiUrl('user.authenticate.browserid'), { assertion: assertion, action: s_browserIdAction, confirm: s_browserIdConfirm }).success(function(result) {
               console.log("Browser ID Login result:");
               console.log(result);
               var sid = parseOdsSession(result);
@@ -647,7 +648,7 @@ var ODS = (function() {
          * the error message.
          */
         registerViaWebId: function(confirm, newSessionHandler, confirmHandler, errorHandler) {
-          if(typeof confirm === Function) {
+          if(typeof confirm === "function") {
             confirmHandler = errorHandler;
             errorHandler = newSessionHandler;
             newSessionHandler = confirm;
@@ -672,19 +673,19 @@ var ODS = (function() {
             }).error(errorHandler || ODS.genericErrorHandler);
         },
 
-        registerViaBrowserId: function(confirm, success, authConfirm, error) {
-          if(typeof confirm === Function) {
-            authConfirm = error;
-            error = success;
-            success = confirm;
+        registerViaBrowserId: function(confirm, newSessionHandler, confirmHandler, errorHandler) {
+          if(typeof confirm === "function") {
+            confirmHandler = errorHandler;
+            errorHandler = newSessionHandler;
+            newSessionHandler = confirm;
             confirm = null;
           }
           if(navigator.id) {
             s_browserIdAction = 'register';
             s_browserIdConfirm = confirm;
-            s_browseridSuccessHandler = success;
-            s_browseridAuthConfirmHandler = authConfirm;
-            s_browseridErrorHandler = error || ODS.genericErrorHandler;
+            s_browseridSuccessHandler = newSessionHandler;
+            s_browseridAuthConfirmHandler = confirmHandler;
+            s_browseridErrorHandler = errorHandler || ODS.genericErrorHandler;
             navigator.id.request();
           }
         },
@@ -713,7 +714,7 @@ var ODS = (function() {
          * the error message.
          */
         registerOrLoginViaWebId: function(confirm, newSessionHandler, confirmHandler, errorHandler) {
-          if(typeof confirm === Function) {
+          if(typeof confirm === "function") {
             confirmHandler = errorHandler;
             errorHandler = newSessionHandler;
             newSessionHandler = confirm;
@@ -733,7 +734,7 @@ var ODS = (function() {
         },
 
         registerOrLoginViaBrowserId: function(confirm, newSessionHandler, confirmHandler, errorHandler) {
-          if(typeof confirm === Function) {
+          if(typeof confirm === "function") {
             confirmHandler = errorHandler;
             errorHandler = newSessionHandler;
             newSessionHandler = confirm;
