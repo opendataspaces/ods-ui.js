@@ -454,6 +454,17 @@ var ODS = (function() {
             });
         },
 
+        connectionMethods: function(callback) {
+            var methods = [];
+            $.get(odsApiUrl("server.getInfo", 0), {info: "regData"}).success(function(result) {
+              for(a in result.connect) {
+                if(result.connect[a])
+                  methods.push(a);
+              }
+              callback(methods);
+            });
+        },
+
         /**
          * Create a new ODS session with password hash authentication.
          *

@@ -167,6 +167,11 @@ function setupLoginLink() {
         }
         else {
           $("#otherLogins").show();
+
+          // build the login link
+          $("#odsThirdPartyLoginButtons").append('<a id="' + method + 'Login" class="odsLoginLink" title="Login via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
+          loginUi = $("#" + method + "Login");
+
           loginUi.click(function(event) {
             // we extract the method from the id of the element
             // this is required since the "method" var scope spans all functions
@@ -196,6 +201,11 @@ function setupLoginLink() {
               ODS.createThirdPartyServiceSession(m, callbackUrl);
             }
           });
+
+
+          // build the auto login link
+          $("#odsThirdPartyAutoButtons").append('<a id="' + method + 'Auto" class="odsLoginLink" title="Login or Register via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
+          loginUi = $("#" + method + "Login");
 
           autoLoginUi.click(function(event) {
             event.preventDefault();
@@ -266,6 +276,12 @@ function setupLoginLink() {
         }
         else {
           $("#otherRegistration").show();
+
+          // build the login link
+          $("#odsThirdPartyRegisterButtons").append('<a id="' + method + 'Register" class="odsLoginLink" title="Register via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
+
+          registerUi = $("#" + method + "Register");
+
           registerUi.click(function(event) {
             // we extract the method from the id of the element
             // this is required since the "method" var scope spans all functions

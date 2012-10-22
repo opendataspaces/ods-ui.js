@@ -129,24 +129,33 @@ function setupProfileWindow() {
     s_odsSession.connectToOpenId(document.openidConnectForm.openidUrl.value, callbackUrl);
   });
 
-  $('#thirdPartyProfileConnect a').click(function(e) {
-    e.preventDefault();
-
-    // get service type from id
-    var service = this.id.substring(0,this.id.indexOf("Connect"));
-
-    if (service == "webid") {
-      if(window.crypto && window.crypto.logout)
-        window.crypto.logout();
-      if(window.location.protocol == "https:")
-        s_odsSession.connectToWebId(loadOnlineAccounts);
-      else
-        window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?connect=webid";
+  // build the 3rd party connect buttons
+  var $thirdPartyProfileConnect = $("#thirdPartyProfileConnect");
+  ODS.connectionMethods(function(methods) {
+    for (var i = 0; i < methods.length; i++) {
+      var method = methods[i];
+      $thirdPartyProfileConnect.append('<a id="' + method + 'Connect" title="Connect ODS profile to ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
     }
-    else {
-      var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-      s_odsSession.connectToThirdPartyService(service, callbackUrl);
-    }
+
+    $('#thirdPartyProfileConnect a').click(function(e) {
+      e.preventDefault();
+
+      // get service type from id
+      var service = this.id.substring(0,this.id.indexOf("Connect"));
+
+      if (service == "webid") {
+        if(window.crypto && window.crypto.logout)
+          window.crypto.logout();
+        if(window.location.protocol == "https:")
+          s_odsSession.connectToWebId(loadOnlineAccounts);
+        else
+          window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?connect=webid";
+      }
+      else {
+        var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        s_odsSession.connectToThirdPartyService(service, callbackUrl);
+      }
+    });
   });
 
   // react to resize events on the profile window and re-center the modal

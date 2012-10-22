@@ -44,19 +44,8 @@
     </div>
     <div class="odsloginMethodDiv" id="otherLogins" style="display:none;">
       <div class="odsloginMethodTitle blue">Login with Your 3rd-party Account</div>
-      <div class="odsThirdPartyLogins">
-        <a id="webidLogin" class="odsLoginLink" title="Login with your WebID" style="display:none;" href="#"><img src="img/webid16.png"/></a>
-        <a id="facebookLogin" class="odsLoginLink" title="Login via Facebook" style="display:none;" href="#"><img src="img/social16/facebook.png"/></a>
-        <a id="twitterLogin" class="odsLoginLink" title="Login via Twitter" style="display:none;" href="#"><img src="img/social16/twitter.png"/></a>
-        <a id="linkedinLogin" class="odsLoginLink" title="Login via LinkedIn" style="display:none;" href="#"><img src="img/social16/linkedin.png"/></a>
-        <a id="googleLogin" class="odsLoginLink" title="Login via Google" style="display:none;" href="#"><img src="img/social16/google.png"/></a>
-        <a id="windowsliveLogin" class="odsLoginLink" title="Login via Windows Live" style="display:none;" href="#"><img src="img/social16/microsoft.png"/></a>
-        <a id="wordpressLogin" class="odsLoginLink" title="Login via Wordpress" style="display:none;" href="#"><img src="img/social16/wordpress.png"/></a>
-        <a id="tumblrLogin" class="odsLoginLink" title="Login via Tumblr" style="display:none;" href="#"><img src="img/social16/tumblr.png"/></a>
-        <a id="yahooLogin" class="odsLoginLink" title="Login via Yahoo" style="display:none;" href="#"><img src="img/social16/yahoo.png"/></a>
-        <a id="disqusLogin" class="odsLoginLink" title="Login via Disqus" style="display:none;" href="#"><img src="img/disqus16.png"/></a>
-        <a id="instagramLogin" class="odsLoginLink" title="Login via Instagram" style="display:none;" href="#"><img src="img/social16/instagram.png"/></a>
-        <a id="bitlyLogin" class="odsLoginLink" title="Login via Bitly" style="display:none;" href="#"><img src="img/bitly16.png"/></a>
+      <div class="odsThirdPartyLogins" id="odsThirdPartyLoginButtons">
+        <!-- Will be filled by userlogin.js -->
       </div>
     </div>
   </div>
@@ -83,19 +72,8 @@
     </div>
     <div class="odsloginMethodDiv" id="otherRegistration" style="display:none;">
       <div class="odsloginMethodTitle blue">Register with Your 3rd-party Account</div>
-      <div class="odsThirdPartyLogins">
-        <a id="webidRegister" class="odsLoginLink" title="Register with your WebID" style="display:none;" href="#"><img src="img/webid16.png"/></a>
-        <a id="facebookRegister" class="odsLoginLink" title="Register via Facebook" style="display:none;" href="#"><img src="img/social16/facebook.png"/></a>
-        <a id="twitterRegister" class="odsLoginLink" title="Register via Twitter" style="display:none;" href="#"><img src="img/social16/twitter.png"/></a>
-        <a id="linkedinRegister" class="odsLoginLink" title="Register via LinkedIn" style="display:none;" href="#"><img src="img/social16/linkedin.png"/></a>
-        <a id="googleRegister" class="odsLoginLink" title="Register via Google" style="display:none;" href="#"><img src="img/social16/google.png"/></a>
-        <a id="windowsliveRegister" class="odsLoginLink" title="Register via Windows Live" style="display:none;" href="#"><img src="img/social16/microsoft.png"/></a>
-        <a id="wordpressRegister" class="odsLoginLink" title="Register via Wordpress" style="display:none;" href="#"><img src="img/social16/wordpress.png"/></a>
-        <a id="tumblrRegister" class="odsLoginLink" title="Register via Tumblr" style="display:none;" href="#"><img src="img/social16/tumblr.png"/></a>
-        <a id="yahooRegister" class="odsLoginLink" title="Register via Yahoo" style="display:none;" href="#"><img src="img/social16/yahoo.png"/></a>
-        <a id="disqusRegister" class="odsLoginLink" title="Register via Disqus" style="display:none;" href="#"><img src="img/disqus16.png"/></a>
-        <a id="instagramRegister" class="odsLoginLink" title="Register via Instagram" style="display:none;" href="#"><img src="img/social16/instagram.png"/></a>
-        <a id="bitlyRegister" class="odsLoginLink" title="Register via Bitly" style="display:none;" href="#"><img src="img/bitly16.png"/></a>
+      <div class="odsThirdPartyLogins" id="odsThirdPartyRegisterButtons">
+        <!-- Will be filled by userlogin.js -->
       </div>
       <hr/>
     <label class="checkbox">
@@ -117,19 +95,8 @@
       <div class="odsloginMethodTitle blue">Register or Login with Your Persona/BrowserID</div>
       <a id="browseridAuto" title="Register or Login with your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
       <div class="odsloginMethodTitle blue">Register or Login with Your 3rd-party Account</div>
-      <div class="odsThirdPartyLogins">
-        <a id="webidAuto" class="odsLoginLink" title="Register Or Login with your WebID" style="display:none;" href="#"><img src="img/webid16.png"/></a>
-        <a id="facebookAuto" class="odsLoginLink" title="Register or Login via Facebook" style="display:none;" href="#"><img src="img/social16/facebook.png"/></a>
-        <a id="twitterAuto" class="odsLoginLink" title="Register or Login via Twitter" style="display:none;" href="#"><img src="img/social16/twitter.png"/></a>
-        <a id="linkedinAuto" class="odsLoginLink" title="Register or Login via LinkedIn" style="display:none;" href="#"><img src="img/social16/linkedin.png"/></a>
-        <a id="googleAuto" class="odsLoginLink" title="Register or Login via Google" style="display:none;" href="#"><img src="img/social16/google.png"/></a>
-        <a id="windowsliveAuto" class="odsLoginLink" title="Register or Login via Windows Live" style="display:none;" href="#"><img src="img/social16/microsoft.png"/></a>
-        <a id="wordpressAuto" class="odsLoginLink" title="Register or Login via Wordpress" style="display:none;" href="#"><img src="img/social16/wordpress.png"/></a>
-        <a id="tumblrAuto" class="odsLoginLink" title="Register or Login via Tumblr" style="display:none;" href="#"><img src="img/social16/tumblr.png"/></a>
-        <a id="yahooAuto" class="odsLoginLink" title="Register or Login via Yahoo" style="display:none;" href="#"><img src="img/social16/yahoo.png"/></a>
-        <a id="disqusAuto" class="odsLoginLink" title="Register or Login via Disqus" style="display:none;" href="#"><img src="img/disqus16.png"/></a>
-        <a id="instagramAuto" class="odsLoginLink" title="Register or Login via Instagram" style="display:none;" href="#"><img src="img/social16/instagram.png"/></a>
-        <a id="bitlyAuto" class="odsLoginLink" title="Register or Login via Bitly" style="display:none;" href="#"><img src="img/bitly16.png"/></a>
+      <div class="odsThirdPartyLogins" id="odsThirdPartyAutoButtons">
+        <!-- Will be filled by userlogin.js -->
       </div>
       <hr/>
       <label class="checkbox">
@@ -291,18 +258,7 @@
               <a id="browseridConnect" title="Connect ODS Profile to your BrowserID/Persona" href="#"><img src="https://developer.mozilla.org/files/3957/email_sign_in_blue.png"/></a>
               <div class="odsloginMethodTitle blue">Connect your ODS profile to a 3rd-party Account</div>
               <div id="thirdPartyProfileConnect" class="odsThirdPartyLogins">
-                <a id="webidConnect" title="Connect ODS profile to a WebID" href="#"><img src="img/webid16.png"/></a>
-                <a id="facebookConnect" title="Connect ODS profile to Facebook" href="#"><img src="img/social16/facebook.png"/></a>
-                <a id="twitterConnect" title="Connect ODS profile to Twitter" href="#"><img src="img/social16/twitter.png"/></a>
-                <a id="linkedinConnect" title="Connect ODS profile to LinkedIn" href="#"><img src="img/social16/linkedin.png"/></a>
-                <a id="googleConnect" title="Connect ODS profile to Google" href="#"><img src="img/social16/google.png"/></a>
-                <a id="windowsliveConnect" title="Connect ODS profile to Windows Live" href="#"><img src="img/social16/microsoft.png"/></a>
-                <a id="wordpressConnect" title="Connect ODS profile to Wordpress" href="#"><img src="img/social16/wordpress.png"/></a>
-                <a id="tumblrConnect" title="Connect ODS profile to Tumblr" href="#"><img src="img/social16/tumblr.png"/></a>
-                <a id="yahooConnect" title="Connect ODS profile to Yahoo" href="#"><img src="img/social16/yahoo.png"/></a>
-                <a id="disqusConnect" title="Connect ODS profile to Disqus" href="#"><img src="img/disqus16.png"/></a>
-                <a id="instagramConnect" title="Connect ODS profile to Instagram" href="#"><img src="img/social16/instagram.png"/></a>
-                <a id="bitlyConnect" title="Connect ODS profile to Bitly" href="#"><img src="img/bitly16.png"/></a>
+                <!-- Will be filled in by userprofile.js -->
               </div>
             </div>
 
