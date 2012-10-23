@@ -397,7 +397,7 @@ ODS.ready(function() {
       var login = getParameterByName(window.location.href, 'login');
       var register = getParameterByName(window.location.href, 'register');
       var auto = getParameterByName(window.location.href, 'auto');
-      var confirm = getParameterByName(window.location.href, 'confirm');
+      var confirm = getParameterByName(window.location.href, 'confirm') || 'auto';
 
       var loginErrorHandler = function(err) {
         hideSpinner();
