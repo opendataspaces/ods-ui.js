@@ -186,7 +186,7 @@ var ODS = (function() {
      * @private
      */
     var odsApiUrl = function(methodName, ssl) {
-      if(ssl === undefined || ssl === null)
+      if(ssl != 1)
         ssl = (window.location.protocol == "https:") ? 1 : 0;
 
       if(ssl == 1 && odsSSLHost != null) {
