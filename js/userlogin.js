@@ -7,6 +7,8 @@
 function newSessionCallback(session) {
     console.log("New session created: " + session.sessionId());
 
+    hideSpinner();
+
     s_odsSession = session;
 
     // save session id in cookie
@@ -19,6 +21,19 @@ function newSessionCallback(session) {
     loadUserData();
 }
 
+
+function authConfirmCallback(confirmSession) {
+  console.log("Auth Confirm");
+  console.log(confirmSession);
+
+  $('#odsAuthConfirmOnlineAccountService').text(confirmSession.onlineAccount.service);
+  $('#odsAuthConfirmOnlineAccountUid').text(confirmSession.onlineAccount.uid);
+  document.odsAuthConfirmForm.usr.value = confirmSession.user.name;
+  document.odsAuthConfirmForm.email.value = confirmSession.user.email;
+  document.odsAuthConfirmForm.cid.value = confirmSession.cid;
+
+  $('#odsAuthConfirmDialog').modal();
+}
 
 /**
  * Try to login via WebID but do not show any error messages.
@@ -136,6 +151,7 @@ function setupLoginLink() {
         if(method == "openid") {
             var openIdLoginFnc = function() {
               var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              showSpinner("Verifying OpenID...");
               ODS.createOpenIdSession(document.openidLoginForm.openidUrl.value, callbackUrl, newSessionCallback);
             };
             $("#openidLoginForm .odsLoginInput").keydown(function(event) {
@@ -152,6 +168,7 @@ function setupLoginLink() {
             var openIdAutoRegFnc = function() {
               var confirm = $('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
               var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              showSpinner("Verifying OpenID...");
               ODS.registerOrLoginViaOpenId(document.openidAutoRegisterForm.openidUrl.value, callbackUrl, confirm);
             };
             $("#openidAutoRegisterForm .odsLoginInput").keydown(function(event) {
@@ -181,6 +198,8 @@ function setupLoginLink() {
             // cancel default submit behaviour
             event.preventDefault();
 
+            showSpinner("Performing authentication via " + m[0].toUpperCase() + m.substring(1) + "...");
+
             if(m == "webid") {
               //
               // Sadly it is not possible yet to send a client certificate via AJAX calls.
@@ -205,7 +224,7 @@ function setupLoginLink() {
 
           // build the auto login link
           $("#odsThirdPartyAutoButtons").append('<a id="' + method + 'Auto" class="odsLoginLink" title="Login or Register via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
-          loginUi = $("#" + method + "Login");
+          autoLoginUi = $("#" + method + "Auto");
 
           autoLoginUi.click(function(event) {
             event.preventDefault();
@@ -215,6 +234,8 @@ function setupLoginLink() {
             var m = this.id.substring(0,this.id.indexOf("Auto"));
 
             var confirm = $('#forceAutoRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
+
+            showSpinner("Performing authentication via " + m[0].toUpperCase() + m.substring(1) + "...");
 
             if(m == "webid") {
               //
@@ -261,6 +282,7 @@ function setupLoginLink() {
             var openIdRegFnc = function() {
               var confirm = $('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
               var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+              showSpinner("Registering via OpenID...");
               ODS.registerViaOpenId(document.openidRegisterForm.openidUrl.value, callbackUrl, confirm);
             };
             $("#openidRegisterForm .odsLoginInput").keydown(function(event) {
@@ -292,6 +314,8 @@ function setupLoginLink() {
             event.preventDefault();
 
             var confirm = $('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
+
+            showSpinner("Registering via " + m[0].toUpperCase() + m.substring(1) + "...");
 
             if(m == "webid") {
               //
@@ -337,10 +361,9 @@ function setupLogoutLink() {
 }
 
 
-ODS.ready(function() {
-    var $errorDialog = $('#errorDialog');
+$(document).ready(function() {
     // we remove the error message from the URL after showing the error
-    $errorDialog.on('hide', function() {
+    $('#errorDialog').on('hide', function() {
       if(window.location.search.length > 0)
         resetAndReload();
     });
@@ -348,10 +371,6 @@ ODS.ready(function() {
       if(window.location.search.length > 0)
         resetAndReload();
     });
-    var errHdl = function(msg) {
-      $('#errorDialogMsg').text(msg);
-      $errorDialog.modal();
-    };
 
     // setup the authentication confirmation dialog
     $("#odsAuthConfirmButton").click(function(e) {
@@ -361,6 +380,13 @@ ODS.ready(function() {
         newSessionCallback(result);
       });
     });
+});
+
+ODS.ready(function() {
+    var errHdl = function(msg) {
+      $('#errorDialogMsg').text(msg);
+      $('#errorDialog').modal();
+    };
 
     if(!ODS.handleAuthenticationCallback(newSessionCallback, authConfirmCallback, errHdl)) {
       var login = getParameterByName(window.location.href, 'login');

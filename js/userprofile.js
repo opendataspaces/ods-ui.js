@@ -126,6 +126,7 @@ function setupProfileWindow() {
   $('#openidConnectBtn').click(function(e) {
     e.preventDefault();
     var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    showSpinner("Connecting account to OpenID...");
     s_odsSession.connectToOpenId(document.openidConnectForm.openidUrl.value, callbackUrl);
   });
 
@@ -134,6 +135,8 @@ function setupProfileWindow() {
   ODS.connectionMethods(function(methods) {
     for (var i = 0; i < methods.length; i++) {
       var method = methods[i];
+      if(method == "openid" || method == "browserid")
+        continue;
       $thirdPartyProfileConnect.append('<a id="' + method + 'Connect" title="Connect ODS profile to ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
     }
 
@@ -142,6 +145,8 @@ function setupProfileWindow() {
 
       // get service type from id
       var service = this.id.substring(0,this.id.indexOf("Connect"));
+
+      showSpinner("Connecting account to " + service[0].toUpperCase() + service.substring(1) + "...");
 
       if (service == "webid") {
         if(window.crypto && window.crypto.logout)
