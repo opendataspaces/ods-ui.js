@@ -39,8 +39,13 @@ function authConfirmCallback(confirmSession) {
  * Try to login via WebID but do not show any error messages.
  */
 function attemptWebIDLogin() {
-  console.log("Attempting automatic WebID login");
-  ODS.createWebIDSession(newSessionCallback, setupLoginLink);
+  if(window.location.protocol == "https:") {
+    console.log("Attempting automatic WebID login");
+    ODS.createWebIDSession(newSessionCallback, setupLoginLink);
+  }
+  else {
+    setupLoginLink();
+  }
 }
 
 
@@ -394,23 +399,34 @@ ODS.ready(function() {
       var auto = getParameterByName(window.location.href, 'auto');
       var confirm = getParameterByName(window.location.href, 'confirm');
 
+      var loginErrorHandler = function(err) {
+        hideSpinner();
+
+        // show login dlg
+        $("#loginPopup").modal();
+
+        // go to the correct tab
+        if(register == 'webid')
+          $('#loginPopupMainTab li:eq(1) a').tab('show');
+        else if(auto == 'webid')
+          $('#loginPopupMainTab li:eq(2) a').tab('show');
+
+        ODS.genericErrorHandler(err);
+
+        setupLoginLink();
+      };
+
       if(login == "webid") {
-        ODS.createWebIdSession(newSessionCallback, function(error) {
-          setupLoginLink();
-          ODS.genericErrorHandler(error)
-        });
+        showSpinner("Performing authentication via WebID...");
+        ODS.createWebIdSession(newSessionCallback, loginErrorHandler);
       }
       else if(register == "webid") {
-        ODS.registerViaWebId(confirm, newSessionCallback, authConfirmCallback, function(error) {
-          setupLoginLink();
-          ODS.genericErrorHandler(error)
-        });
+        showSpinner("Registering via WebID...");
+        ODS.registerViaWebId(confirm, newSessionCallback, authConfirmCallback, loginErrorHandler);
       }
       else if(auto == "webid") {
-        ODS.registerOrLoginViaWebId(confirm, newSessionCallback, authConfirmCallback, function(error) {
-          setupLoginLink();
-          ODS.genericErrorHandler(error)
-        });
+        showSpinner("Performing authentication via WebID...");
+        ODS.registerOrLoginViaWebId(confirm, newSessionCallback, authConfirmCallback, loginErrorHandler);
       }
       else {
         checkSession();

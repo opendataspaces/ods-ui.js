@@ -178,17 +178,22 @@ var ODS = (function() {
 
     /**
      * Construct an ODS API URL with optional ssl.
+     *
      * @param methodName The name of the method to call.
-     * @param ssl If <em>true</em> the returned URL will use the https protocol.
+     * @param ssl If <em>1</em> the returned URL will use the "https" protocol, if <em>0</em>
+     * "http" will be used. If undefined the same protocol as the current window will be used.
      *
      * @private
      */
     var odsApiUrl = function(methodName, ssl) {
+      if(ssl === undefined || ssl === null)
+        ssl = window.location.protocol == "https:";
+
       if(ssl == 1 && odsSSLHost != null) {
         return "https://" + odsSSLHost + "/ods/api/" + methodName;
       }
       else {
-          return window.location.protocol + "//" + odsHost + "/ods/api/" + methodName;
+          "http://" + odsHost + "/ods/api/" + methodName;
       }
     };
 
