@@ -14,6 +14,11 @@ var ODS = (function() {
     var odsHost = window.location.host;
     var odsSSLHost = null;
 
+    /**
+     * The generic error handler which is used as a fallback
+     * if clients do not provide anything else.
+     * @private
+     */
     var odsGenericErrorHandler = function(result) {
       console.log(result);
 
@@ -25,17 +30,27 @@ var ODS = (function() {
       else
         alert(result);
     };
+
+    /**
+     * The default error handler which can be changed via ODS.setDefaultErrorHandler().
+     * @private
+     */
     var defaultErrorHandler = odsGenericErrorHandler;
+
 
     /**
      * Parses a session result from ODS authentication methods.
      * @return the session id on success, null on error
+     * @private
      */
     var parseOdsSession = function(sessXml) {
       var x = $(sessXml);
       return x.find('userSession sid').text() || null;
     };
 
+    /**
+     * @private
+     */
     var parseOdsAuthConfirmSession = function(sessXml) {
       var x = $(sessXml);
       x = $(x.find('confirmSession'));
@@ -407,7 +422,10 @@ var ODS = (function() {
         },
 
         /**
-         * Generic callback for AJAX calls and the like
+         * <p>Generic error handler which display an <em>alert</em> showing the
+         * error message.</p>
+         * <p>This is the default error handler used if nothing else is specified
+         * by the client and no default has been set via {@link ODS#setDefaultErrorHandler}.</p>
          */
         genericErrorHandler: function(result) {
           odsGenericErrorHandler(result);
@@ -438,13 +456,20 @@ var ODS = (function() {
 
         /**
          * Construct an ODS API URL with optional ssl.
-         * @param methodName The name of the method to call.
-         * @param ssl If <em>true</em> the returned URL will use the https protocol.
+         * @param {String} methodName The name of the method to call.
+         * @param {Boolean} ssl If <em>true</em> the returned URL will use the https protocol.
          */
         apiUrl: function(methodName, ssl) {
             return odsApiUrl(methodName, ssl);
         },
 
+        /**
+         * Retrieve the supported authentication methods. This list can for example be used to
+         * create authentication buttons which, when clicked, trigger a call to {@link ODS#createThirdPartyServiceSession}.
+         *
+         * @param {Function} callback A function which gets one parameter: a list of supported
+         * authentication methods like <em>webid</em>, <em>facebook</em>, <em>browserid</em>, ...
+         */
         authenticationMethods: function(callback) {
             var methods = [];
             $.get(odsApiUrl("server.getInfo", 0), {info: "regData"}).success(function(result) {
@@ -481,24 +506,18 @@ var ODS = (function() {
         /**
          * Create a new ODS session with password hash authentication.
          *
-         * @param usr The user name.
-         * @param pwd The password.
-         * @param success A callback function which has one parameter: the new
+         * @param {String} usr The user name.
+         * @param {String} pwd The password.
+         * @param newSessionHandler A callback function which has one parameter: the new
          * ODS {@link ODS.Session} object.
-         * @param error A callback function which has two parameters:
-         * <li>An error code</li>
-         * <li>A human readable error message.</li>
+         * @param {Function} errorHandler An optional error callback function. See also {@link ODS#setDefaultErrorHandler}.
          */
-        createSession: function(usr, pwd, success, error) {
+        createSession: function(usr, pwd, newSessionHandler, errorHandler) {
             var authenticationUrl = odsApiUrl("user.authenticate", 0),
             authenticationParams = {
                 user_name : usr,
                 password_hash : $.sha1(usr + pwd)
             };
-
-            if(error == null) {
-                error = defaultErrorHandler;
-            }
 
             $.get(authenticationUrl, authenticationParams).success(function(result) {
                 var s = $(result).find("sid").text();
@@ -507,15 +526,12 @@ var ODS = (function() {
 
                 if(s.length > 0) {
                     // login succeeded
-                    success(new Session(s));
+                    newSessionHandler(new Session(s));
                 }
                 else {
                     // login failed
-                    error(result);
+                    (errorHandler || defaultErrorHandler)(result);
                 }
-            }).error(function(jqXHR) {
-                // FIXME: handle HTTP errors
-                error(jqXHR);
             });
         },
 
@@ -525,10 +541,10 @@ var ODS = (function() {
          * The browser will automatically request the WebID certificate from
          * the user.
          *
-         * @param newSessionHandler A callback function with a single parameter: the new
+         * @param {Function} newSessionHandler A callback function with a single parameter: the new
          * {@link ODS.Session} object.
-         * @param errorHandler optional error callback function which is called if the
-         * session is no longer valid or the ODS call failed.
+         * @param {Function} errorHandler optional error callback function which is called if the
+         * session is no longer valid or the ODS call failed. See also {@link ODS#setDefaultErrorHandler}.
          */
         createWebIdSession: function(newSessionHandler, errorHandler) {
             $.get(odsApiUrl("user.authenticate.webid", 1), {}).success(function(result) {
@@ -552,9 +568,10 @@ var ODS = (function() {
          * Once the redirection is done this function needs to be called again, this time leaving both
          * parameters empty.
          *
-         * @param openid The OpenID the user wants to login with. This needs to be specified for step 1.
-         * @param url The callback URL.
-         * @param errorHandler An optional error callback function which is called if the ODS call failed.
+         * @param {String} openid The OpenID the user wants to login with. This needs to be specified for step 1.
+         * @param {String} url The callback URL.
+         * @param {Function} errorHandler An optional error callback function which is called if the ODS call failed.
+         *        See also {@link ODS#setDefaultErrorHandler}.
          */
         createOpenIdSession: function(openid, url, errorHandler) {
             $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: "openid", callback: url, data: openid }, "text/plain").success(function(result) {
@@ -577,6 +594,7 @@ var ODS = (function() {
          * @param {String} type The name of the third-party service to connect to.
          * @param {String} url The callback URL ODS should redirect the user to after completing the process.
          * @param {Function} errorHandler An optional error handler in case of a failure.
+         *        See also {@link ODS#setDefaultErrorHandler}.
          */
         createThirdPartyServiceSession: function(type, url, errorHandler) {
           $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { service: type, "callback": url }, "text/plain").success(function(result) {
@@ -587,10 +605,10 @@ var ODS = (function() {
         /**
          * <p>Create a new session via BrowserID/Mozilla Personal login.</p>
          *
-         * @param newSessionHandler A function which handles a successful authentication. It has one
+         * @param {Function} newSessionHandler A function which handles a successful authentication. It has one
          * parameter: the new {@link ODS.Session} object.
-         * @param errorHandler An optional error callback function which is called if the
-         * session is no longer valid or the ODS call failed.
+         * @param {Function} errorHandler An optional error callback function which is called if the
+         * session is no longer valid or the ODS call failed. See also {@link ODS#setDefaultErrorHandler}.
          */
         createBrowserIdSession: function(newSessionHandler, errorHandler) {
           if(navigator.id) {
@@ -608,11 +626,11 @@ var ODS = (function() {
          * The function will check if the session is still valid and if so
          * create a corresponding Session object.</p>
          *
-         * @param sessionId The id of the session.
-         * @param newSessionHandler A function which handles a successful authentication. It has one
+         * @param {String} sessionId The id of the session.
+         * @param {Function} newSessionHandler A function which handles a successful authentication. It has one
          * parameter: the new {@link ODS.Session} object.
-         * @param errorHandler An optional error callback function which is called if the
-         * session is no longer valid or the ODS call failed.
+         * @param {Function} errorHandler An optional error callback function which is called if the
+         * session is no longer valid or the ODS call failed. See also {@link ODS#setDefaultErrorHandler}.
          */
         createSessionFromId: function(sessionId, newSessionHandler, errorHandler) {
             console.log("ODS: createSessionFromId: " + sessionId);
@@ -633,10 +651,24 @@ var ODS = (function() {
         },
 
         /**
+         * <p>Register a new ODS account via a third-party service.</p>
+         *
+         * <p>ODS supports a variety of services (a list can be obtained via {@link ODS#registrationMethods})
+         * for registration.</p>
+         *
+         * <p>A successful call to this method results in a redirect to the third-party service's authentication
+         * page which in turn will result in yet another redirect to the given url.</p>
+         *
+         * <p>The helper function {@link ODS#handleAuthenticationCallback} will help with completing the
+         * connection.</p>
+         *
          * @param {String} type The type of service to register with.
-         * See <a href="https://web.ods.openlinksw.com/odsdox/group__ods__module__user.html#ods_authentication_url_services">the ODS API documentation</a> for details.
+         * See <a href="http://web.ods.openlinksw.com/odsdox/group__ods__module__user.html#ods_authentication_url_services">the ODS API documentation</a> for details.
+         * @param {String} url The callback URL ODS should redirect the user to after completing the process.
          * @param {String} confirm The confirmation setting, can be one of "auto", "always", or "never".
-         * See <a href="FIXME">the ODS API documentation</a> for details.
+         * See <a href="http://web.ods.openlinksw.com/odsdox/group__ods__module__user.html#ods_authentication_url_confirm">the ODS API documentation</a> for details.
+         * @param {Function} errorHandler A function which handles the error case. It has one parameter:
+         * the error message. See also {@link ODS#setDefaultErrorHandler}.
          */
         registerViaThirdPartyService: function(type, url, confirm, errorHandler) {
           $.get(odsApiUrl("user.authenticate.authenticationUrl", 0), { action: "register", "confirm": confirm || 'auto', "service": type, "callback": url }, "text/plain").success(function(result) {
@@ -647,14 +679,14 @@ var ODS = (function() {
         /**
          * <p>Create a new ODS account by identifying with a WebID (X.509 certificate).</p>
          *
-         * <p>See also <a href="https://web.ods.openlinksw.com/odsdox/group__ods__module__user.html#gacc9b0a34fd501b1723e780fc6b520a46">
+         * <p>See also <a href="http://web.ods.openlinksw.com/odsdox/group__ods__module__user.html#gacc9b0a34fd501b1723e780fc6b520a46">
          * The ODS HTTP API: user.authenticate.webid</a>.</p>
          *
          * @param {String} confirm The optional confirmation setting, can be one of "auto", "always", or "never".
-         * See <a href="FIXME">the ODS API documentation</a> for details.
-         * @param newSessionHandler A function which handles a successful authentication. It has one
+         * See <a href="http://web.ods.openlinksw.com/odsdox/group__ods__module__user.html#ods_authentication_url_confirm">Authentication Confirmation Mode</a> for details.
+         * @param {Function} newSessionHandler A function which handles a successful authentication. It has one
          * parameter: the new {@link ODS.Session} object.
-         * @param confirmHandler A function which handles an authentication confirmation. This is only
+         * @param {Function} confirmHandler A function which handles an authentication confirmation. This is only
          * required if a registration has been started with <em>confirm</em> mode <em>auto</em> or
          * <em>always</em>. The function gets one Json object parameter as follows:
          * <pre>{
@@ -671,8 +703,8 @@ var ODS = (function() {
          * The confirmation session id <em>cid</em> as well as the confirmed and optionally modified values of
          * <em>user.name</em> and <em>user.email</em> should be passed to {@link ODS.confirmAuthentication} to
          * complete the authentication/registration.
-         * @param errorHandler A function which handles the error case. It has one parameter:
-         * the error message.
+         * @param {Function} errorHandler A function which handles the error case. It has one parameter:
+         * the error message. See also {@link ODS#setDefaultErrorHandler}.
          */
         registerViaWebId: function(confirm, newSessionHandler, confirmHandler, errorHandler) {
           if(typeof confirm === "function") {
@@ -795,13 +827,13 @@ var ODS = (function() {
          * The method will parse the result from the current URL and provide it to the
          * given handler functions in an appropriate form.
          *
-         * @param newSessionHandler A function which handles a successful authentication. It has one
+         * @param {Function} newSessionHandler A function which handles a successful authentication. It has one
          * parameter: the new {@link ODS.Session} object.
-         * @param confirmHandler A function which handles an authentication confirmation. This is only
+         * @param {Function} confirmHandler A function which handles an authentication confirmation. This is only
          * required if a registration has been started with <em>confirm</em> mode <em>auto</em> or
          * <em>always</em>. The function gets one parameter as described in {@link ODS#registerViaWebId}.
-         * @param errorHandler A function which handles the error case. It has one parameter:
-         * the error message.
+         * @param {Function} errorHandler A function which handles the error case. It has one parameter:
+         * the error message. See also {@link ODS#setDefaultErrorHandler}.
          *
          * @returns If there was a result to process <em>true</em> is returned, <em>false</em>
          * otherwise. In the latter case none of the handler functions is called. Thus, this
@@ -896,6 +928,14 @@ var ODS = (function() {
           odsSSLHost = sslHost;
         },
 
+        /**
+         * <p>Set the default error handler for all functions in ODS and {@link ODS.Session}
+         * which have an optional <em>errorHandler</em> parameter.</p>
+         * <p>When not calling this function the {@link ODS#genericErrorHandler} function will
+         * be used as a fallback for all functions if no <em>errorHandler</em> is specified.</p>
+         *
+         * @param {Function} handler The new default error handler function.
+         */
         setDefaultErrorHandler: function(handler) {
           defaultErrorHandler = handler;
         }

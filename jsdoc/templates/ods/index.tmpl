@@ -41,17 +41,30 @@
       <p>Then one can optionally set the host of the ODS instance one wants to interface with:
         <pre>{+new Link().toSymbol("ODS#setOdsHost")+}("mydomain.com", "mydomain.com");</pre></p>
       <p>Login buttons should be connected to the corresponding functions in ODS. If one, for example,
-        wants to allow login via Twitter one would connect the button to the following function:
-        <pre>function() {
+        wants to allow login via Twitter one would connect the button to the following function:</p>
+
+      <pre>function() {
   {+new Link().toSymbol("ODS#createThirdPartyServiceSession")+}("twitter",
                                      "http://mydomain.com/index.html");
 }</pre>
-      The execution of that function will result in a redirect, allowing the user to log into Twitter
+
+      <p>The execution of that function will result in a redirect, allowing the user to log into Twitter
       and return to the client callback URL, in this case <em>index.html</em>. The URL will then contain
-      query parameters informing about success of failure. These parameters are best processed via:
-      <pre>{+new Link().toSymbol("ODS#handleAuthenticationCallback")+}(mySuccessFunction, myErrorFunction);</pre>
-      On a successful login the <em>mySuccessFunction</em> function will be called with one parameter:
+      query parameters informing about success of failure. These parameters are best processed via:</p>
+
+      <pre>{+new Link().toSymbol("ODS#handleAuthenticationCallback")+}(mySuccessFunction,
+                                 myConfirmFunction,
+                                 myErrorFunction);</pre>
+
+      <p>On a successful login the <em>mySuccessFunction</em> function will be called with one parameter:
       the new <a href="jods_ods_session.vsp">ODS.Session</a> object.</p>
+
+      <p>To keep track of all the different authentication methods ODS support one may use {+new Link().toSymbol("ODS#authenticationMethods")+}
+      or {+new Link().toSymbol("ODS#registrationMethods")+} to get the supported methods and then create the corresponding links programmatically.</p>
+
+      <p>Account creation is done in the same way via {+new Link().toSymbol("ODS#registerViaThirdPartyService")+} or
+      {+new Link().toSymbol("ODS#registerViaBrowserId")+}. The {+new Link().toSymbol("ODS")+} namespace offers several
+      functions to log into ODS, to create accounts, or to do one or the other automatically.</p>
 
 			<h2 class="classTitle">Class Index</h2>
 
