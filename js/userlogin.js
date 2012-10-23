@@ -39,9 +39,9 @@ function authConfirmCallback(confirmSession) {
  * Try to login via WebID but do not show any error messages.
  */
 function attemptWebIDLogin() {
-  if(window.location.protocol == "https:") {
+  if(0 && window.location.protocol == "https:") {
     console.log("Attempting automatic WebID login");
-    ODS.createWebIDSession(newSessionCallback, setupLoginLink);
+    ODS.createWebIdSession(newSessionCallback, setupLoginLink);
   }
   else {
     setupLoginLink();
