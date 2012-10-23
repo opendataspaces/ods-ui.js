@@ -187,13 +187,13 @@ var ODS = (function() {
      */
     var odsApiUrl = function(methodName, ssl) {
       if(ssl === undefined || ssl === null)
-        ssl = window.location.protocol == "https:";
+        ssl = (window.location.protocol == "https:") ? 1 : 0;
 
       if(ssl == 1 && odsSSLHost != null) {
         return "https://" + odsSSLHost + "/ods/api/" + methodName;
       }
       else {
-          "http://" + odsHost + "/ods/api/" + methodName;
+        return "http://" + odsHost + "/ods/api/" + methodName;
       }
     };
 
