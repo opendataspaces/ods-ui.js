@@ -37,19 +37,6 @@ function authConfirmCallback(confirmSession) {
   $('#odsAuthConfirmDialog').modal();
 }
 
-/**
- * Try to login via WebID but do not show any error messages.
- */
-function attemptWebIDLogin() {
-  if(0 && window.location.protocol == "https:") {
-    console.log("Attempting automatic WebID login");
-    ODS.createWebIdSession(newSessionCallback, setupLoginLink);
-  }
-  else {
-    setupLoginLink();
-  }
-}
-
 
 /**
  * Check if the session id saved in the cookie is still valid.
@@ -66,11 +53,11 @@ function checkSession() {
         if(sessionId != null) {
             console.log("Found session cookie " + sessionId);
             // check if the session is still valid
-            ODS.createSessionFromId(sessionId, newSessionCallback, attemptWebIDLogin);
+            ODS.createSessionFromId(sessionId, newSessionCallback, setupLoginLink);
         }
         else {
             console.log("No session cookie stored.");
-            attemptWebIDLogin();
+            setupLoginLink();
         }
     }
 }
@@ -409,19 +396,74 @@ $(document).ready(function() {
 });
 
 ODS.ready(function() {
+    // we allow to choose WebID as the default login mecahnism via a query parameter
+    var defaultToWebID = (getParameterByName(window.location.href, 'defaultToWebID').toLowerCase() == 'true');
+
     var errHdl = function(msg) {
       $('#errorDialogMsg').text(msg);
       $('#errorDialog').modal();
     };
+
+    $('.odsLoginLink').click(function(e) {
+      e.preventDefault();
+
+      if(defaultToWebID) {
+        // try login via WebID and fallback to the rest
+        if(window.crypto && window.crypto.logout)
+          window.crypto.logout();
+
+        if(window.location.protocol == "https:") {
+          ODS.createWebIdSession(newSessionCallback, function() {
+            $("#loginPopup").modal();
+          });
+        }
+        else {
+          window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?login=webid&showError=no";
+        }
+      }
+      else {
+        $("#loginPopup").modal();
+      }
+    });
+
+    $('.odsSignUpLink').click(function(e) {
+      e.preventDefault();
+
+      if(defaultToWebID) {
+        // try sign up via WebID and fallback to the rest
+        if(window.crypto && window.crypto.logout)
+          window.crypto.logout();
+
+        if(window.location.protocol == "https:") {
+          ODS.registerViaWebId('auto', newSessionCallback, authConfirmCallback, function() {
+            $('#loginPopupMainTab li:eq(1) a').tab('show');
+            $("#loginPopup").modal();
+          });
+        }
+        else {
+          window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?login=webid&showError=no";
+        }
+      }
+      else {
+        $('#loginPopupMainTab li:eq(1) a').tab('show');
+        $("#loginPopup").modal();
+      }
+    });
 
     if(!ODS.handleAuthenticationCallback(newSessionCallback, authConfirmCallback, errHdl)) {
       var login = getParameterByName(window.location.href, 'login');
       var register = getParameterByName(window.location.href, 'register');
       var auto = getParameterByName(window.location.href, 'auto');
       var confirm = getParameterByName(window.location.href, 'confirm') || 'auto';
+      var showError = getParameterByName(window.location.href, 'showError');
 
       var loginErrorHandler = function(err) {
         hideSpinner();
+
+        if(showError != "no")
+          ODS.genericErrorHandler(err);
+
+        setupLoginLink();
 
         // show login dlg
         $("#loginPopup").modal();
@@ -431,10 +473,6 @@ ODS.ready(function() {
           $('#loginPopupMainTab li:eq(1) a').tab('show');
         else if(auto == 'webid')
           $('#loginPopupMainTab li:eq(2) a').tab('show');
-
-        ODS.genericErrorHandler(err);
-
-        setupLoginLink();
       };
 
       if(login == "webid") {

@@ -12,6 +12,10 @@
 
 <!-- The Login and registration window -->
 <div class="modal hide" id="loginPopup">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>ODS Account Management <small>Login or register</small></h3>
+  </div>
 <div class="modal-body">
   <ul id="loginPopupMainTab" class="nav nav-tabs">
     <li class="active"><a href="#authenticate" data-toggle="tab">Authenticate</a></li>
@@ -271,7 +275,7 @@
 </div>
 
 
-
+<!-- AUTH CONFIRMATION DLG -->
 <div id="odsAuthConfirmDialog" class="modal hide">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -305,6 +309,7 @@
 </div>
 
 
+<!-- PASSWORD DLG  -->
 <div id="odsPasswordDlg" class="modal hide">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
