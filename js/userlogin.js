@@ -26,6 +26,8 @@ function authConfirmCallback(confirmSession) {
   console.log("Auth Confirm");
   console.log(confirmSession);
 
+  hideSpinner();
+
   $('#odsAuthConfirmOnlineAccountService').text(confirmSession.onlineAccount.service);
   $('#odsAuthConfirmOnlineAccountUid').text(confirmSession.onlineAccount.uid);
   document.odsAuthConfirmForm.usr.value = confirmSession.user.name;
