@@ -133,6 +133,23 @@ function setupLoginLink() {
         }
     });
 
+    var digestRegisterFnc = function() {
+      ODS.register(document.odsDigestRegister.usr.value, document.odsDigestRegister.email.value, document.odsDigestRegister.pwd1.value, function(result) {
+        $("#loginPopup").modal("hide");
+        newSessionCallback(result);
+      });
+    };
+    $("form#odsDigestRegister input.odsButton").click(function(event) {
+        event.stopPropagation();
+        digestRegisterFnc();
+    });
+    $("form#odsDigestRegister .odsDigestRegisterInput").keydown(function(event) {
+        event.stopPropagation();
+        if(event.keyCode == 13) {
+          digestRegisterFnc();
+        }
+    });
+
 
     //
     // ====================================================
@@ -279,6 +296,8 @@ function setupLoginLink() {
       console.log(methods);
       for (var i = 0; i < methods.length; i++) {
         var method = methods[i];
+        if (method == 'digest')
+          continue;
         var registerUi = $("#" + method + "Register");
         registerUi.show();
 

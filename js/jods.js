@@ -45,7 +45,13 @@ var ODS = (function() {
      */
     var parseOdsSession = function(sessXml) {
       var x = $(sessXml);
-      return x.find('userSession sid').text() || null;
+      var sid = x.find('userSession sid');
+      if(sid) {
+        return new Session(sid.text(), x.find('user new').text());
+      }
+      else {
+        return null;
+      }
     };
 
     /**
@@ -117,13 +123,13 @@ var ODS = (function() {
             $.get(ODS.apiUrl('user.authenticate.browserid'), { assertion: assertion, "audience": audience, action: s_browserIdAction, confirm: s_browserIdConfirm }).success(function(result) {
               console.log("Browser ID Login result:");
               console.log(result);
-              var sid = parseOdsSession(result);
-              if(!sid) {
+              var s = parseOdsSession(result);
+              if(!s) {
                 // confirm session
                 s_browseridAuthConfirmHandler(parseOdsAuthConfirmSession(result));
               }
               else {
-                s_browseridSuccessHandler(new Session(sid));
+                s_browseridSuccessHandler(s);
               }
             }).error(s_browseridErrorHandler || defaultErrorHandler);
           }
@@ -198,7 +204,7 @@ var ODS = (function() {
     };
 
     /** @private */
-    var Session = function(sessionId) {
+    var Session = function(sessionId, isNewUser) {
         /**
          * ODS Session main object.
          * The main ODS session object provides methods to all the ODS
@@ -210,6 +216,7 @@ var ODS = (function() {
          * @name ODS.Session
          */
         var m_sessionId = sessionId;
+        var m_newUser = (isNewUser ? true : false);
 
         /** @lends ODS.Session# */
         return {
@@ -388,6 +395,17 @@ var ODS = (function() {
                     this.m_sessionId = null;
                     successHandler();
                 }).error(errorHandler || defaultErrorHandler);
+            },
+
+            /**
+             * Check if this session is the result of a newly created user account.
+             * This is useful for showing welcome messages and the like.
+             *
+             * @return <em>true</em> if this session is the result of a newly created
+             * user account.
+             */
+            isNewUser: function() {
+              return m_newUser;
             }
         };
     };
@@ -556,7 +574,7 @@ var ODS = (function() {
                 var s = parseOdsSession(result);
 
                 console.log("Authentication result: " + s);
-                newSessionHandler(new Session(s));
+                newSessionHandler(s);
             }).error(errorHandler || defaultErrorHandler);
         },
 
@@ -656,6 +674,26 @@ var ODS = (function() {
         },
 
         /**
+         * <p>Register a new ODS account with classical username and password credentials.</p>
+         *
+         * @param {String} uname The wanted username.
+         * @param {String} email The email address accociated with the new account.
+         * @param {String} password The password for the account.
+         * @param {Function} newSessionHandler A function which handles a successful authentication. It has one
+         * parameter: the new {@link ODS.Session} object.
+         * @param {Function} errorHandler An optional error callback function which is called if the
+         * session is no longer valid or the ODS call failed. See also {@link ODS#setDefaultErrorHandler}.
+         */
+        register: function(uname, email, password, newSessionHandler, errorHandler) {
+          $.get(odsApiUrl('user.register'), { name: uname, "password": password, "email": email }).success(function(result) {
+            if(ODS.isErrorResult(result))
+              (errorHandler || defaultErrorHandler)(result);
+            else
+              newSessionHandler(parseOdsSession(result));
+          }).error(errorHandler || defaultErrorHandler);
+        },
+
+        /**
          * <p>Register a new ODS account via a third-party service.</p>
          *
          * <p>ODS supports a variety of services (a list can be obtained via {@link ODS#registrationMethods})
@@ -720,13 +758,13 @@ var ODS = (function() {
           }
 
           $.get(odsApiUrl("user.authenticate.webid", 1), { action: "register", "confirm": confirm }).success(function(result) {
-            var sid = parseOdsSession(result);
-            if(!sid) {
+            var s = parseOdsSession(result);
+            if(!s) {
               // confirm session
               confirmHandler(parseOdsAuthConfirmSession(result));
             }
             else {
-              newSessionHandler(new Session(sid));
+              newSessionHandler(s);
             }
           }).error(errorHandler || defaultErrorHandler);
         },
@@ -786,13 +824,13 @@ var ODS = (function() {
           }
 
           $.get(odsApiUrl("user.authenticate.webid", 1), { action: "auto", "confirm": confirm }).success(function(result) {
-            var sid = parseOdsSession(result);
-            if(!sid) {
+            var s = parseOdsSession(result);
+            if(!s) {
               // confirm session
               confirmHandler(parseOdsAuthConfirmSession(result));
             }
             else {
-              newSessionHandler(new Session(sid));
+              newSessionHandler(s);
             }
           }).error(errorHandler);
         },
@@ -821,7 +859,7 @@ var ODS = (function() {
 
         confirmAuthentication: function(cid, username, email, newSessionHandler, errorHandler) {
           $.get(odsApiUrl("user.authenticate.confirm"), { "cid": cid, "username": username, "email": email }).success(function(result) {
-            newSessionHandler(new Session(parseOdsSession(result)));
+            newSessionHandler(parseOdsSession(result));
           }).error(errorHandler || defaultErrorHandler);
         },
 
