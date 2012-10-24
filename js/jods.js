@@ -934,8 +934,14 @@ var ODS = (function() {
          * @returns <em>true</em> if it is in fact an error.
          */
         isErrorResult: function(result) {
-          if(!result.getElementsByTagName)
-            result = $.parseXML(result);
+          if(typeof result == 'string') {
+            try {
+              result = $.parseXML(result);
+            }
+            catch(err) {
+              return false;
+            }
+          }
 
           var error = result.getElementsByTagName('failed')[0];
           if (error)
@@ -950,8 +956,15 @@ var ODS = (function() {
          * @param result The XML block as returned by many ODS functions.
          */
          extractErrorResultMessage: function(result) {
-          if(!result.getElementsByTagName)
-             result = $.parseXML(result);
+           if(typeof result == 'string') {
+            try {
+              result = $.parseXML(result);
+            }
+            catch(err) {
+              // fallback to the plain string
+              return result;
+            }
+          }
           return $(result).find('message').text();
         },
 
