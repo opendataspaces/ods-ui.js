@@ -300,4 +300,10 @@ $(document).bind('ods-new-session', function(s) {
   if(window.location.protocol == "https:" && getParameterByName(window.location.href, 'connect') == "webid") {
     s_odsSession.connectToWebId(loadOnlineAccounts);
   }
+
+  // For some reason we do not get the session ID in vsp in Opera and Chrome on Windows. Thus, we use JS as a fallback
+  if(document.initialCertificateGeneratorForm.sid.value.length == 0)
+    document.initialCertificateGeneratorForm.sid.value = s_odsSession.sessionId();
+  if(document.certificateGeneratorForm.sid.value.length == 0)
+    document.certificateGeneratorForm.sid.value = s_odsSession.sessionId();
 });
