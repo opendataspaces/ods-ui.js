@@ -19,6 +19,10 @@ function newSessionCallback(session) {
     setupLogoutLink();
     $(document).trigger('ods-new-session', s_odsSession);
     loadUserData();
+
+    if(session.isNewUser()) {
+      $('#odsWelcomeDlg').modal();
+    }
 }
 
 

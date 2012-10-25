@@ -30,6 +30,30 @@ function loadOnlineAccounts() {
   });
 }
 
+function loadCertificates() {
+  s_odsSession.apiCall('user.certificates.list', {}, "json").success(function(certs) {
+    /* A JSON stream like so:
+     [
+    [
+        3,
+        "/CN=Sebastian Tr\\xC3\\xBCg/emailAddress=trueg@openlinksw.com",
+        "1 minute ago",
+        "15:37:C0:64:3A:D4:9C:8D:F8:E2:08:E9:28:39:B1:8F",
+        "Yes"
+    ],
+    */
+
+    console.log(certs);
+    $certs = $('#x509Certificates');
+    $certs.text('');
+
+    for(var i = 0; i < certs.length; i++) {
+      var cert = certs[i];
+      $certs.append('<p class="odsOnlineAccount" id="cert_' + cert[0] + '"><span class="odsOnlineAccountCell"><b>' + cert[1] + '</b> (created ' + cert[2] + ')</span> <span class="odsOnlineAccountCell"><a href="#" onclick="s_odsSession.apiCall(\'user.certificates.delete\', { id: ' + cert[0] + '}); $(\'#cert_' + cert[0] + '\').remove();" title="Delete this certificate from the ODS profile">Remove</a></span></p>');
+    }
+  });
+}
+
 function loadUserProfile() {
   s_odsSession.userInfo(function(userProps) {
     console.log("loadProfile");
@@ -177,6 +201,15 @@ function setupProfileWindow() {
   });
 }
 
+function setupCertDialog() {
+  // load the certs when opening the cert dialog
+  // We exploit  a little "bug" in Bootstrap: we get a show event for each tab change in the modal-body
+  // that is exactly what we want
+  $('#odsCertDialog').on('show', function() {
+    loadCertificates();
+  });
+}
+
 /**
  * Checks in the input on the register form and optionally marks the input fields.
  */
@@ -245,6 +278,7 @@ function setupPasswordDialog() {
 
 ODS.ready(function() {
     setupProfileWindow();
+    setupCertDialog();
     setupPasswordDialog();
 
     // make our profile dlg resizable
@@ -252,6 +286,12 @@ ODS.ready(function() {
 
     $(".profileDetail#firstName").change(function(event) {
       console.log("This is where you break!!!");
+    });
+
+    // Since the keygen element is very badly designed there is no way to get any feedback
+    // Thus, all we can do is to show a message that something is happening and hope for the best
+    $('#initialCertificateGeneratorBtn').click(function() {
+      $('#initialCertificateGeneratorDiv').html("<p><em>Your WebID certiticate is being generated and the private key is installed into your Browser's key store...</em></p>");
     });
 });
 

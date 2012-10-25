@@ -1,3 +1,8 @@
+<?vsp
+  declare sid varchar;
+  sid := get_keyword('ods_session_id', vsp_ua_get_cookie_vec(lines));
+?>
+
 <!-- An error dialog -->
 <div class="modal hide" id="errorDialog">
   <div class="modal-header">
@@ -275,6 +280,52 @@
 </div>
 
 
+<!-- CERTIFICATE DLG -->
+<div id="odsCertDialog" class="modal hide">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>ODS Security <small>X.509/WebID Certificates</small></h3>
+  </div>
+  <div class="modal-body">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a id="odsCertListTabLink" href="#certTab1" data-toggle="tab">Available Certificates</a>
+        </li>
+        <li>
+            <a href="#certTab2" data-toggle="tab">Certificate Generator</a>
+        </li>
+    </ul>
+
+    <!-- User Profile Tab content -->
+    <div id="userCertsTabContent" class="tab-content">
+      <!-- User Certs Tab 1 -->
+      <div class="tab-pane in active" id="certTab1">
+        <p>The following certificates are accociated with the ODS account:</p>
+        <div id="x509Certificates"></div>
+      </div>
+
+      <!-- User Certs Tab 2 -->
+      <div class="tab-pane" id="certTab2">
+        <p>One ODS account can be accociated with as many WebID enabled X.509 as one wants. New certificates can be generated here.
+        The key strength can normally be left to the default value.</p>
+        <form name="certificateGeneratorForm" action="/ods/api/user.certificates.create">
+          <label class="control-label" for="commonName">Certificate Name:</label> <input type="text" name="commonName" />
+          <label for="publicKey">Key Strength:</label><keygen name="publicKey" /> <!-- I would love to hide the keygen element but then Opera will not create a key pair on submit! -->
+          <input class="btn" type="submit" value="Create Certificate"/>
+          <input name="sid" type="hidden" value="<?V sid ?>" />
+          <input name="realm" type="hidden" value="wa" />
+        </form>
+      </div>
+
+    </div> <!-- tab-content -->
+
+  </div> <!-- modal-body -->
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+  </div>
+</div>
+
+
 <!-- AUTH CONFIRMATION DLG -->
 <div id="odsAuthConfirmDialog" class="modal hide">
   <div class="modal-header">
@@ -336,5 +387,27 @@
   <div class="modal-footer">
     <a id="passwordSaveButton" href="#" class="btn btn-primary">Update Password</a>
     <a href="#" class="btn" data-dismiss="modal">Close</a>
+  </div>
+</div>
+
+
+<!-- WELCOME DLG -->
+<div id="odsWelcomeDlg" class="modal hide">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Welcome to ODS <small>Play with your new account</small></h3>
+  </div>
+  <div class="modal-body">
+    <p>Your new ODS account has been created. You can now modify the profile details or create a WebID certificate.
+    A WebID certificate makes authentication even simpler. Creating the certificate is as simple as pressing the button below.
+    The key strength can normally be left to the default value.</p>
+    <div id="initialCertificateGeneratorDiv">
+      <form id="initialCertificateGeneratorForm" name="initialCertificateGeneratorForm" action="/ods/api/user.certificates.create" class="form-inline">
+        <label for="publicKey">Key Strength:</label> <keygen class="" name="publicKey" /> <!-- I would love to hide the keygen element but then Opera will not create a key pair on submit! -->
+        <input name="sid" type="hidden" value="<?V sid ?>" />
+        <input name="realm" type="hidden" value="wa" />
+        <input id="initialCertificateGeneratorBtn" class="btn" type="submit" value="Create Certificate"/>
+      </form>
+    </div>
   </div>
 </div>
