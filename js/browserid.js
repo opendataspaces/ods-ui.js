@@ -20,6 +20,9 @@ ODS.ready(function() {
   $('#browseridConnect').click(function(event) {
     event.preventDefault();
     showSpinner();
-    s_odsSession.connectToBrowserId(loadOnlineAccounts);
+    s_odsSession.connectToBrowserId(function() {
+      hideSpinner();
+      loadOnlineAccounts();
+    })
   });
 });
