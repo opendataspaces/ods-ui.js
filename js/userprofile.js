@@ -1,6 +1,6 @@
 // load all connected online accounts
 function loadOnlineAccounts() {
-  s_odsSession.apiCall('user.onlineAccounts.list', { type: 'P' }, "json").success(function(result) {
+  s_odsSession.apiCall('user.onlineAccounts.list', { type: 'P' }, "json").success(function(onlineAccounts) {
     /* a JSON stream like so:
     [
     [
@@ -11,20 +11,20 @@ function loadOnlineAccounts() {
     ],
     We are only interested in the first 3.
     */
-    console.log(result);
+    console.log(onlineAccounts);
     $coa = $('#connectedOnlineAccounts');
     $coa.text('');
 
     // sort the accounts
-    result.sort(function(a, b) {
+    onlineAccounts.sort(function(a, b) {
       if (a[1].toLowerCase() == b[1].toLowerCase())
         return a[2].localeCompare(b[2]);
       else
         return a[1].localeCompare(b[1]);
     });
 
-    for(var i = 0; i < result.length; i++) {
-      var account = result[i];
+    for(var i = 0; i < onlineAccounts.length; i++) {
+      var account = onlineAccounts[i];
       $coa.append('<p class="odsOnlineAccount" id="onlineAccount_' + account[0] + '"><img class="odsOnlineAccountCell" src="img/social16/' + account[1].toLowerCase() + '.png"/><span class="odsOnlineAccountCell"><b>' + account[1] + '</b>: ' + account[2] + '</span><span class="odsOnlineAccountCell"><a href="#" onclick="s_odsSession.apiCall(\'user.onlineAccounts.delete\', { id: ' + account[0] + ', type: \'P\'}); $(\'#onlineAccount_' + account[0] + '\').remove();" title="Disconnect this ' + account[1] + ' account from the ODS profile">Disconnect</a></span></p>');
     }
   });
@@ -33,14 +33,27 @@ function loadOnlineAccounts() {
 function loadCertificates() {
   s_odsSession.apiCall('user.certificates.list', {}, "json").success(function(certs) {
     /* A JSON stream like so:
-     [
+[
     [
-        3,
-        "/CN=Sebastian Tr\\xC3\\xBCg/emailAddress=trueg@openlinksw.com",
-        "1 minute ago",
-        "15:37:C0:64:3A:D4:9C:8D:F8:E2:08:E9:28:39:B1:8F",
-        "Yes"
+        37,
+        "/CN=Da WUuuurst/emailAddress=trueg@openlinksw.com",
+        "Less than 2 hours ago",
+        "4A:83:96:6A:BF:D6:A7:FB:58:94:8D:82:64:B9:F2:4F",
+        "Yes",
+        {
+            "id":37,
+            "fingerprint":"4A:83:96:6A:BF:D6:A7:FB:58:94:8D:82:64:B9:F2:4F",
+            "timestamp":"2012-10-25 16:14:53",
+            "fuzzyTimestamp":"Less than 2 hours ago",
+            "subject":[
+                "CN",
+                "Da WUuuurst",
+                "emailAddress",
+                "trueg@openlinksw.com"
+            ]
+        }
     ],
+    We are only interested in the readable JSON blob
     */
 
     console.log(certs);
@@ -48,8 +61,12 @@ function loadCertificates() {
     $certs.text('');
 
     for(var i = 0; i < certs.length; i++) {
-      var cert = certs[i];
-      $certs.append('<p class="odsOnlineAccount" id="cert_' + cert[0] + '"><span class="odsOnlineAccountCell"><b>' + cert[1] + '</b> (created ' + cert[2] + ')</span> <span class="odsOnlineAccountCell"><a href="#" onclick="s_odsSession.apiCall(\'user.certificates.delete\', { id: ' + cert[0] + '}); $(\'#cert_' + cert[0] + '\').remove();" title="Delete this certificate from the ODS profile">Remove</a></span></p>');
+      var cert = certs[i][5];
+      var certLine = '<p class="odsOnlineAccount" style="width:100%" id="cert_' + cert.id + '"><span class="odsOnlineAccountCell"><b>' + cert.subject.CN + '</b><br/>';
+      if('emailAddress' in cert.subject)
+        certLine += 'EMail: ' + cert.subject.emailAddress + ' ';
+      certLine += '(created ' + cert.fuzzyTimestamp + ')</span> <span class="odsOnlineAccountCell pull-right"><a href="#" onclick="s_odsSession.apiCall(\'user.certificates.delete\', { id: ' + cert.id + '}); $(\'#cert_' + cert.id + '\').remove();" title="Delete this certificate from the ODS profile">Remove</a></span></p>';
+      $certs.append(certLine);
     }
   });
 }
