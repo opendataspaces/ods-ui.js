@@ -47,7 +47,7 @@ var ODS = (function() {
       var x = $(sessXml);
       var sid = x.find('userSession sid');
       if(sid) {
-        return new Session(sid.text(), x.find('user new').text());
+        return new Session(sid.text(), parseInt(x.find('user new').text()));
       }
       else {
         return null;
