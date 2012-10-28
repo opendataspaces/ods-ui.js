@@ -46,7 +46,7 @@ var ODS = (function() {
     var parseOdsSession = function(sessXml) {
       var x = $(sessXml);
       var sid = x.find('userSession sid');
-      if(sid) {
+      if(sid.length > 0) {
         return new Session(sid.text(), parseInt(x.find('user new').text()));
       }
       else {
@@ -205,6 +205,11 @@ var ODS = (function() {
 
     /** @private */
     var Session = function(sessionId, isNewUser) {
+        if(sessionId == null || sessionId == undefined || typeof sessionId != "string" || sessionId.length == 0) {
+          console.log("Cannot create a session with an empty session ID.");
+          return null;
+        }
+
         /**
          * ODS Session main object.
          * The main ODS session object provides methods to all the ODS
