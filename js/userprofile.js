@@ -235,17 +235,16 @@ function verifyPasswordChangeDlgInput(form) {
     var pwd2 = form.password2.value;
 
     var $form = $(form);
+    var $pwd2 = $form.find("div.control-group").has(":input#password2");
 
     // compare passwords if we have input in pwd2
     if(pwd2.length > 0 && pwd1 != pwd2) {
-        var $pwd2 = $form.find("div.control-group").has(":input#password2");
         if(!$pwd2.hasClass("error")) {
             $pwd2.addClass("error");
             $pwd2.find("div.controls").append('<p class="help-inline">Passwords do not match</p>');
         }
     }
     else {
-        var $pwd2 = $form.find("div.control-group").has(":input#password2");
         $pwd2.removeClass("error");
         $pwd2.find("p.help-inline").remove();
     }
@@ -323,4 +322,12 @@ $(document).bind('ods-new-session', function(s) {
     document.initialCertificateGeneratorForm.sid.value = s_odsSession.sessionId();
   if(document.certificateGeneratorForm.sid.value.length == 0)
     document.certificateGeneratorForm.sid.value = s_odsSession.sessionId();
+
+  // Check if the user already changed the pwd
+  // FIXME: reuse the already fetched user profile data
+  s_odsSession.userInfo(function(result) {
+    if(result.noPassword == "1") {
+      $('#odsOldPwdInput').hide();
+    }
+  });
 });
