@@ -306,9 +306,10 @@ ODS.ready(function() {
 
     // Since the keygen element is very badly designed there is no way to get any feedback
     // Thus, all we can do is to show a message that something is happening and hope for the best
-    $('#initialCertificateGeneratorBtn').click(function() {
+/*    $('#initialCertificateGeneratorForm').submit(function() {
       $('#initialCertificateGeneratorDiv').html("<p><em>Your WebID certiticate is being generated and the private key is installed into your Browser's key store...</em></p>");
-    });
+      return true;
+    });*/
 });
 
 $(document).bind('ods-new-session', function(s) {
