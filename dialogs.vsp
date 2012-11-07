@@ -407,9 +407,10 @@
     <p>Your new ODS account has been created. You can now modify the profile details or create a WebID certificate.
     A WebID certificate makes authentication even simpler. Creating the certificate is as simple as pressing the button below.
     The key strength can normally be left to the default value.</p>
+    <p>As soon as the Browser confirmed that the certificate has been installed this dialog can be closed.</p>
     <div id="initialCertificateGeneratorDiv">
       <form id="initialCertificateGeneratorForm" name="initialCertificateGeneratorForm" action="/ods/api/user.certificates.create" class="form-inline">
-        <label for="publicKey">Key Strength:</label> <keygen class="" name="publicKey" /> <!-- I would love to hide the keygen element but then Opera will not create a key pair on submit! -->
+        <label for="publicKey">Key Strength:</label> <keygen name="publicKey" /> <!-- I would love to hide the keygen element but then Opera will not create a key pair on submit! -->
         <input name="sid" type="hidden" value="<?V sid ?>" />
         <input name="realm" type="hidden" value="wa" />
         <input id="initialCertificateGeneratorBtn" class="btn" type="submit" value="Create Certificate"/>
