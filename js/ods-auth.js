@@ -837,7 +837,7 @@ var ODS = (function() {
             else {
               newSessionHandler(s);
             }
-          }).error(errorHandler);
+          }).error(errorHandler || defaultErrorHandler);
         },
 
         registerOrLoginViaBrowserId: function(confirm, newSessionHandler, confirmHandler, errorHandler) {
