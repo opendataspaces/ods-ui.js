@@ -96,10 +96,8 @@ var getParameterByName = function(url, name) {
 /**
  * Register methods to actions, events, and so on.
  */
-ODS.ready(function() {
-    console.log("Ready");
-
-    $('#odsFeed').rssfeed('https://trueg.wordpress.com/feed/',
+$(document).ready(function() {
+/*    $('#odsFeed').rssfeed('https://trueg.wordpress.com/feed/',
       { limit: 5,
         header: false,
         content: false
@@ -107,5 +105,5 @@ ODS.ready(function() {
       function() {
         $('.rssDate').timeago();
       }
-    );
+    );*/
 });
