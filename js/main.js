@@ -97,6 +97,12 @@ var getParameterByName = function(url, name) {
  * Register methods to actions, events, and so on.
  */
 $(document).ready(function() {
+  $('.navigation-wrapper').affix({
+    offset: {
+      top: 107
+    }
+  });
+
 /*    $('#odsFeed').rssfeed('https://trueg.wordpress.com/feed/',
       { limit: 5,
         header: false,
