@@ -836,7 +836,7 @@ keygen {
   top: 0;
   width: 974px;
   background-color: #F1F1F1;
-  z-index: 2000;
+  z-index: 1020;
 }
 
 .hp .navigation-wrapper.affix {
