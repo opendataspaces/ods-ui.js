@@ -58,7 +58,7 @@ function showSpinner(msg) {
   }).spin();
 
   $(document).data("__spinner__", bd);
-};
+}
 
 function hideSpinner() {
   var $doc = $(document);
@@ -66,7 +66,7 @@ function hideSpinner() {
     $doc.data("__spinner__").remove();
     $doc.data("__spinner__", null);
   }
-};
+}
 
 
 /**
@@ -75,14 +75,14 @@ function hideSpinner() {
 function resetAndReload() {
   console.log("resetAndReload");
   window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname;
-};
+}
 
 
 /**
  * Extract query parameters from a URL
  */
 var getParameterByName = function(url, name) {
-    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regexS = "[\\?&]" + name + "=([^&#]*)";
     var regex = new RegExp(regexS);
     var results = regex.exec(url.substring(url.indexOf('?')));
