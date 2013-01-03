@@ -193,7 +193,10 @@ function setupProfileWindow() {
         if(window.crypto && window.crypto.logout)
           window.crypto.logout();
         if(window.location.protocol == "https:")
-          s_odsSession.connectToWebId(loadOnlineAccounts);
+          s_odsSession.connectToWebId(function() {
+            hideSpinner();
+            loadOnlineAccounts();
+          });
         else
           window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?connect=webid";
       }
