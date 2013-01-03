@@ -44,7 +44,7 @@
     <div class="odsloginMethodDiv" id="openidLogin" style="display:none;">
       <div class="odsloginMethodTitle blue">Login with Your OpenID</div>
       <form name="openidLoginForm" class="form-inline" id="openidLoginForm">
-        <input class="odsLoginInput" style="width:366px; margin-right:2px;" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" id="openidLoginBtn" value="OpenID Login" title="Login with your OpenID" />
+        <input class="odsLoginInput openIdInput" type="text" id="openidUrl" name="openidUrl" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" id="openidLoginBtn" value="OpenID Login" title="Login with your OpenID" />
       </form>
     </div>
     <div class="odsloginMethodDiv" id="browseridLogin" style="display:none;">
@@ -72,7 +72,7 @@
     <div class="odsloginMethodDiv" id="openidRegister" style="display:none;">
       <div class="odsloginMethodTitle blue">Register with Your OpenID</div>
       <form name="openidRegisterForm" class="form-inline" id="openidRegisterForm">
-        <input class="odsLoginInput" style="width:366px; margin-right:2px;" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" name="openidRegisterBtn" id="openidRegisterBtn" value="OpenID Register" title="Register with your OpenID" />
+        <input class="odsLoginInput openIdInput" type="text" id="openidUrl" name="openidUrl" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" name="openidRegisterBtn" id="openidRegisterBtn" value="OpenID Register" title="Register with your OpenID" />
       </form>
     </div>
     <div class="odsloginMethodDiv" id="browseridRegister" style="display:none;">
@@ -97,7 +97,7 @@
     <div class="odsloginMethodDiv" id="openidAuto" style="display:none;">
       <div class="odsloginMethodTitle blue">Register or Login with Your OpenID</div>
       <form name="openidAutoRegisterForm" class="form-inline" id="openidRegisterForm">
-        <input class="odsLoginInput" style="width:366px; margin-right:2px;" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" name="openidAutoRegisterBtn" id="openidAutoRegisterBtn" value="OpenID Auto" title="Register or Login with your OpenID" />
+        <input class="odsLoginInput openIdInput" type="text" id="openidUrl" name="openidUrl" /><input class="odsButton odsFormButton btn" style="width:128px;" type="button" name="openidAutoRegisterBtn" id="openidAutoRegisterBtn" value="OpenID Auto" title="Register or Login with your OpenID" />
       </form>
     </div>
     <div class="odsloginMethodDiv" id="autoRegistration">
@@ -260,7 +260,7 @@
 
               <div class="odsloginMethodTitle blue">Connect your ODS profile to your OpenID</div>
               <form name="openidConnectForm" class="form-inline" id="openidConnectForm">
-                <input class="odsLoginInput" type="text" id="openidUrl" name="openidUrl" placeholder="OpenID" />
+                <input class="odsLoginInput openIdInput" type="text" id="openidUrl" name="openidUrl" />
                 <input class="odsButton btn" type="button" id="openidConnectBtn" value="OpenID Connect" title="Connect to your OpenID" />
               </form>
               <div class="odsloginMethodTitle blue">Connect your ODS profile to a Persona/BrowserID</div>

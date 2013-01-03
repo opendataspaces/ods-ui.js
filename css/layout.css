@@ -865,3 +865,8 @@ keygen {
   width: 974px;
   height: 5px;
 }
+
+.hp .navigation-container {
+  /* We need to have enough space for the bg image */
+  min-height: 418px;
+}

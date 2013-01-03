@@ -32,3 +32,13 @@ form .odsDigestRegisterInput:nth-child(2) {
   padding: 2px 5px;
   margin: 5px 0;
 }
+
+input.openIdInput {
+  background-image: url("../img/openid-16x16.gif");
+  background-repeat: no-repeat;
+  background-position: 5px;
+  width:340px;
+  margin-right:2px;
+
+  padding-left: 26px;
+}
