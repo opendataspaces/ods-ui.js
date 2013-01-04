@@ -86,7 +86,7 @@
       </div>
       <hr/>
     <label class="checkbox">
-      <input id="forceRegistrationConfirmation" type="checkbox"> Force registration confirmation
+      <input id="forceRegistrationConfirmation" type="checkbox"> Force registration confirmation</input>
     </label>
     </div>
   </div>
@@ -109,7 +109,7 @@
       </div>
       <hr/>
       <label class="checkbox">
-        <input id="forceAutoRegistrationConfirmation" type="checkbox"> Force registration confirmation
+        <input id="forceAutoRegistrationConfirmation" type="checkbox"> Force registration confirmation</input>
       </label>
     </div>
   </div>
@@ -120,7 +120,7 @@
 
 
 <!-- Fake result frame for the submitting of the form below -->
-<iframe id="fake_form_target" name="fake_form_target" src="blank.html" style="width:0;height:0;border:0px solid #fff;" style="display:none;"></iframe>
+<iframe id="fake_form_target" name="fake_form_target" src="blank.html" style="width:0;height:0;border:0px solid #fff;display:none;"></iframe>
 
 
 <!-- The profile editor dialog -->
@@ -175,7 +175,7 @@
                     <label class="control-label" for="photo">Photo</label>
                     <div class="controls">
                         <div class="input-append">
-                            <input class="profileDetail" type="text" id="photo" disabled="disabled"><button id="profilePhotoBtn" class="btn"><i class="icon-folder-open"></i> Choose file</button>
+                            <input class="profileDetail" type="text" id="photo" disabled="disabled" /><button id="profilePhotoBtn" class="btn"><i class="icon-folder-open"></i> Choose file</button>
                         </div>
                         <br/>
                         <input type="file" id="pf_photoContent" name="pf_photoContent" style="visibility:hidden;position:absolute;top:0;left:0" onchange="document.getElementById('photo').value=this.value"></input>
