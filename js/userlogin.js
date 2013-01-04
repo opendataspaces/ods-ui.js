@@ -201,7 +201,7 @@ function setupLoginLink() {
           $("#otherLogins").show();
 
           // build the login link
-          $("#odsThirdPartyLoginButtons").append('<a id="' + method + 'Login" class="odsLoginLink" title="Login via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
+          $("#odsThirdPartyLoginButtons").append('<a id="' + method + 'Login" class="odsLoginLink" title="Login via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="/val/img/social16/' + method + '.png"/></a> ');
           loginUi = $("#" + method + "Login");
 
           loginUi.click(function(event) {
@@ -238,7 +238,7 @@ function setupLoginLink() {
 
 
           // build the auto login link
-          $("#odsThirdPartyAutoButtons").append('<a id="' + method + 'Auto" class="odsLoginLink" title="Login or Register via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
+          $("#odsThirdPartyAutoButtons").append('<a id="' + method + 'Auto" class="odsLoginLink" title="Login or Register via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="/val/img/social16/' + method + '.png"/></a> ');
           autoLoginUi = $("#" + method + "Auto");
 
           autoLoginUi.click(function(event) {
@@ -317,7 +317,7 @@ function setupLoginLink() {
           $("#otherRegistration").show();
 
           // build the login link
-          $("#odsThirdPartyRegisterButtons").append('<a id="' + method + 'Register" class="odsLoginLink" title="Register via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
+          $("#odsThirdPartyRegisterButtons").append('<a id="' + method + 'Register" class="odsLoginLink" title="Register via ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="/val/img/social16/' + method + '.png"/></a> ');
 
           registerUi = $("#" + method + "Register");
 
