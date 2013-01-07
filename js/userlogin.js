@@ -367,6 +367,10 @@ function setupLogoutLink() {
           // remove the cookie
           $.cookie("ods_session_id", null);
 
+          // reset the selected client certificate if possible
+          if(window.crypto && window.crypto.logout)
+            window.crypto.logout();
+
           // reload the page to reset everything without any parameters
           resetAndReload();
         });
