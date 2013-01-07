@@ -178,7 +178,7 @@ function setupProfileWindow() {
       var method = methods[i];
       if(method == "openid" || method == "browserid")
         continue;
-      $thirdPartyProfileConnect.append('<a id="' + method + 'Connect" title="Connect ODS profile to ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="/val/img/social16/' + method + '.png"/></a> ');
+      $thirdPartyProfileConnect.append('<a id="' + method + 'Connect" title="Connect ODS profile to ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
     }
 
     $('#thirdPartyProfileConnect a').click(function(e) {
