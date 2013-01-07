@@ -1,3 +1,5 @@
+var s_loginLinkSetupDone = false;
+
 /**
  * Callback function for successful ODS authentication.
  *
@@ -105,6 +107,11 @@ function loadUserData() {
 
 function setupLoginLink() {
     console.log("setupLoginLink");
+
+    if(s_loginLinkSetupDone) {
+      return;
+    }
+    s_loginLinkSetupDone = true;
 
     // For now we need to setup the digest authentication manually
     var digestLoginFnc = function() {
