@@ -1,0 +1,73 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>ODS Login Demo</title>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="stylesheet" href="css/vendor/jquery.zrssfeed.css">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/odslogin.css">
+
+  <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+    <div id="ods-profile-box">
+      <span class="odsLoginLink"><a class="profileBoxLink" href="#">Login</a> | <a class="odsSignUpLink profileBoxLink" href="#">Sign Up</a></span>
+      <div id="userProfileLinks" style="display:none">
+        <a class="profileBoxLink dropdown-toggle" href="#" data-toggle="dropdown"><span id="profileLinkUserName">Profile</span> <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li id="profileLink"><a href="#odsUserProfileWindow" data-toggle="modal">User Profile</a></li>
+          <li><a href="#odsCertDialog" data-toggle="modal">User Certificates</a></li>
+          <li><a href="#odsPasswordDlg" data-toggle="modal">Change Password</a></li>
+          <li id="odsUserLogout"><a class="odsUserLogout" href="#">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>ODS Login Demo</h2>
+
+    <div id="ods_dialogs"></div>
+
+</body>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+<script>window.jQuery || document.write('<script type="text/javascript" src="js/vendor/jquery-1.7.2.min.js"><\/script><script type="text/javascript" src="jquery-ui-1.8.23.min.js"><\/script>')</script>
+
+<script>$('#ods_dialogs').load('dialogs.html');</script>
+
+<!-- cached version of https://login.persona.org/include.js -->
+<script src="js/cached/persona.org/include.js"></script>
+
+<script src="js/vendor/jquery.cookie.js"></script>
+<script src="js/vendor/jquery.sha1.js"></script>
+<script src="js/vendor/jquery.timeago.js"></script>
+<script src="js/vendor/jquery.form.js"></script>
+<script src="js/vendor/spin.min.js"></script>
+<script src="js/jquery.spin.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/jquery.bootstrap.dynalert.js"></script>
+<script src="js/ods-auth.js"></script>
+<script src="js/main.js"></script>
+<script src="js/userlogin.js"></script>
+<script src="js/userprofile.js"></script>
+<script src="js/browserid.js"></script>
+
+<!--[if lt IE 7 ]>
+  <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
+  <script>window.attachEvent("onload",function(){CFInstall.check({mode:"overlay"})})</script>
+<![endif]-->
+
+</body>
+</html>
