@@ -1,8 +1,3 @@
-<?vsp
-  declare sid varchar;
-  sid := get_keyword('ods_session_id', vsp_ua_get_cookie_vec(lines));
-?>
-
 <!-- An error dialog -->
 <div class="modal hide" id="errorDialog">
   <div class="modal-header">
@@ -312,7 +307,7 @@
           <label class="control-label" for="commonName">Certificate Name:</label> <input type="text" name="commonName" />
           <label for="publicKey">Key Strength:</label><keygen name="publicKey" /> <!-- I would love to hide the keygen element but then Opera will not create a key pair on submit! -->
           <input class="btn" type="submit" value="Create Certificate"/>
-          <input name="sid" type="hidden" value="<?V sid ?>" />
+          <input name="sid" type="hidden" value="" />
           <input name="realm" type="hidden" value="wa" />
         </form>
       </div>
@@ -411,7 +406,7 @@
     <div id="initialCertificateGeneratorDiv">
       <form id="initialCertificateGeneratorForm" name="initialCertificateGeneratorForm" action="/ods/api/user.certificates.create" class="form-inline">
         <label for="publicKey">Key Strength:</label> <keygen name="publicKey" /> <!-- I would love to hide the keygen element but then Opera will not create a key pair on submit! -->
-        <input name="sid" type="hidden" value="<?V sid ?>" />
+        <input name="sid" type="hidden" value="" />
         <input name="realm" type="hidden" value="wa" />
         <input id="initialCertificateGeneratorBtn" class="btn" type="submit" value="Create Certificate"/>
       </form>
