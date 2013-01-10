@@ -322,10 +322,14 @@ $(document).bind('ods-new-session', function(s) {
   }
 
   // For some reason we do not get the session ID in vsp in Opera and Chrome on Windows. Thus, we use JS as a fallback
+  if(document.initialCertificateGeneratorForm) {
   if(document.initialCertificateGeneratorForm.sid.value.length == 0)
     document.initialCertificateGeneratorForm.sid.value = s_odsSession.sessionId();
+  }
+  if(document.certificateGeneratorForm) {
   if(document.certificateGeneratorForm.sid.value.length == 0)
     document.certificateGeneratorForm.sid.value = s_odsSession.sessionId();
+  }
 
   // Check if the user already changed the pwd
   // FIXME: reuse the already fetched user profile data
