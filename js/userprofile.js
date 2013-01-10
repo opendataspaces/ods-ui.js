@@ -25,7 +25,7 @@ function loadOnlineAccounts() {
 
     for(var i = 0; i < onlineAccounts.length; i++) {
       var account = onlineAccounts[i];
-      $coa.append('<p class="odsOnlineAccount" id="onlineAccount_' + account[0] + '"><img class="odsOnlineAccountCell" src="img/social16/' + account[1].toLowerCase() + '.png"/><span class="odsOnlineAccountCell"><b>' + account[1] + '</b>: ' + account[2] + '</span><span class="odsOnlineAccountCell"><a href="#" onclick="s_odsSession.apiCall(\'user.onlineAccounts.delete\', { id: ' + account[0] + ', type: \'P\'}); $(\'#onlineAccount_' + account[0] + '\').remove();" title="Disconnect this ' + account[1] + ' account from the ODS profile">Disconnect</a></span></p>');
+      $coa.append('<p class="odsOnlineAccount" id="onlineAccount_' + account[0] + '"><img class="odsOnlineAccountCell" src="http://' + ODS.host() + '/val/img/social16/' + account[1].toLowerCase() + '.png"/><span class="odsOnlineAccountCell"><b>' + account[1] + '</b>: ' + account[2] + '</span><span class="odsOnlineAccountCell"><a href="#" onclick="s_odsSession.apiCall(\'user.onlineAccounts.delete\', { id: ' + account[0] + ', type: \'P\'}); $(\'#onlineAccount_' + account[0] + '\').remove();" title="Disconnect this ' + account[1] + ' account from the ODS profile">Disconnect</a></span></p>');
     }
   });
 }
@@ -178,7 +178,7 @@ function setupProfileWindow() {
       var method = methods[i];
       if(method == "openid" || method == "browserid")
         continue;
-      $thirdPartyProfileConnect.append('<a id="' + method + 'Connect" title="Connect ODS profile to ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="img/social16/' + method + '.png"/></a> ');
+      $thirdPartyProfileConnect.append('<a id="' + method + 'Connect" title="Connect ODS profile to ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="http://' + ODS.host() + '/val/img/social16/' + method + '.png"/></a> ');
     }
 
     $('#thirdPartyProfileConnect a').click(function(e) {
