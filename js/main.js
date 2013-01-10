@@ -1,8 +1,6 @@
 /* Author: Sebastian Trueg <trueg@openlinksw.com>
 */
 
-ODS.setOdsHost('web.ods.openlinksw.com', 'web.ods.openlinksw.com');
-
 /// The ODS session
 var s_odsSession = null;
 
