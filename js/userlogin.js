@@ -411,19 +411,20 @@ function setupAuthConfirmDialog() {
 }
 
 
-$(document).ready(function() {
+function setupErrorDialog() {
     // we remove the error message from the URL after showing the error
     $('#errorDialog').on('hide', function() {
       if(window.location.search.length > 0)
         resetAndReload();
     });
-});
+}
 
 ODS.ready(function() {
     // we allow to choose WebID as the default login mecahnism via a query parameter
     var defaultToWebID = (getParameterByName(window.location.href, 'defaultToWebID').toLowerCase() == 'true');
 
     var errHdl = function(msg) {
+      setupErrorDialog();
       $('#errorDialogMsg').text(msg);
       $('#errorDialog').modal();
     };
