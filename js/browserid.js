@@ -15,7 +15,7 @@ ODS.ready(function() {
     event.preventDefault();
     $("#loginPopup").modal("hide");
     //showSpinner();
-    ODS.registerOrLoginViaBrowserId($('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto', newSessionCallback, authConfirmCallback);
+    ODS.registerOrLoginViaBrowserId($('#forceAutoRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto', newSessionCallback, authConfirmCallback);
   });
   $('#browseridConnect').click(function(event) {
     event.preventDefault();

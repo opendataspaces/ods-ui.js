@@ -197,7 +197,7 @@ function setupLoginDialog() {
             });
 
             var openIdAutoRegFnc = function() {
-              var confirm = $('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
+              var confirm = $('#forceAutoRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
               var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               showSpinner("Verifying OpenID...");
               ODS.registerOrLoginViaOpenId(document.openidAutoRegisterForm.openidUrl.value, callbackUrl, confirm);
