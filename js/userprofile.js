@@ -121,7 +121,22 @@ function saveUserProfile() {
 }
 
 
-function setupProfileWindow() {
+var s_odsProfileDialogSetupDone = false;
+
+function setupProfileDialogs() {
+  if(!s_odsProfileDialogSetupDone) {
+    if ($('#odsUserProfileWindow').size() == 0) {
+      console.log("User profile dialog HTML not loaded yet.");
+      return;
+    }
+  }
+  else {
+    console.log("User profile dialog already setup.");
+    return;
+  }
+
+  s_odsProfileDialogSetupDone = true;
+
   // use our hidden file input to select a new photo
   $("#profilePhotoBtn").click(function(event) {
     event.preventDefault();
@@ -219,6 +234,10 @@ function setupProfileWindow() {
       $(this).css("max-height", 400 + ui.size.height - ui.originalSize.height);
     });
   });
+
+  // setup the other dialogs
+  setupCertDialog();
+  setupPasswordDialog();
 }
 
 function setupCertDialog() {
@@ -296,16 +315,10 @@ function setupPasswordDialog() {
 }
 
 ODS.ready(function() {
-    setupProfileWindow();
-    setupCertDialog();
-    setupPasswordDialog();
+    setupProfileDialogs();
 
     // make our profile dlg resizable
     $("#odsUserProfileWindow").resizable();
-
-    $(".profileDetail#firstName").change(function(event) {
-      console.log("This is where you break!!!");
-    });
 
     // Since the keygen element is very badly designed there is no way to get any feedback
     // Thus, all we can do is to show a message that something is happening and hope for the best

@@ -34,6 +34,8 @@ function authConfirmCallback(confirmSession) {
 
   hideSpinner();
 
+  setupAuthConfirmDialog();
+
   $('#odsAuthConfirmOnlineAccountService').text(confirmSession.onlineAccount.service);
   $('#odsAuthConfirmOnlineAccountUid').text(confirmSession.onlineAccount.uid);
   document.odsAuthConfirmForm.usr.value = confirmSession.user.name;
@@ -59,11 +61,11 @@ function checkSession() {
         if(sessionId != null) {
             console.log("Found session cookie " + sessionId);
             // check if the session is still valid
-            ODS.createSessionFromId(sessionId, newSessionCallback, setupLoginLink);
+            ODS.createSessionFromId(sessionId, newSessionCallback, setupLoginDialog);
         }
         else {
             console.log("No session cookie stored.");
-            setupLoginLink();
+            setupLoginDialog();
         }
     }
 }
@@ -105,10 +107,17 @@ function loadUserData() {
 }
 
 
-function setupLoginLink() {
-    console.log("setupLoginLink");
+function setupLoginDialog() {
+    console.log("setupLoginDialog");
 
-    if(s_loginLinkSetupDone) {
+    if(!s_loginLinkSetupDone) {
+      if ($('#loginPopup').size() == 0) {
+        console.log("User authentication dialog HTML not loaded yet.");
+        return;
+      }
+    }
+    else {
+      console.log("User authentication dialog already setup.");
       return;
     }
     s_loginLinkSetupDone = true;
@@ -385,13 +394,8 @@ function setupLogoutLink() {
 }
 
 
-$(document).ready(function() {
-    // we remove the error message from the URL after showing the error
-    $('#errorDialog').on('hide', function() {
-      if(window.location.search.length > 0)
-        resetAndReload();
-    });
-    $("#odsAuthConfirmDialog").on('hide', function() {
+function setupAuthConfirmDialog() {
+      $("#odsAuthConfirmDialog").on('hide', function() {
       if(window.location.search.length > 0)
         resetAndReload();
     });
@@ -403,6 +407,15 @@ $(document).ready(function() {
         $("#odsAuthConfirmDialog").modal("hide");
         newSessionCallback(result);
       });
+    });
+}
+
+
+$(document).ready(function() {
+    // we remove the error message from the URL after showing the error
+    $('#errorDialog').on('hide', function() {
+      if(window.location.search.length > 0)
+        resetAndReload();
     });
 });
 
@@ -474,7 +487,7 @@ ODS.ready(function() {
         if(showError != "no")
           ODS.genericErrorHandler(err);
 
-        setupLoginLink();
+        setupLoginDialog();
 
         // show login dlg
         $("#loginPopup").modal();
