@@ -68,15 +68,6 @@ function hideSpinner() {
 
 
 /**
- * Reloads the current page resetting any parameters
- */
-function resetAndReload() {
-  console.log("resetAndReload");
-  window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname;
-}
-
-
-/**
  * Extract query parameters from a URL
  */
 var getParameterByName = function(url, name) {

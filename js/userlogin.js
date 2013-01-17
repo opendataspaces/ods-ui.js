@@ -1,5 +1,30 @@
 var s_loginLinkSetupDone = false;
 
+function callbackUrl(needSsl, params) {
+  needSsl = needSsl || 0;
+  params = params || '';
+  var url = (needSsl ? "https:" : window.location.protocol) + "//" + window.location.host + window.location.pathname + window.location.search;
+  if (params.length > 0) {
+    if (window.location.search.length > 0)
+      url += '&';
+    else
+      url += '?'
+    url += params;
+  }
+  return ODS.cleanUrl(url);
+}
+
+
+/**
+ * Reloads the current page resetting any parameters we added
+ */
+function resetAndReload(forced) {
+  console.log("resetAndReload");
+  var cleanUrl = ODS.clearUrl(window.location.href);
+  if(cleanUrl != window.location.href || forced == true)
+    window.location.href = cleanUrl;
+}
+
 /**
  * Callback function for successful ODS authentication.
  *
@@ -181,9 +206,8 @@ function setupLoginDialog() {
 
         if(method == "openid") {
             var openIdLoginFnc = function() {
-              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               showSpinner("Verifying OpenID...");
-              ODS.createOpenIdSession(document.openidLoginForm.openidUrl.value, callbackUrl, newSessionCallback);
+              ODS.createOpenIdSession(document.openidLoginForm.openidUrl.value, callbackUrl(), newSessionCallback);
             };
             $("#openidLoginForm .odsLoginInput").keydown(function(event) {
               event.stopPropagation();
@@ -198,9 +222,8 @@ function setupLoginDialog() {
 
             var openIdAutoRegFnc = function() {
               var confirm = $('#forceAutoRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
-              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               showSpinner("Verifying OpenID...");
-              ODS.registerOrLoginViaOpenId(document.openidAutoRegisterForm.openidUrl.value, callbackUrl, confirm);
+              ODS.registerOrLoginViaOpenId(document.openidAutoRegisterForm.openidUrl.value, callbackUrl(), confirm);
             };
             $("#openidAutoRegisterForm .odsLoginInput").keydown(function(event) {
               event.stopPropagation();
@@ -242,13 +265,11 @@ function setupLoginDialog() {
               if(window.location.protocol == "https:")
                 ODS.createWebIdSession(newSessionCallback);
               else
-                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?login=webid";
+                window.location.href = callbackUrl(true, "login=webid");
             }
             else {
-              // construct our callback url
-              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               // try to login via OpenID
-              ODS.createThirdPartyServiceSession(m, callbackUrl);
+              ODS.createThirdPartyServiceSession(m, callbackUrl());
             }
           });
 
@@ -278,13 +299,11 @@ function setupLoginDialog() {
               if(window.location.protocol == "https:")
                 ODS.registerOrLoginViaWebId(confirm, newSessionCallback, authConfirmCallback);
               else
-                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?auto=webid&confirm=" + confirm;
+                window.location.href = callbackUrl(true, "auto=webid&confirm=" + confirm);
             }
             else {
-              // construct our callback url
-              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               // try to login via OpenID
-              ODS.registerOrLoginViaThirdPartyService(m, callbackUrl, confirm);
+              ODS.registerOrLoginViaThirdPartyService(m, callbackUrl(), confirm);
             }
           });
         }
@@ -314,9 +333,8 @@ function setupLoginDialog() {
         else if(method == "openid") {
             var openIdRegFnc = function() {
               var confirm = $('#forceRegistrationConfirmation').attr('checked') == "checked" ? 'always' : 'auto';
-              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               showSpinner("Registering via OpenID...");
-              ODS.registerViaOpenId(document.openidRegisterForm.openidUrl.value, callbackUrl, confirm);
+              ODS.registerViaOpenId(document.openidRegisterForm.openidUrl.value, callbackUrl(), confirm);
             };
             $("#openidRegisterForm .odsLoginInput").keydown(function(event) {
               event.stopPropagation();
@@ -361,13 +379,11 @@ function setupLoginDialog() {
               if(window.location.protocol == "https:")
                 ODS.registerViaWebId(confirm, newSessionCallback, authConfirmCallback);
               else
-                window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?register=webid&confirm=" + confirm;
+                window.location.href = callbackUrl(true, "register=webid&confirm=" + confirm);
             }
             else {
-              // construct our callback url
-              var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
               // try to login via OpenID
-              ODS.registerViaThirdPartyService(m, callbackUrl, confirm);
+              ODS.registerViaThirdPartyService(m, callbackUrl(), confirm);
             }
           });
         }
@@ -388,7 +404,7 @@ function setupLogoutLink() {
             window.crypto.logout();
 
           // reload the page to reset everything without any parameters
-          resetAndReload();
+          resetAndReload(true);
         });
     });
 }
@@ -443,7 +459,7 @@ ODS.ready(function() {
           });
         }
         else {
-          window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?login=webid&showError=no";
+          window.location.href = callbackUrl(true, "login=webid&showError=no");
         }
       }
       else {
@@ -466,7 +482,7 @@ ODS.ready(function() {
           });
         }
         else {
-          window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?login=webid&showError=no";
+          window.location.href = callbackUrl(true, "login=webid&showError=no");
         }
       }
       else {

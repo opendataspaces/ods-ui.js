@@ -181,9 +181,8 @@ function setupProfileDialogs() {
 
   $('#openidConnectBtn').click(function(e) {
     e.preventDefault();
-    var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     showSpinner("Connecting account to OpenID...");
-    s_odsSession.connectToOpenId(document.openidConnectForm.openidUrl.value, callbackUrl);
+    s_odsSession.connectToOpenId(document.openidConnectForm.openidUrl.value, callbackUrl());
   });
 
   // build the 3rd party connect buttons
@@ -213,11 +212,10 @@ function setupProfileDialogs() {
             loadOnlineAccounts();
           });
         else
-          window.location.href = "https://" + ODS.sslHost() + window.location.pathname + "?connect=webid";
+          window.location.href = callbackUrl(true, "connect=webid");
       }
       else {
-        var callbackUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-        s_odsSession.connectToThirdPartyService(service, callbackUrl);
+        s_odsSession.connectToThirdPartyService(service, callbackUrl());
       }
     });
   });
