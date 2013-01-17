@@ -191,7 +191,7 @@ function setupProfileDialogs() {
   ODS.connectionMethods(function(methods) {
     for (var i = 0; i < methods.length; i++) {
       var method = methods[i];
-      if(method == "openid" || method == "browserid")
+      if(method == "digest" || method == "openid" || method == "browserid")
         continue;
       $thirdPartyProfileConnect.append('<a id="' + method + 'Connect" title="Connect ODS profile to ' + method[0].toUpperCase() + method.substring(1) + '" href="#"><img src="http://' + ODS.host() + '/val/img/social16/' + method + '.png"/></a> ');
     }
