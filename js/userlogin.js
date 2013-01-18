@@ -11,7 +11,7 @@ function callbackUrl(needSsl, params) {
       url += '?'
     url += params;
   }
-  return ODS.cleanUrl(url);
+  return ODS.cleanupUrl(url);
 }
 
 
@@ -20,7 +20,7 @@ function callbackUrl(needSsl, params) {
  */
 function resetAndReload(forced) {
   console.log("resetAndReload");
-  var cleanUrl = ODS.clearUrl(window.location.href);
+  var cleanUrl = ODS.cleanupUrl(window.location.href);
   if(cleanUrl != window.location.href || forced == true)
     window.location.href = cleanUrl;
 }
