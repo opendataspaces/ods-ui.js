@@ -1,3 +1,14 @@
+/**
+ * Supported options:
+ * <li>cookieDomain</li>
+ */
+s_odsConfig = {
+};
+
+function configureOdsUi(opts) {
+  $.extend(s_odsConfig, opts);
+}
+
 var s_loginLinkSetupDone = false;
 
 function callbackUrl(needSsl, params) {
@@ -41,7 +52,10 @@ function newSessionCallback(session) {
     // save session id in cookie
     var expire = new Date();
     expire.setDate(expire.getDate() + 7); // one week expiration
-    $.cookie("ods_session_id", s_odsSession.sessionId(), {expires: expire, path: '/'});
+    var cookie = { expires: expire, path: '/' };
+    if(s_odsConfig.cookieDomain)
+      cookie.domain = s_odsConfig.cookieDomain;
+    $.cookie("ods_session_id", s_odsSession.sessionId(), cookie);
 
     setupLogoutLink();
     $(document).trigger('ods-new-session', s_odsSession);
@@ -397,7 +411,12 @@ function setupLogoutLink() {
 
         s_odsSession.logout(function() {
           // remove the cookie
-          $.cookie("ods_session_id", null);
+          var expireDate = new Date();
+          expireDate.setFullYear(1970);
+          var cookie = { expires: expireDate, path: '/' };
+          if(s_odsConfig.cookieDomain)
+            cookie.domain = s_odsConfig.cookieDomain;
+          $.cookie("ods_session_id", "", cookie);
 
           // reset the selected client certificate if possible
           if(window.crypto && window.crypto.logout)
